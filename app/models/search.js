@@ -52,53 +52,285 @@ var search = {
 
     if(typePage == 1){
       if(object.catogory == 0){
-        var sql1 = 'select b.proid, b.proname, b.tinydes, datediff(datefinish, NOW()) as songay, b.currentprice, count(a.productid) as soluotdaugia\
-                  from bidhistory a right join product b on a.productid = b.proid\
-                  where b.proname LIKE ?\
-                  group by b.proid, b.proname, b.tinydes, b.currentprice\
-                  order by b.currentprice ASC\
-                  LIMIT ? , ?;'
+        var sql1 = 'select b.image1, b.proid, b.proname, b.tinydes, TIMESTAMPDIFF(Second , now() , b.datefinish) sogiay,\
+                    case\
+                          	  when a.price is null then b.startprice \
+                              when a.price is not null then a.price\
+                    end as priceAuction, \
+                    case \
+                          	  when a.userid is null then "No Bid"\
+                              when a.userid is not null then a.userid\
+                    end as userBid, \
+                    case \
+                               when  (select count(*)  \
+                    					 from dackweb.bidhistory history\
+                    					 where history.productid = b.proid\
+                    					 group by history.productid) is null then 0\
+                    			   when  (select count(*)  \
+                    					 from dackweb.bidhistory history\
+                    					 where history.productid = b.proid\
+                    					 group by history.productid) is not null then (select count(*)  \
+                    															 from dackweb.bidhistory history\
+                    															 where history.productid = b.proid\
+                    															 group by history.productid)\
+                    end as soluotdaugia\
+                    from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid\
+                    where b.proname LIKE ?\
+                    and not exists (\
+                    						select *\
+                                            from dackweb.bidhistory c\
+                    						where c.productid = a.productid\
+                                            and a.userid = c.userid\
+                                            and  exists(\
+                    											select * \
+                                                                from dackweb.bidhistory e \
+                                                                where e.productid = c.productid\
+                                                                and a.price < e.price\
+                    									)\
+                    			 )\
+                    group by b.proid, b.proname, b.tinydes, TIMESTAMPDIFF(Second , now() , b.datefinish), a.price, a.userid\
+                    order by \
+                    case\
+                    	  when a.price is null then b.startprice \
+                        when a.price is not null then a.price\
+                    end ASC\
+                    LIMIT ? , ?;';
       } else {
-        var sql1 = 'select b.proid, b.proname, b.tinydes, datediff(datefinish, NOW()) as songay, b.currentprice, count(a.productid) as soluotdaugia\
-                  from bidhistory a right join product b on a.productid = b.proid\
-                  where b.catid = ? and b.proname LIKE ?\
-                  group by b.proid, b.proname, b.tinydes, b.currentprice\
-                  order by b.currentprice ASC\
-                  LIMIT ? , ?;'
+        var sql1 = 'select b.image1, b.proid, b.proname, b.tinydes, TIMESTAMPDIFF(Second , now() , b.datefinish) sogiay,\
+                    case\
+                          	  when a.price is null then b.startprice \
+                              when a.price is not null then a.price\
+                    end as priceAuction, \
+                    case \
+                          	  when a.userid is null then "No Bid"\
+                              when a.userid is not null then a.userid\
+                    end as userBid, \
+                    case \
+                               when  (select count(*)  \
+                    					 from dackweb.bidhistory history\
+                    					 where history.productid = b.proid\
+                    					 group by history.productid) is null then 0\
+                    			   when  (select count(*)  \
+                    					 from dackweb.bidhistory history\
+                    					 where history.productid = b.proid\
+                    					 group by history.productid) is not null then (select count(*)  \
+                    															 from dackweb.bidhistory history\
+                    															 where history.productid = b.proid\
+                    															 group by history.productid)\
+                    end as soluotdaugia\
+                    from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid\
+                    where b.catid = ? and b.proname LIKE ?\
+                    and not exists (\
+                    						select *\
+                                            from dackweb.bidhistory c\
+                    						where c.productid = a.productid\
+                                            and a.userid = c.userid\
+                                            and  exists(\
+                    											select * \
+                                                                from dackweb.bidhistory e \
+                                                                where e.productid = c.productid\
+                                                                and a.price < e.price\
+                    									)\
+                    			 )\
+                    group by b.proid, b.proname, b.tinydes, TIMESTAMPDIFF(Second , now() , b.datefinish), a.price, a.userid\
+                    order by \
+                    case\
+                    	  when a.price is null then b.startprice \
+                        when a.price is not null then a.price\
+                    end ASC\
+                    LIMIT ? , ?;'
       }
     }
     else if (typePage == 0) {
       if(object.catogory == 0){
-        var sql1 = 'select b.proid, b.proname, b.tinydes, datediff(datefinish, NOW()) as songay, b.currentprice, count(a.productid) as soluotdaugia\
-                  from bidhistory a right join product b on a.productid = b.proid\
-                  where b.proname LIKE ?\
-                  group by b.proid, b.proname, b.tinydes, b.currentprice\
-                  LIMIT ? , ?;'
+        var sql1 = 'select b.image1, b.proid, b.proname, b.tinydes, TIMESTAMPDIFF(Second , now() , b.datefinish) sogiay,\
+                    case\
+                          	  when a.price is null then b.startprice \
+                              when a.price is not null then a.price\
+                    end as priceAuction, \
+                    case \
+                          	  when a.userid is null then "No Bid"\
+                              when a.userid is not null then a.userid\
+                    end as userBid, \
+                    case \
+                               when  (select count(*)  \
+                    					 from dackweb.bidhistory history\
+                    					 where history.productid = b.proid\
+                    					 group by history.productid) is null then 0\
+                    			   when  (select count(*)  \
+                    					 from dackweb.bidhistory history\
+                    					 where history.productid = b.proid\
+                    					 group by history.productid) is not null then (select count(*)  \
+                    															 from dackweb.bidhistory history\
+                    															 where history.productid = b.proid\
+                    															 group by history.productid)\
+                    end as soluotdaugia\
+                    from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid\
+                    where b.proname LIKE ?\
+                    and not exists (\
+                    						select *\
+                                            from dackweb.bidhistory c\
+                    						where c.productid = a.productid\
+                                            and a.userid = c.userid\
+                                            and  exists(\
+                    											select * \
+                                                                from dackweb.bidhistory e \
+                                                                where e.productid = c.productid\
+                                                                and a.price < e.price\
+                    									)\
+                    			 )\
+                    group by b.proid, b.proname, b.tinydes, TIMESTAMPDIFF(Second , now() , b.datefinish), a.price, a.userid\
+                    LIMIT ? , ?;'
       }
       else {
-        var sql1 = 'select b.proid, b.proname, b.tinydes, datediff(datefinish, NOW()) as songay, b.currentprice, count(a.productid) as soluotdaugia\
-                  from bidhistory a right join product b on a.productid = b.proid\
-                  where b.catid = ? and b.proname LIKE ?\
-                  group by b.proid, b.proname, b.tinydes, b.currentprice\
-                  LIMIT ? , ?;'
+        var sql1 = 'select b.image1, b.proid, b.proname, b.tinydes, TIMESTAMPDIFF(Second , now() , b.datefinish) sogiay,\
+                    case\
+                          	  when a.price is null then b.startprice \
+                              when a.price is not null then a.price\
+                    end as priceAuction, \
+                    case \
+                          	  when a.userid is null then "No Bid"\
+                              when a.userid is not null then a.userid\
+                    end as userBid, \
+                    case \
+                               when  (select count(*)  \
+                    					 from dackweb.bidhistory history\
+                    					 where history.productid = b.proid\
+                    					 group by history.productid) is null then 0\
+                    			   when  (select count(*)  \
+                    					 from dackweb.bidhistory history\
+                    					 where history.productid = b.proid\
+                    					 group by history.productid) is not null then (select count(*)  \
+                    															 from dackweb.bidhistory history\
+                    															 where history.productid = b.proid\
+                    															 group by history.productid)\
+                    end as soluotdaugia\
+                    from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid\
+                    where b.catid = ? and b.proname LIKE ?\
+                    and not exists (\
+                    						select *\
+                                            from dackweb.bidhistory c\
+                    						where c.productid = a.productid\
+                                            and a.userid = c.userid\
+                                            and  exists(\
+                    											select * \
+                                                                from dackweb.bidhistory e \
+                                                                where e.productid = c.productid\
+                                                                and a.price < e.price\
+                    									)\
+                    			 )\
+                    group by b.proid, b.proname, b.tinydes, TIMESTAMPDIFF(Second , now() , b.datefinish), a.price, a.userid\
+                    LIMIT ? , ?;'
       }
     }
     else if (typePage == 2) {
       if(object.catogory == 0){
-        var sql1 = 'select b.proid, b.proname, b.tinydes, datediff(datefinish, NOW()) as songay, b.currentprice, count(a.productid) as soluotdaugia\
-                  from bidhistory a right join product b on a.productid = b.proid\
-                  where b.proname LIKE ?\
-                  group by b.proid, b.proname, b.tinydes, b.currentprice\
-                  order by count(a.productid) DESC\
-                  LIMIT ? , ?;'
+        var sql1 = 'select b.image1, b.proid, b.proname, b.tinydes, TIMESTAMPDIFF(Second , now() , b.datefinish) sogiay,\
+                    case\
+                          	  when a.price is null then b.startprice \
+                              when a.price is not null then a.price\
+                    end as priceAuction, \
+                    case \
+                          	  when a.userid is null then "No Bid"\
+                              when a.userid is not null then a.userid\
+                    end as userBid, \
+                    case \
+                               when  (select count(*)  \
+                    					 from dackweb.bidhistory history\
+                    					 where history.productid = b.proid\
+                    					 group by history.productid) is null then 0\
+                    			   when  (select count(*)  \
+                    					 from dackweb.bidhistory history\
+                    					 where history.productid = b.proid\
+                    					 group by history.productid) is not null then (select count(*)  \
+                    															 from dackweb.bidhistory history\
+                    															 where history.productid = b.proid\
+                    															 group by history.productid)\
+                    end as soluotdaugia\
+                    from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid\
+                    where b.proname LIKE ?\
+                    and not exists (\
+                    						select *\
+                                            from dackweb.bidhistory c\
+                    						where c.productid = a.productid\
+                                            and a.userid = c.userid\
+                                            and  exists(\
+                    											select * \
+                                                                from dackweb.bidhistory e \
+                                                                where e.productid = c.productid\
+                                                                and a.price < e.price\
+                    									)\
+                    			 )\
+                    group by b.proid, b.proname, b.tinydes, TIMESTAMPDIFF(Second , now() , b.datefinish), a.price, a.userid\
+                    order by \
+                    case \
+                             when  (select count(*)  \
+                    					 from dackweb.bidhistory history\
+                    					 where history.productid = b.proid\
+                    					 group by history.productid) is null then 0\
+                    			   when  (select count(*)  \
+                    					 from dackweb.bidhistory history \
+                    					 where history.productid = b.proid\
+                    					 group by history.productid) is not null then (select count(*)  \
+                    															 from dackweb.bidhistory history\
+                    															 where history.productid = b.proid \
+                    															 group by history.productid) \
+                    end  DESC \
+                    LIMIT ? , ?;';
       }
       else {
-        var sql1 = 'select b.proid, b.proname, b.tinydes, datediff(datefinish, NOW()) as songay, b.currentprice, count(a.productid) as soluotdaugia\
-                  from bidhistory a right join product b on a.productid = b.proid\
-                  where b.catid = ? and b.proname LIKE ?\
-                  group by b.proid, b.proname, b.tinydes, b.currentprice\
-                  order by count(a.productid) DESC\
-                  LIMIT ? , ?;'
+        var sql1 = 'select b.image1, b.proid, b.proname, b.tinydes, TIMESTAMPDIFF(Second , now() , b.datefinish) sogiay,\
+                    case\
+                          	  when a.price is null then b.startprice \
+                              when a.price is not null then a.price\
+                    end as priceAuction, \
+                    case \
+                          	  when a.userid is null then "No Bid"\
+                              when a.userid is not null then a.userid\
+                    end as userBid, \
+                    case \
+                               when  (select count(*)  \
+                    					 from dackweb.bidhistory history\
+                    					 where history.productid = b.proid\
+                    					 group by history.productid) is null then 0\
+                    			   when  (select count(*)  \
+                    					 from dackweb.bidhistory history\
+                    					 where history.productid = b.proid\
+                    					 group by history.productid) is not null then (select count(*)  \
+                    															 from dackweb.bidhistory history\
+                    															 where history.productid = b.proid\
+                    															 group by history.productid)\
+                    end as soluotdaugia\
+                    from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid\
+                    where b.catid = ? and b.proname LIKE ?\
+                    and not exists (\
+                    						select *\
+                                            from dackweb.bidhistory c\
+                    						where c.productid = a.productid\
+                                            and a.userid = c.userid\
+                                            and  exists(\
+                    											select * \
+                                                                from dackweb.bidhistory e \
+                                                                where e.productid = c.productid\
+                                                                and a.price < e.price\
+                    									)\
+                    			 )\
+                    group by b.proid, b.proname, b.tinydes, TIMESTAMPDIFF(Second , now() , b.datefinish), a.price, a.userid\
+                    order by \
+                    case \
+                             when  (select count(*)  \
+                    					 from dackweb.bidhistory history\
+                    					 where history.productid = b.proid\
+                    					 group by history.productid) is null then 0\
+                    			   when  (select count(*)  \
+                    					 from dackweb.bidhistory history \
+                    					 where history.productid = b.proid\
+                    					 group by history.productid) is not null then (select count(*)  \
+                    															 from dackweb.bidhistory history\
+                    															 where history.productid = b.proid \
+                    															 group by history.productid) \
+                    end  DESC \
+                    LIMIT ? , ?;'
       }
     }
     if (object.catogory == 0) {

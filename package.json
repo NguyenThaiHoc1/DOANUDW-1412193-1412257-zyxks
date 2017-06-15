@@ -20,7 +20,8 @@
     "express-session": "^1.15.2",
     "handlebars": "^4.0.10",
     "mysql": "^2.13.0",
-    "q": "^1.5.0"
+    "q": "^1.5.0",
+    "request": "^2.81.0"
   },
   "dependencies": {
     "mustache": "^2.3.0"

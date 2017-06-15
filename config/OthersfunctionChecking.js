@@ -10,9 +10,14 @@ var functionCheck = {
     // neu nhu chua dang nhap thi dang nhap
     if (req.session.user !== undefined){
       return next();
-
     }else {
-      res.redirect('/login');
+      if(req.body.ajax !== undefined){
+        req.flash("messagesFail", "Please Login After Add Wishlist");
+        res.send({redirect: '/login'});
+      }
+      else {
+        res.redirect('/login');
+      }
     }
   },
   isLoggedLong : function (req, res, next) { // neu nhu da dang nhap roi thi ....

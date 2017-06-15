@@ -29,27 +29,31 @@
                           stringProname = SV.proname;
                         }
                         ul.append('\
+                      <div class="item">\
                         <div class="col-md-4 col-sm-6">\
                           <span class="thumbnail text-center">\
-                              <img src="/img/Bags/B1a.jpg" alt="..." class="img-responsive" style="width: 350px; height:280px;">\
-                                <h6 class="text-danger" style="font-size: 15px;">{{this.proname}} '+ stringProname +'</h6>\
+                              <img src="{{this.image1}}'+ SV.image1 +'" alt="..." class="img-responsive" style="width: 350px; height:280px;">\
+                                <h6 class="text-danger" style="font-size: 15px;">'+ stringProname +'</h6>\
                                   <div class="ratings">\
+                                    <p style="font-size: 11px; color: red">Highestbuyerid: {{this.userBid}}'+ SV.userBid +'</p>\
                                   </div>\
-                                  <p style="font-size: 13px;">Price: <span class="price">{{this.currentprice}}'+ SV.currentprice +'</span> </p>\
-                                  <p style="font-size: 10px; color: blue">[{{this.soluotdaugia}}'+ SV.soluotdaugia +' turn]</p>\
-                                  <p style="font-size: 13px;">Auction End in {{this.songay}}'+ SV.songay +' days</p>\
+                                  <p style="font-size: 11px;"><span class="price">Best price in time: {{this.priceAuction}}'+ SV.priceAuction +'</span> </p>\
+                                  <p style="font-size: 10px; color: blue">['+ SV.soluotdaugia +' turn]</p>\
+                                  <p style="font-size: 13px;">Auction End in {{this.sogiay}}'+ SV.sogiay +' Second</p>\
+                                  <input class="idText" type="hidden" name="id" value="'+ SV.proid +'">\
                                   <hr class="line">\
                                   <div class="row">\
                                       <div class="col-md-6 col-sm-6">\
-                                          <button type="button" class="btn btn-link">Add to Wishlist</button>\
+                                        <button button-add="addwishlist" type="button" class="btn btn-link watchlistItem">Add to Wishlist</button>\
                                       </div>\
                                       <div class="col-md-6 col-sm-6">\
-                                        <a href="/item/'+ SV.proid +'"><button class="btn btn-danger right" button-bid="bidnow"> BID NOW</button></a>\
+                                        <a href="/item/{{this.proid}}'+ SV.proid +'"><button class="btn btn-danger right" button-bid="bidnow"> BID NOW</button></a>\
                                       </div>\
                                   </div>\
                           </span>\
                         </div>\
-                        ')
+                      </div>\
+                        ');
                       });
                     }
                     else {
@@ -57,7 +61,9 @@
                         <h4>No Prodcut In This Times</h4>\
                       </div>')
                     }
-
+                },
+                complete: function () {
+                  $.getScript("/js/PopupMessageClick.js");
                 }
             });
       });
@@ -84,26 +90,30 @@
                         stringProname = SV.proname;
                       }
                       ul.append('\
+                    <div class="item">\
                       <div class="col-md-4 col-sm-6">\
                         <span class="thumbnail text-center">\
-                            <img src="/img/Bags/B1a.jpg" alt="..." class="img-responsive" style="width: 350px; height:280px;">\
-                              <h6 class="text-danger" style="font-size: 15px;">{{this.proname}} '+ stringProname +'</h6>\
+                            <img src="{{this.image1}}'+ SV.image1 +'" alt="..." class="img-responsive" style="width: 350px; height:280px;">\
+                              <h6 class="text-danger" style="font-size: 15px;">'+ stringProname +'</h6>\
                                 <div class="ratings">\
+                                  <p style="font-size: 11px; color: red">Highestbuyerid: {{this.userBid}}'+ SV.userBid +'</p>\
                                 </div>\
-                                <p style="font-size: 13px;">Price: <span class="price">{{this.currentprice}}'+ SV.currentprice +'</span> </p>\
-                                <p style="font-size: 10px; color: blue">[{{this.soluotdaugia}}'+ SV.soluotdaugia +' turn]</p>\
-                                <p style="font-size: 13px;">Auction End in {{this.songay}}'+ SV.songay +' days</p>\
+                                <p style="font-size: 11px;"><span class="price">Best price in time: {{this.priceAuction}}'+ SV.priceAuction +'</span> </p>\
+                                <p style="font-size: 10px; color: blue">['+ SV.soluotdaugia +' turn]</p>\
+                                <p style="font-size: 13px;">Auction End in {{this.sogiay}}'+ SV.sogiay +' Second</p>\
+                                <input class="idText" type="hidden" name="id" value="'+ SV.proid +'">\
                                 <hr class="line">\
                                 <div class="row">\
                                     <div class="col-md-6 col-sm-6">\
-                                        <button type="button" class="btn btn-link">Add to Wishlist</button>\
+                                      <button button-add="addwishlist" type="button" class="btn btn-link watchlistItem">Add to Wishlist</button>\
                                     </div>\
                                     <div class="col-md-6 col-sm-6">\
-                                      <a href="/item/'+ SV.proid +'"><button class="btn btn-danger right" button-bid="bidnow"> BID NOW</button></a>\
+                                      <a href="/item/{{this.proid}}'+ SV.proid +'"><button class="btn btn-danger right" button-bid="bidnow"> BID NOW</button></a>\
                                     </div>\
                                 </div>\
                         </span>\
                       </div>\
+                    </div>\
                       ');
                     });
                     }
@@ -112,6 +122,9 @@
                         <h4>No Prodcut In This Time</h4>\
                       </div>')
                     }
+                },
+                complete: function () {
+                  $.getScript("/js/PopupMessageClick.js");
                 }
             });
       });
@@ -138,26 +151,30 @@
                         stringProname = SV.proname;
                       }
                       ul.append('\
+                    <div class="item">\
                       <div class="col-md-4 col-sm-6">\
                         <span class="thumbnail text-center">\
-                            <img src="/img/Bags/B1a.jpg" alt="..." class="img-responsive" style="width: 350px; height:280px;">\
-                              <h6 class="text-danger" style="font-size: 15px;">{{this.proname}} '+ stringProname +'</h6>\
+                            <img src="{{this.image1}}'+ SV.image1 +'" alt="..." class="img-responsive" style="width: 350px; height:280px;">\
+                              <h6 class="text-danger" style="font-size: 15px;">'+ stringProname +'</h6>\
                                 <div class="ratings">\
+                                  <p style="font-size: 11px; color: red">Highestbuyerid: {{this.userBid}}'+ SV.userBid +'</p>\
                                 </div>\
-                                <p style="font-size: 13px;">Price: <span class="price">{{this.currentprice}}'+ SV.currentprice +'</span> </p>\
-                                <p style="font-size: 10px; color: blue">[{{this.soluotdaugia}}'+ SV.soluotdaugia +' turn]</p>\
-                                <p style="font-size: 13px;">Auction End in {{this.songay}}'+ SV.songay +' days</p>\
+                                <p style="font-size: 11px;"><span class="price">Best price in time: {{this.priceAuction}}'+ SV.priceAuction +'</span> </p>\
+                                <p style="font-size: 10px; color: blue">['+ SV.soluotdaugia +' turn]</p>\
+                                <p style="font-size: 13px;">Auction End in {{this.sogiay}}'+ SV.sogiay +' Second</p>\
+                                <input class="idText" type="hidden" name="id" value="'+ SV.proid +'">\
                                 <hr class="line">\
                                 <div class="row">\
                                     <div class="col-md-6 col-sm-6">\
-                                        <button type="button" class="btn btn-link">Add to Wishlist</button>\
+                                      <button button-add="addwishlist" type="button" class="btn btn-link watchlistItem">Add to Wishlist</button>\
                                     </div>\
                                     <div class="col-md-6 col-sm-6">\
-                                      <a href="/item/'+ SV.proid +'"><button class="btn btn-danger right" button-bid="bidnow"> BID NOW</button></a>\
+                                      <a href="/item/{{this.proid}}'+ SV.proid +'"><button class="btn btn-danger right" button-bid="bidnow"> BID NOW</button></a>\
                                     </div>\
                                 </div>\
                         </span>\
                       </div>\
+                    </div>\
                       ');
                     });
                   } else {
@@ -165,6 +182,9 @@
                       <h4>No Prodcut In This Time</h4>\
                     </div>')
                   }
+                },
+                complete: function () {
+                  $.getScript("/js/PopupMessageClick.js"); // loading lai khoi javascript nay khi hoan thanh
                 }
             });
       });

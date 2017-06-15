@@ -114,7 +114,6 @@
         proID: proId
       };
       var sql = mustache.render('SELECT step, max(price) as maxprice, startprice, count(*) as bidcount FROM bidhistory, product where bidhistory.productid = {{proID}} and product.proid = bidhistory.productid',obj);
-      console.log(sql);
       db.query(sql,function (error, results) {
         if (error){
           d.reject(error);
@@ -125,7 +124,18 @@
         d.resolve(results[0]);
       });
       return d.promise;
-    }
+    },
+    getCatogory: function() {
+        var d = q.defer();
+        var sql = 'select catid, catname from category;';
+        db.query(sql, function(error, results) {
+            if (error) {
+                d.reject(error);
+            }
+            d.resolve(results);
+        });
+        return d.promise;
+    },
   }
 
   module.exports = item;

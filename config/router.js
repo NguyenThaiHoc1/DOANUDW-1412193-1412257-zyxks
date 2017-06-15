@@ -7,7 +7,7 @@ var checking = require("./OthersfunctionChecking.js");
 module.exports = function(app) {
     // home
     app.get("/", index.home.homedefaultPage);
-    // cái item này nên để là :id thì tốt hơn
+
     app.get("/item/:id", index.item.loadWithID);
 
     app.get("/register", checking.isLoggedLong, index.user.registerPage);
@@ -43,6 +43,21 @@ module.exports = function(app) {
     app.get("/timkiem", index.search.searchMenuPage);
 
     app.get("/danhmuc", index.catogory.searchCatogory);
+
+    app.post("/wishlist", checking.isLoggedIn, index.wishlist.additemwishlist);
+
+    app.get("/profile/wishlist", checking.isLoggedIn, index.profile.wishlistUserPage);
+
+    app.get("/profile/historyauction", checking.isLoggedIn, index.profile.wishlistUserPage);
+
+    app.get("/profile/historyvictory", checking.isLoggedIn, index.profile.wishlistUserPage);
+
+    // cai nay la test co the xoa
+    app.get("/popup", function (req, res) {
+      res.render("testingPopup",{
+        layout: "application"
+      });
+    })
     // login Admin
     app.get("/test1", function (req, res) {
        res.render("_featureWEB/loginAdmin", {

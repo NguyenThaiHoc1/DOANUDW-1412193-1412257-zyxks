@@ -3,6 +3,7 @@
         <!-- {{> breadcrumd}} -->
     </div>
 </div>
+{{> popupMessage}}
 <!-- Breadcrumb-->
 <div class="row" style="margin-top: 20px;">
     <div class="col-md-12 col-ms-12">
@@ -39,25 +40,26 @@
                                         {{#each mostauctionbid}}
                                             <div class="item">
                                                 <div class="col-md-4 col-sm-12">
-                                                    <span class="thumbnail text-center">
-                                                        <img src="/img/Bags/B1a.jpg" alt="..." class="img-responsive" style="width: 350px; height:280px;">
-                                                          <h6 class="text-danger">{{{trimString this.proname}}}</h6>
-                                                            <div class="ratings">
-                                                                <!-- <p>{{this.tinydes}}</p> -->
-                                                            </div>
-                                                            <p>Price: {{this.currentprice}} </p>
-                                                            <p style="font-size: 10px; color: blue">[{{this.soluotdaugia}} turn]</p>
-                                                            <p>Auction End in {{this.songay}} days</p>
-                                                            <hr class="line">
-                                                            <div class="row">
-                                                                <div class="col-md-6 col-sm-6">
-                                                                    <button type="button" class="btn btn-link">Add to Wishlist</button>
-                                                                </div>
-                                                                <div class="col-md-6 col-sm-6">
-                                                                  <a href="/item/{{this.proid}}"><button class="btn btn-danger right" button-bid="bidnow"> BID NOW</button></a>
-                                                                </div>
-                                                            </div>
-                                                    </span>
+                                                  <span class="thumbnail text-center">
+                                                      <img src="{{this.image1}}" alt="..." class="img-responsive" style="width: 350px; height:280px;">
+                                                        <h6 class="text-danger" style="font-size: 15px;">{{{trimString this.proname}}}</h6>
+                                                          <div class="ratings">
+                                                            <p style="font-size: 11px; color: red">Highestbuyerid: {{this.userBid}}</p>
+                                                          </div>
+                                                          <p style="font-size: 11px;"><span class="price">Best price in time: {{this.priceAuction}} $</span> </p>
+                                                          <p style="font-size: 10px; color: blue">[{{this.soluotdaugia}} turn]</p>
+                                                          <p style="font-size: 13px;">Auction End in {{this.sogiay}} Second</p>
+                                                          <input class="idText" type="hidden" name="id" value="{{this.proid}}">
+                                                          <hr class="line">
+                                                          <div class="row">
+                                                              <div class="col-md-6 col-sm-6">
+                                                                  <button button-add="addwishlist" type="button" class="btn btn-link watchlistItem">Add to Wishlist</button>
+                                                              </div>
+                                                              <div class="col-md-6 col-sm-6">
+                                                                <a href="/item/{{this.proid}}"><button class="btn btn-danger right" button-bid="bidnow"> BID NOW</button></a>
+                                                              </div>
+                                                          </div>
+                                                  </span>
                                                 </div>
                                             </div>
                                         {{/each}}
@@ -92,25 +94,26 @@
                                       {{#each bestprice}}
                                           <div class="item">
                                               <div class="col-md-4 col-sm-12">
-                                                  <span class="thumbnail text-center">
-                                                      <img src="/img/Bags/B1a.jpg" alt="..." class="img-responsive" style="width: 350px; height:280px;">
-                                                        <h6 class="text-danger">{{{trimString this.proname}}}</h6>
-                                                          <div class="ratings">
-                                                              <!-- <p>{{this.tinydes}}</p> -->
-                                                          </div>
-                                                          <p>Price: {{this.currentprice}} </p>
-                                                          <p style="font-size: 10px; color: blue">[{{this.soluotdaugia}} turn]</p>
-                                                          <p>Auction End in {{this.songay}} days</p>
-                                                          <hr class="line">
-                                                          <div class="row">
-                                                              <div class="col-md-6 col-sm-6">
-                                                                  <button type="button" class="btn btn-link">Add to Wishlist</button>
-                                                              </div>
-                                                              <div class="col-md-6 col-sm-6">
-                                                                <a href="/item/{{this.proid}}"><button class="btn btn-danger right" button-bid="bidnow"> BID NOW</button></a>
-                                                              </div>
-                                                          </div>
-                                                  </span>
+                                                <span class="thumbnail text-center">
+                                                    <img src="{{this.image1}}" alt="..." class="img-responsive" style="width: 350px; height:280px;">
+                                                      <h6 class="text-danger" style="font-size: 15px;">{{{trimString this.proname}}}</h6>
+                                                        <div class="ratings">
+                                                          <p style="font-size: 11px; color: red">Highestbuyerid: {{this.userBid}}</p>
+                                                        </div>
+                                                        <p style="font-size: 11px;">Price: <span class="price">Best price in time: {{this.priceAuction}}</span> </p>
+                                                        <p style="font-size: 10px; color: blue">[{{this.soluotdaugia}} turn]</p>
+                                                        <p style="font-size: 13px;">Auction End in {{this.sogiay}} Second</p>
+                                                        <input class="idText" type="hidden" name="id" value="{{this.proid}}">
+                                                        <hr class="line">
+                                                        <div class="row">
+                                                            <div class="col-md-6 col-sm-6">
+                                                                <button button-add="addwishlist" type="button" class="btn btn-link watchlistItem">Add to Wishlist</button>
+                                                            </div>
+                                                            <div class="col-md-6 col-sm-6">
+                                                              <a href="/item/{{this.proid}}"><button class="btn btn-danger right" button-bid="bidnow"> BID NOW</button></a>
+                                                            </div>
+                                                        </div>
+                                                </span>
                                               </div>
                                           </div>
                                       {{/each}}
@@ -145,25 +148,26 @@
                                       {{#each cometoend}}
                                           <div class="item">
                                               <div class="col-md-4 col-sm-12">
-                                                  <span class="thumbnail text-center">
-                                                      <img src="/img/Bags/B1a.jpg" alt="..." class="img-responsive" style="width: 350px; height:280px;">
-                                                        <h6 class="text-danger">{{{trimString this.proname}}}</h6>
-                                                          <div class="ratings">
-                                                              <!-- <p>{{this.tinydes}}</p> -->
-                                                          </div>
-                                                          <p>Price: {{this.currentprice}} </p>
-                                                          <p style="font-size: 10px; color: blue">[{{this.soluotdaugia}} turn]</p>
-                                                          <p>Auction End in {{this.songay}} days</p>
-                                                          <hr class="line">
-                                                          <div class="row">
-                                                              <div class="col-md-6 col-sm-6">
-                                                                  <button type="button" class="btn btn-link">Add to Wishlist</button>
-                                                              </div>
-                                                              <div class="col-md-6 col-sm-6">
-                                                                <a href="/item/{{this.proid}}"><button class="btn btn-danger right" button-bid="bidnow"> BID NOW</button></a>
-                                                              </div>
-                                                          </div>
-                                                  </span>
+                                                <span class="thumbnail text-center">
+                                                    <img src="{{this.image1}}" alt="..." class="img-responsive" style="width: 350px; height:280px;">
+                                                      <h6 class="text-danger" style="font-size: 15px;">{{{trimString this.proname}}}</h6>
+                                                        <div class="ratings">
+                                                          <p style="font-size: 11px; color: red">Highestbuyerid: {{this.userBid}}</p>
+                                                        </div>
+                                                        <p style="font-size: 11px;">Price: <span class="price">Best price in time: {{this.priceAuction}}</span> </p>
+                                                        <p style="font-size: 10px; color: blue">[{{this.soluotdaugia}} turn]</p>
+                                                        <p style="font-size: 13px;">Auction End in {{this.sogiay}} Second</p>
+                                                        <input class="idText" type="hidden" name="id" value="{{this.proid}}">
+                                                        <hr class="line">
+                                                        <div class="row">
+                                                            <div class="col-md-6 col-sm-6">
+                                                                <button button-add="addwishlist" type="button" class="btn btn-link">Add to Wishlist</button>
+                                                            </div>
+                                                            <div class="col-md-6 col-sm-6">
+                                                              <a href="/item/{{this.proid}}"><button class="btn btn-danger right" button-bid="bidnow"> BID NOW</button></a>
+                                                            </div>
+                                                        </div>
+                                                </span>
                                               </div>
                                           </div>
                                       {{/each}}
@@ -180,8 +184,10 @@
     </div>
 </div>
 
+<script src="/js/PopupMessageClick.js"></script>
 <script type="text/javascript">
     $(document).ready(function() {
+        // ajax xử lý button add to watchlist
         $('.fdi-Carousel .item:first-child').addClass("active");
 
         $('#myCarousel').carousel({

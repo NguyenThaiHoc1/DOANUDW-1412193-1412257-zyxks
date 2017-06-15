@@ -8,7 +8,8 @@
  var locationController = require("./locationControllers.js");
  var profileController = require("./profileControllers.js");
  var DangDauGiaController = require("./DangDauGiaControllers.js");
-
+ var WishlistController = require("./wishlistControllers");
+ 
  module.exports = {
    home : homeController,
    user : userController,
@@ -19,5 +20,6 @@
    contact : contactController,
    location : locationController,
    profile : profileController,
-   dangdaugia : DangDauGiaController
+   dangdaugia : DangDauGiaController,
+   wishlist : WishlistController
  }

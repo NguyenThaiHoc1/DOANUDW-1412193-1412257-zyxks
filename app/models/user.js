@@ -42,10 +42,10 @@ var user = {
 
     today = yyyy+'-'+mm+'-'+dd;
 
-    var newuser = new objectUser(object.username, object.password, object.first_name, object.last_name, object.email, today, 1);
+    var newuser = new objectUser('',object.username, object.password, object.first_name, object.last_name, object.email, object.address,today, 'user');
     newuser.SettingPassword(newuser.encryptPassword(newuser.Password));
-    var sql = 'INSERT INTO user(f_Username, f_Password, f_Name, f_Email, f_DOB, f_Permission) values (?, ?, ?, ?, ?, ?)';
-    db.query(sql, [newuser.Username, newuser.Password, newuser.Firstname + " " + newuser.Lastname, newuser.Email ,newuser.Days, newuser.Permission],function (error, results) {
+    var sql = 'INSERT INTO user(f_Username, f_Password, f_Name, f_Email, f_Address,f_DOB, f_Permission) values (?, ?, ?, ?, ?, ?, ?)';
+    db.query(sql, [newuser.Username, newuser.Password, newuser.Firstname + " " + newuser.Lastname, newuser.Email , newuser.Address, newuser.Days, newuser.Permission],function (error, results) {
       if (error){
         d.reject(error);
       }
