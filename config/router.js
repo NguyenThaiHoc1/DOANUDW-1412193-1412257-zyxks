@@ -51,10 +51,16 @@ module.exports = function(app) {
         layout: "application"
       });
     })
-    // login Admin
-    app.get("/test1", function (req, res) {
-       res.render("_featureWEB/loginAdmin", {
-         layout: false
-       });
-    });
+
+    app.get("/admin", index.admin.Defaultpage);
+
+    app.post("/admin", index.admin.adminLogin);
+
+    app.get("/acceptsellrequest", index.admin.acceptSellRequest);
+    app.get("/denysellrequest", index.admin.denySellRequest);
+    app.get("/changecategorystate", index.admin.changeCategoryState);
+    app.get("/addcategory", index.admin.addCategory);
+    app.get("/changeuserstate", index.admin.changeUserState);
+    app.get("/resetpassword", index.admin.resetPassword);
+
 }
