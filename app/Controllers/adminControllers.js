@@ -47,31 +47,64 @@ var adminControllers = {
     res.redirect('/');
   },
   acceptSellRequest: function (req, res) {
+    if (req.session.admin === undefined) {
+      res.redirect('/admin');
+      return;
+    }
     adminDB.AcceptSellRequest(req.query.f_Username).then(function (rows) {
       res.redirect('/admin');
     });
   },
   denySellRequest: function (req, res) {
+    if (req.session.admin === undefined) {
+      res.redirect('/admin');
+      return;
+    }
     adminDB.DenySellRequest(req.query.f_Username).then(function (rows) {
       res.redirect('/admin');
     });
   },
   changeCategoryState: function (req, res) {
+    if (req.session.admin === undefined) {
+      res.redirect('/admin');
+      return;
+    }
     adminDB.ChangeCategoryState(req.query.f_Catname_ChangeState).then(function (rows) {
       res.redirect('/admin');
     });
   },
   addCategory: function (req, res) {
+    if (req.session.admin === undefined) {
+      res.redirect('/admin');
+      return;
+    }
     adminDB.AddCategory(req.query.f_Catname_Add).then(function (rows) {
       res.redirect('/admin');
     })
   },
+  editCategoryName: function (req, res) {
+    if (req.session.admin === undefined) {
+      res.redirect('/admin');
+      return;
+    }
+    adminDB.EditCategoryName(req.query.f_Old_Catname,req.query.f_New_Catname).then(function (rows) {
+      res.redirect('/admin');
+    })
+  },
   resetPassword: function (req, res) {
+    if (req.session.admin === undefined) {
+      res.redirect('/admin');
+      return;
+    }
     adminDB.ResetPassword(req.query.f_Username).then(function (rows) {
       res.redirect('/admin');
     })
   },
   changeUserState: function (req, res) {
+    if (req.session.admin === undefined) {
+      res.redirect('/admin');
+      return;
+    }
     adminDB.ChangeUserState(req.query.f_Username).then(function (rows) {
       res.redirect('/admin');
     })

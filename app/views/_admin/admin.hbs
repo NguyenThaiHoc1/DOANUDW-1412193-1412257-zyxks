@@ -40,25 +40,39 @@
          }
          .form {display: inline-block;}
          .input {display: inline-block;}
+         .editModal {position: absolute; right: 5px;}
+         .fixedHeader {
+          position: fixed;
+          left: 15px;
+          top: 10px;
+          width: 98%;
+         }
+         .fixedNav {
+          position: fixed;
+          left: 15px;
+          top: 80px;
+          width: 23%;
+         }
     </style>
 </head>
 <body>
 <div class="container-fluid">
-  <div class="row" style="margin: 10px 0;">
-    <img src="/img/logo.png" alt="" style="width: 3.5em;">
-    <h2 style="display: inline;">Quản trị website</h2>
+  <div class="row" style="margin: 10px 0; background-color: #f0f0f0;">
+    <img src="/img/logo.png" alt="" style="width: 3em; margin: 0 15px;">
+    <h4 style="display: inline;vertical-align:middle;">Quản trị website</h4>
   </div>
   <div class="row">
           <div class="col-sm-4 col-md-3">
+            <div class="panel panel-default">
                 <ul class="nav nav-pills nav-stacked" role="tablist">
                   <li role="presentation" class="active"><a href="#duyet" aria-controls="home" role="tab" data-toggle="tab">Duyệt yêu cầu bán</a></li>
                   <li role="presentation"><a href="#user" aria-controls="profile" role="tab" data-toggle="tab">Quản lý tài khoản người dùng</a></li>
                   <li role="presentation"><a href="#danhmuc" aria-controls="messages" role="tab" data-toggle="tab">Quản lý danh mục</a></li>
                 </ul>
+            </div>
           </div>
           <div class="col-sm-8 col-md-9">
                 <div class="tab-content">
-
                   <div role="tabpanel" class="tab-pane active" id="duyet">
                     <table class="table table-hover table-bordered" id="table1">
                       <thead>
@@ -129,7 +143,7 @@
                             
                           {{/if}}
                           </form>
-                          <form action="/resetpassword" method="get">
+                          <form class="resetpassword" action="/resetpassword" method="get">
                           <button class="btn btn-default" type="submit">Reset MK</button>
                           <input type="text" value="{{f_username}}" style="display:none" name="f_Username">
                           </form>
@@ -147,13 +161,16 @@
                         <tr>
                           <th>Danh mục</th>
                           <th>Tình trạng</th>
-                          <th>Chỉnh sửa</th>
+                          <th>Chức năng</th>
                         </tr>
                       </thead>
                       <tbody>
                         {{#each categories}}
                         <tr>
-                          <td valign="middle" align="center">{{catname}}</td>
+                          <td valign="middle" align="center" style="position:relative;">
+                            {{catname}}
+                            <button class="btn btn-default editModal" catname="{{catname}}"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button>
+                          </td>
                           <form action="/changecategorystate" method="get">
                           {{#if active}}
                             <td valign="middle" align="center" style="color: green;">Đang hoạt động</td>
@@ -184,6 +201,29 @@
                 </div>
           </div>
   </div>
+
+
+  <div class="modal fade" id="editCategory" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="editCategoryLabel"></h4>
+      </div>
+      <div class="modal-body">
+        
+    <form action="/editcategoryname" method="get">
+      <input type="text" name="f_New_Catname">
+      <input type="text" name="f_Old_Catname" id="f_Old_Catname" style="display:none">
+      <button type="submit" class="btn btn-success">Sửa</button>
+    </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Hủy bỏ</button>
+      </div>
+    </div>
+  </div>
+</div>
 </div>
 <script src="/js/datatable.js"></script>
 <script>
@@ -191,6 +231,17 @@
     $('#table1').DataTable();
     $('#table2').DataTable();
     $('#table3').DataTable();
+    $('.resetpassword').submit(function() {
+      var c = confirm("Bạn có chắc muốn reset mật khẩu của tài khoản " + 
+        $(this).find('input').first().attr('value') + " ? Tài khoản này sẽ bị mất tài khoản cũ và thay bằng một chuỗi ký tự ngẫu nhiên.");
+      return c;
+    });
+    $('.editModal').click(function() {
+      
+      $('#editCategoryLabel').html('Sửa tên danh mục ' + $(this).attr('catname'));
+      $('#f_Old_Catname').attr('value', $(this).attr('catname'));
+      $('#editCategory').modal();
+    })
   });
 </script>
 </body>

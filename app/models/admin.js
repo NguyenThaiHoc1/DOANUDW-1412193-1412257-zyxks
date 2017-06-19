@@ -19,7 +19,7 @@ var admin = {
   LoadUser: function() {
     var d = q.defer();
     var sql = 'select f_username,f_email,f_name,f_permission,positiverating,negativerating,accessadmin \
-      from user order by accessadmin';
+      from user';
     db.query(sql, function (err,rslt) {
       if (err)
         d.reject(err);
@@ -29,7 +29,7 @@ var admin = {
   },
   LoadCategory: function() {
     var d = q.defer();
-    var sql = 'select catname, active from category order by active';
+    var sql = 'select catname, active from category';
     db.query(sql, function (err,rslt) {
       if (err)
         d.reject(err);
@@ -87,6 +87,16 @@ var admin = {
     var d = q.defer();
     var sql = "insert into category(catname,active) values(?,1)";
     db.query(sql, [catname], function (err,rslt) {
+      if (err)
+        d.reject(err);
+      d.resolve(rslt);
+    });
+    return d.promise;
+  },
+  EditCategoryName: function (catname, newcatname) {
+    var d = q.defer();
+    var sql = "update category set catname=? where catname=?";
+    db.query(sql, [newcatname, catname], function (err,rslt) {
       if (err)
         d.reject(err);
       d.resolve(rslt);
