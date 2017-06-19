@@ -1,6 +1,6 @@
 <div class="container">
     <div class="row">
-        {{#each wishlist}}
+        {{#each historyAuction}}
         <div class="row">
             <div class="col-xs-12 col-sm-3 col-md-3">
                 <img src="{{this.image1}}" class="img-responsive img-box img-thumbnail">
@@ -15,9 +15,10 @@
                                 </a>
                             </div>
                             <small>
-                                  <i class="glyphicon glyphicon-time"></i> {{this.sogiay}} days ago via <span class="twitter"> <i class="fa fa-twitter"></i> <a target="_blank" href="https://twitter.com/sintret" alt="sintret" title="sintret">@sintret</a></span>
+                                  <p><i class="glyphicon glyphicon-time"></i> Time to finish: {{{checkingDeadline this.thoigian}}} </p>
                                   <br>
-                                  <span class="explore"><i class="glyphicon glyphicon-th"></i> <a href="#">Explore 2 places </a></span>
+                                  <p>Date to bid this product: <span style="color:#800000; font-size: 14px;"> {{this.timebid}}</span> </p>
+                                  <p style="color:#00BFFF">Your price bid: {{this.price}} $</p>
                             </small>
                         </div>
                     </div>

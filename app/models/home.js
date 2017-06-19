@@ -10,7 +10,7 @@ var home = {
                 limit 0, 5;\
                 ';
       */
-      var sql = 'select b.image1, b.proid, b.proname, b.tinydes, TIMESTAMPDIFF(Second , now() , b.datefinish) sogiay,\
+      var sql = 'select b.image1, b.proid, b.proname, b.tinydes, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\') sogiay,\
                   case\
                             when a.price is null then b.startprice \
                             when a.price is not null then a.price\
@@ -69,7 +69,7 @@ var home = {
                   order by count(*) DESC\
                   limit 0, 5;';
       */
-      var sql = 'select b.image1, b.proid, b.proname, b.tinydes, TIMESTAMPDIFF(Second , now() , b.datefinish) sogiay,\
+      var sql = 'select b.image1, b.proid, b.proname, b.tinydes, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\') sogiay,\
                   case\
                             when a.price is null then b.startprice \
                             when a.price is not null then a.price\
@@ -137,7 +137,7 @@ var home = {
                 limit 0, 5;\
                 ';
       */
-      var sql = 'select b.image1, b.proid, b.proname, b.tinydes, TIMESTAMPDIFF(Second , now() , b.datefinish) sogiay,\
+      var sql = 'select b.image1, b.proid, b.proname, b.tinydes, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\') sogiay,\
                   case\
                             when a.price is null then b.startprice \
                             when a.price is not null then a.price\

@@ -26,7 +26,7 @@
                             </div>
                             <p style="font-size: 11px;"><span class="price">Best price in time: {{this.priceAuction}}</span> </p>
                             <p style="font-size: 10px; color: blue">[{{this.soluotdaugia}} turn]</p>
-                            <p style="font-size: 13px;">Auction End in {{this.sogiay}} Second</p>
+                            <p class="DateEnd" style="font-size: 13px;">  {{{CheckDeadline this.sogiay}}}</p>
                             <input class="idText" type="hidden" name="id" value="{{this.proid}}">
                             <hr class="line">
                             <div class="row">
@@ -61,3 +61,5 @@
 </div>
 
 <script src="/js/PopupMessageClick.js"></script>
+<script src="/component/jquery.countdown/dist/jquery.countdown.js"></script>
+<script src="/js/countDownt.js"></script>

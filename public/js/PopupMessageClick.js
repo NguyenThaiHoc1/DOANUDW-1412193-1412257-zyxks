@@ -23,8 +23,6 @@ $(".item").on('click', '[button-add="addwishlist"]', function () {
                // thanh cong minh se lam gi ?
                //1. minh se cho hien 1 cai popup len thong bao da thanh cong
                //2. neu minh da them san pham nay roi thi minh se in ra la da co san pham nay roi
-               console.log(data.messagesFail);
-               console.log(data.messagesSuccess);
                if( data.messagesFail !== undefined) {
                   // that bai
                   var bodymessage = $("#primary").find(".modal-body h3");
@@ -36,7 +34,6 @@ $(".item").on('click', '[button-add="addwishlist"]', function () {
                   // thanh cong
                   var bodymessage = $("#primary").find(".modal-body h3");
                   bodymessage.css("color", "black");
-                  console.log(data.messagesSuccess);
                   bodymessage.text(data.messagesSuccess);
                   $("#popupMessages").click();
                }

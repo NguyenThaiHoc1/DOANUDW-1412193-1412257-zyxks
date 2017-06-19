@@ -20,6 +20,7 @@
     "flat-ui": "^2.3.0",
     "bootstrap-select": "^1.12.2",
     "eonasdan-bootstrap-datetimepicker": "^4.17.47",
-    "jquery-validation": "^1.16.0"
+    "jquery-validation": "^1.16.0",
+    "jquery.countdown": "^2.2.0"
   }
 }

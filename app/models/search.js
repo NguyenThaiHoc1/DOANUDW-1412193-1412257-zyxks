@@ -52,7 +52,7 @@ var search = {
 
     if(typePage == 1){
       if(object.catogory == 0){
-        var sql1 = 'select b.image1, b.proid, b.proname, b.tinydes, TIMESTAMPDIFF(Second , now() , b.datefinish) sogiay,\
+        var sql1 = 'select b.image1, b.proid, b.proname, b.tinydes, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\') sogiay,\
                     case\
                           	  when a.price is null then b.startprice \
                               when a.price is not null then a.price\
@@ -88,7 +88,7 @@ var search = {
                                                                 and a.price < e.price\
                     									)\
                     			 )\
-                    group by b.proid, b.proname, b.tinydes, TIMESTAMPDIFF(Second , now() , b.datefinish), a.price, a.userid\
+                    group by b.proid, b.proname, b.tinydes, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\'), a.price, a.userid\
                     order by \
                     case\
                     	  when a.price is null then b.startprice \
@@ -96,7 +96,7 @@ var search = {
                     end ASC\
                     LIMIT ? , ?;';
       } else {
-        var sql1 = 'select b.image1, b.proid, b.proname, b.tinydes, TIMESTAMPDIFF(Second , now() , b.datefinish) sogiay,\
+        var sql1 = 'select b.image1, b.proid, b.proname, b.tinydes, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\') sogiay,\
                     case\
                           	  when a.price is null then b.startprice \
                               when a.price is not null then a.price\
@@ -132,7 +132,7 @@ var search = {
                                                                 and a.price < e.price\
                     									)\
                     			 )\
-                    group by b.proid, b.proname, b.tinydes, TIMESTAMPDIFF(Second , now() , b.datefinish), a.price, a.userid\
+                    group by b.proid, b.proname, b.tinydes, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\'), a.price, a.userid\
                     order by \
                     case\
                     	  when a.price is null then b.startprice \
@@ -143,7 +143,7 @@ var search = {
     }
     else if (typePage == 0) {
       if(object.catogory == 0){
-        var sql1 = 'select b.image1, b.proid, b.proname, b.tinydes, TIMESTAMPDIFF(Second , now() , b.datefinish) sogiay,\
+        var sql1 = 'select b.image1, b.proid, b.proname, b.tinydes, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\') sogiay,\
                     case\
                           	  when a.price is null then b.startprice \
                               when a.price is not null then a.price\
@@ -179,11 +179,11 @@ var search = {
                                                                 and a.price < e.price\
                     									)\
                     			 )\
-                    group by b.proid, b.proname, b.tinydes, TIMESTAMPDIFF(Second , now() , b.datefinish), a.price, a.userid\
+                    group by b.proid, b.proname, b.tinydes,DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\') , a.price, a.userid\
                     LIMIT ? , ?;'
       }
       else {
-        var sql1 = 'select b.image1, b.proid, b.proname, b.tinydes, TIMESTAMPDIFF(Second , now() , b.datefinish) sogiay,\
+        var sql1 = 'select b.image1, b.proid, b.proname, b.tinydes, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\') sogiay,\
                     case\
                           	  when a.price is null then b.startprice \
                               when a.price is not null then a.price\
@@ -219,13 +219,13 @@ var search = {
                                                                 and a.price < e.price\
                     									)\
                     			 )\
-                    group by b.proid, b.proname, b.tinydes, TIMESTAMPDIFF(Second , now() , b.datefinish), a.price, a.userid\
+                    group by b.proid, b.proname, b.tinydes, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\'), a.price, a.userid\
                     LIMIT ? , ?;'
       }
     }
     else if (typePage == 2) {
       if(object.catogory == 0){
-        var sql1 = 'select b.image1, b.proid, b.proname, b.tinydes, TIMESTAMPDIFF(Second , now() , b.datefinish) sogiay,\
+        var sql1 = 'select b.image1, b.proid, b.proname, b.tinydes, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\') sogiay,\
                     case\
                           	  when a.price is null then b.startprice \
                               when a.price is not null then a.price\
@@ -261,7 +261,7 @@ var search = {
                                                                 and a.price < e.price\
                     									)\
                     			 )\
-                    group by b.proid, b.proname, b.tinydes, TIMESTAMPDIFF(Second , now() , b.datefinish), a.price, a.userid\
+                    group by b.proid, b.proname, b.tinydes, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\'), a.price, a.userid\
                     order by \
                     case \
                              when  (select count(*)  \
@@ -279,7 +279,7 @@ var search = {
                     LIMIT ? , ?;';
       }
       else {
-        var sql1 = 'select b.image1, b.proid, b.proname, b.tinydes, TIMESTAMPDIFF(Second , now() , b.datefinish) sogiay,\
+        var sql1 = 'select b.image1, b.proid, b.proname, b.tinydes, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\') sogiay,\
                     case\
                           	  when a.price is null then b.startprice \
                               when a.price is not null then a.price\
@@ -315,7 +315,7 @@ var search = {
                                                                 and a.price < e.price\
                     									)\
                     			 )\
-                    group by b.proid, b.proname, b.tinydes, TIMESTAMPDIFF(Second , now() , b.datefinish), a.price, a.userid\
+                    group by b.proid, b.proname, b.tinydes, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\'), a.price, a.userid\
                     order by \
                     case \
                              when  (select count(*)  \

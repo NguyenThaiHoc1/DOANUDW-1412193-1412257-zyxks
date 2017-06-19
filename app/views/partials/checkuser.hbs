@@ -1,13 +1,15 @@
 
 {{#if user}}
 <li class="dropdown">
-    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{user.Username}}<span class="caret"></span></a>
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{user.Firstname}} {{user.Lastname}}<span class="caret"></span></a>
     <ul class="dropdown-menu">
-        <li><a href="#">Profile</a></li>
-        <li><a href="#">1. Comming Soon</a></li>
-        <li><a href="#">2. Comming Soon</a></li>
+        <li><a href="/profile"> <strong>Profile</strong> </a></li>
+        <li><a href="/changepassword"> <strong>ChangePassword</strong> </a></li>
+        <li><a href="/profile/wishlist"> <strong>Wishlist</strong> </a></li>
+        <li><a href="/profile/historyauction"> <strong>History Auction</strong> </a></li>
+        <li><a href="/profile/historyauction"> <strong>History Victory</strong> </a></li>
         <li role="separator" class="divider"></li>
-        <li><a href="/logout">Log out</a></li>
+        <li><a href="/logout"> <strong>Log out</strong> </a></li>
     </ul>
 </li>
 {{else}}

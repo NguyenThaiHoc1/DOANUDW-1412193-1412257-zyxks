@@ -63,11 +63,20 @@ var catogoryController = {
                           } else {
                             return new handle.SafeString(theString + "...");
                           }
+                        },
+                        CheckDeadline: function (Parameter) {
+                          // <p class="DateEnd" style="font-size: 13px;">
+                          // <span class="countdown" data-countdown="{{this.sogiay}}">{{this.sogiay}}</span></p>
+                          var x = new Date(Parameter);
+                          var y = new Date();
+                          if(x > y){
+                            return new handle.SafeString('<span class="countdown" style="color:blue;" data-countdown="'+ Parameter +'">'+ Parameter +'</span>');
+                          } else {
+                            return new handle.SafeString('<span class="countdown" style="color:red;" >'+ 'Finished' +'</span>');
+                          }
                         }
                   }
                 });
-
-
               }
           });
     });

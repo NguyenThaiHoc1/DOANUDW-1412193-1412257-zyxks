@@ -16,8 +16,6 @@ module.exports = function(app) {
 
     app.get("/contact", index.contact.Defaultpage);
 
-    app.get("/profile", checking.isLoggedIn, index.profile.Defaultpage);
-
     app.get("/registerDauGia", checking.isLoggedIn, index.dangdaugia.Defaultpage);
 
     app.get("/login", checking.isLoggedLong, index.user.loginPage);
@@ -46,6 +44,18 @@ module.exports = function(app) {
 
     app.post("/wishlist", checking.isLoggedIn, index.wishlist.additemwishlist);
 
+    app.get("/profile", checking.isLoggedIn, index.profile.Defaultpage);
+
+    app.get("/profile/wishlist", checking.isLoggedIn, index.profile.wishlistUserPage);
+
+    app.get("/profile/historyauction", checking.isLoggedIn, index.profile.historyauctionPage);
+
+    app.get("/profile/historyvictory", checking.isLoggedIn, index.profile.historyvictoryPage);
+
+    app.post("/profile", index.user.changeInformation);
+
+
+    // cai nay la test co the xoa
     app.get("/popup", function (req, res) {
       res.render("testingPopup",{
         layout: "application"

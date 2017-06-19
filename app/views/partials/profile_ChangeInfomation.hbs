@@ -1,0 +1,119 @@
+<a class="btn btn-danger" id="popupMessages" href="#primary" data-toggle="modal">Change Information Profile</a>
+<div class="modal fade" id="primary" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header modal-header-primary">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4><i class="fa fa-bar-chart-o"></i> Change Information </h4>
+            </div>
+            <form role="form" id="Changefrom" method="post">
+              <div class="modal-body">
+                      <div class="form-group">
+                        <label for="email">Email address</label>
+                        <input type="email" name="email"  class="form-control" placeholder="Email" value="">
+                      </div>
+                      <div class="form-group">
+                        <label for="exampleFHoten">First name</label>
+                        <input type="text" name="first_name" class="form-control" id="exampleFHoten" placeholder="Enter your First Name" value="">
+                      </div>
+                      <div class="form-group">
+                        <label for="exampleLHoten">Last name</label>
+                        <input type="text"  name="last_name" class="form-control" id="exampleLHoten" placeholder="Enter your Last Name" value="">
+                      </div>
+                      <div class="form-group">
+                        <label for="exampleAddress">Address</label>
+                        <input type="text" name="address" class="form-control" id="exampleAddress" placeholder="Enter your Address" value="">
+                      </div>
+              </div>
+              <div class="modal-footer">
+                  <button type="submit" class="btn btn-default pull-left">Accpect</button>
+                  <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Close</button>
+              </div>
+          </form>
+        </div>
+    </div>
+</div>
+<script src="/component/jquery-validation/dist/jquery.validate.min.js"></script>
+<script type="text/javascript">
+  $.validator.setDefaults({
+    errorClass: 'help-block',
+    highlight: function(element) {
+      $(element)
+        .closest('.form-group')
+        .addClass('has-error');
+    },
+    unhighlight: function(element) {
+      $(element)
+        .closest('.form-group')
+        .removeClass('has-error');
+    },
+    errorPlacement: function (error, element) {
+      if (element.prop('type') === 'checkbox') {
+        error.insertAfter(element.parent());
+      } else {
+        error.insertAfter(element);
+      }
+    }
+  });
+
+  $.validator.addMethod('strongPassword', function(value, element) {
+    return this.optional(element)
+      || value.length >= 6
+      && /\d/.test(value)
+      && /[a-z]/i.test(value);
+  }, 'Your password must be at least 6 characters long and contain at least one number and one char\'.')
+
+  $.validator.addMethod("noSpace", function(value, element) {
+    return value.indexOf(" ") < 0 && value != "";
+  }, "No space please and don't leave it empty");
+
+  $(function () {
+
+      $("#Changefrom").validate({
+        rules : {
+          email:{
+            required: true,
+            email: true,
+            remote: "/inputvalidateEmail"
+          },
+          address: {
+            required: true,
+            maxlength: 100
+          },
+          first_name : {
+            required: true,
+            noSpace: true
+          },
+          last_name : {
+              required: true,
+              noSpace: true
+          }
+        },
+        messages: {
+          address: {
+            required: "Please enter a your address",
+            maxlength:"max length 100 digits"
+          },
+          first_name: {
+            required: "Please Enter your First name"
+          },
+          last_name: {
+            required: "Please Enter your Last name"
+          }
+        }
+      });
+
+
+      $("#popupMessages").click(function () {
+          var email = $('#PFemail span em').text();
+          var fullname = $('#PFfullname span em').text().split(' ');
+          var first_name =  fullname[0];
+          var last_name = fullname[1];
+          var address = $('#PFaddress span em').text();
+          $('[name="email"]').val(email);
+          $('[name="first_name"]').val(first_name);
+          $('[name="last_name"]').val(last_name);
+          $('[name="address"]').val(address);
+      });
+  });
+</script>
