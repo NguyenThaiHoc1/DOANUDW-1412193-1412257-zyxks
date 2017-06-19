@@ -1,0 +1,248 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+    <title>This is a title</title>
+    <link rel="stylesheet" href="/component/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/component/bootstrap-select/dist/css/bootstrap-select.min.css">
+    <link rel="stylesheet" href="/component/flat-ui/dist/css/flat-ui.min.css">
+    <link rel="stylesheet" href="/css/supportSelect.css">
+    <script src="/component/moment/min/moment.min.js"></script>
+    <script src="/component/jquery/dist/jquery.js"></script>
+    <script src="/component/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/component/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/component/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+    <link href="css/datatable.css" rel="stylesheet">
+    <style media="screen">
+          .bgimg-1 {
+           position: relative;
+           opacity: 0.8;
+           background-position: center;
+           background-repeat: no-repeat;
+           background-size: cover;
+         }
+         .bgimg-1 {
+           background-image: url("../../img/background_admin.jpg");
+           height: 100%;
+         }
+         .table {
+           font-size: 0.7em;
+           font-family: Arial;
+         }
+         .btn {
+           font-size: inherit;
+           padding: 5px;
+           margin-bottom: 3px;
+         }
+         .td {
+           text-align: center;
+         }
+         .form {display: inline-block;}
+         .input {display: inline-block;}
+         .editModal {position: absolute; right: 5px;}
+         .fixedHeader {
+          position: fixed;
+          left: 15px;
+          top: 10px;
+          width: 98%;
+         }
+         .fixedNav {
+          position: fixed;
+          left: 15px;
+          top: 80px;
+          width: 23%;
+         }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+  <div class="row" style="margin: 10px 0; background-color: #f0f0f0;">
+    <img src="/img/logo.png" alt="" style="width: 3em; margin: 0 15px;">
+    <h4 style="display: inline;vertical-align:middle;">Quản trị website</h4>
+  </div>
+  <div class="row">
+          <div class="col-sm-4 col-md-3">
+            <div class="panel panel-default">
+                <ul class="nav nav-pills nav-stacked" role="tablist">
+                  <li role="presentation" class="active"><a href="#duyet" aria-controls="home" role="tab" data-toggle="tab">Duyệt yêu cầu bán</a></li>
+                  <li role="presentation"><a href="#user" aria-controls="profile" role="tab" data-toggle="tab">Quản lý tài khoản người dùng</a></li>
+                  <li role="presentation"><a href="#danhmuc" aria-controls="messages" role="tab" data-toggle="tab">Quản lý danh mục</a></li>
+                </ul>
+            </div>
+          </div>
+          <div class="col-sm-8 col-md-9">
+                <div class="tab-content">
+                  <div role="tabpanel" class="tab-pane active" id="duyet">
+                    <table class="table table-hover table-bordered" id="table1">
+                      <thead>
+                        <tr>
+                          <th>Username</th>
+                          <th>Email</th>
+                          <th>Họ tên</th>
+                          <th>Điểm tích cực</th>
+                          <th>Điểm tiêu cực</th>
+                          <th>Thời gian yêu cầu</th>
+                          <th>Duyệt</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {{#each users_request}}
+                        <tr>
+                          <td valign="middle" align="center">{{f_username}}</td>
+                          <td valign="middle" align="center">{{f_email}}</td>
+                          <td valign="middle" align="center">{{f_name}}</td>
+                          <td valign="middle" align="center">{{positiverating}}</td>
+                          <td valign="middle" align="center">{{negativerating}}</td>
+                          <td valign="middle" align="center">{{f_time}}</td>
+                          <td valign="middle" align="center">
+                            <form action="/acceptsellrequest" method="get"><button class="btn btn-success" type="submit">OK</button>
+                             <input type="text" value="{{f_username}}" style="display:none" name="f_Username"></form>
+                             <form action="/denysellrequest" method="get"><button class="btn btn-danger" type="submit">No</button>
+                             <input type="text" value="{{f_username}}" style="display:none" name="f_Username"></form>
+                          </td>
+                        </tr>
+                        {{/each}}
+                      </tbody>
+
+                    </table>
+                  </div>
+
+                  <div role="tabpanel" class="tab-pane" id="user">
+                    <table class="table table-hover table-bordered" id="table2">
+                      <thead>
+                        <tr>
+                          <th>Username</th>
+                          <th>Email</th>
+                          <th>Họ tên</th>
+                          <th>Quyền</th>
+                          <th>Điểm tích cực</th>
+                          <th>Điểm tiêu cực</th>
+                          <th>Chức năng</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {{#each users_all}}
+                        <tr>
+                          <td valign="middle" align="center">{{f_username}}</td>
+                          <td valign="middle" align="center">{{f_email}}</td>
+                          <td valign="middle" align="center">{{f_name}}</td>
+                          <td valign="middle" align="center">{{f_permission}}</td>
+                          <td valign="middle" align="center">{{positiverating}}</td>
+                          <td valign="middle" align="center">{{negativerating}}</td>
+                          <form action="/changeuserstate" method="get">
+                          {{#if accessadmin}}
+                            <td>
+                              <button class="btn btn-warning" type="submit">Khóa</button>
+                              <input type="text" value="{{f_username}}" style="display:none" name="f_Username">
+
+                          {{else}}
+                            <td>
+                              <button class="btn btn-success" type="submit">Mở khóa</button>
+                              <input type="text" value="{{f_username}}" style="display:none" name="f_Username">
+
+                          {{/if}}
+                          </form>
+                          <form class="resetpassword" action="/resetpassword" method="get">
+                          <button class="btn btn-default" type="submit">Reset MK</button>
+                          <input type="text" value="{{f_username}}" style="display:none" name="f_Username">
+                          </form>
+                          </td>
+                        </tr>
+                        {{/each}}
+                      </tbody>
+
+                    </table>
+                  </div>
+
+                  <div id="danhmuc" role="tabpanel" class="tab-pane">
+                    <table class="table table-hover table-bordered" id="table3">
+                      <thead>
+                        <tr>
+                          <th>Danh mục</th>
+                          <th>Tình trạng</th>
+                          <th>Chức năng</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {{#each categories}}
+                        <tr>
+                          <td valign="middle" align="center" style="position:relative;">
+                            {{catname}}
+                            <button class="btn btn-default editModal" catname="{{catname}}"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button>
+                          </td>
+                          <form action="/changecategorystate" method="get">
+                          {{#if active}}
+                            <td valign="middle" align="center" style="color: green;">Đang hoạt động</td>
+                            <td>
+                              <button class="btn btn-warning" type="submit">Khóa</button>
+                              <input type="text" value="{{catname}}" style="display:none" name="f_Catname_ChangeState">
+                            </td>
+                          {{else}}
+                            <td valign="middle" align="center" style="color: red;">Không hoạt động</td>
+                            <td>
+                              <button class="btn btn-success" type="submit">Kích hoạt</button>
+                              <input type="text" value="{{catname}}" style="display:none" name="f_Catname_ChangeState">
+                            </td>
+                          {{/if}}
+                          </form>
+                        </tr>
+                        {{/each}}
+                      </tbody>
+                    </table>
+                    <form action="/addcategory" method="get">
+                            <input type="text" name="f_Catname_Add" required>
+                            <button class="btn btn-primary" type="submit">
+                              Thêm danh mục
+                            </button>
+                    </form>
+                  </div>
+
+                </div>
+          </div>
+  </div>
+
+
+  <div class="modal fade" id="editCategory" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="editCategoryLabel"></h4>
+      </div>
+      <div class="modal-body">
+
+    <form action="/editcategoryname" method="get">
+      <input type="text" name="f_New_Catname">
+      <input type="text" name="f_Old_Catname" id="f_Old_Catname" style="display:none">
+      <button type="submit" class="btn btn-success">Sửa</button>
+    </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Hủy bỏ</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<script src="/js/datatable.js"></script>
+<script>
+  $(document).ready(function(){
+    $('#table1').DataTable();
+    $('#table2').DataTable();
+    $('#table3').DataTable();
+    $('.resetpassword').submit(function() {
+      var c = confirm("Bạn có chắc muốn reset mật khẩu của tài khoản " +
+        $(this).find('input').first().attr('value') + " ? Tài khoản này sẽ bị mất tài khoản cũ và thay bằng một chuỗi ký tự ngẫu nhiên.");
+      return c;
+    });
+    $('.editModal').click(function() {
+
+      $('#editCategoryLabel').html('Sửa tên danh mục ' + $(this).attr('catname'));
+      $('#f_Old_Catname').attr('value', $(this).attr('catname'));
+      $('#editCategory').modal();
+    })
+  });
+</script>
+</body>
+</html>

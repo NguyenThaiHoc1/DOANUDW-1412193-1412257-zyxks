@@ -1,11 +1,16 @@
 /*
-   
+
    Table Of Content
-   
- 
+
+
 
 */
-
+ul{
+  list-style-type: none;
+}
+li button{
+  margin-top: 10px;
+}
 
 .content {
     margin-bottom: 20px;
@@ -195,10 +200,17 @@ div.comment .content ul {
 div.comment .content ul li {
     margin: 0;
 }
+
 #myModal .modal-body{
     display: flex;
     justify-content: center;
     text-align: center;
+}
+.btn span.glyphicon {
+	opacity: 0;
+}
+.btn.active span.glyphicon {
+	opacity: 1;
 }
 
 .button {

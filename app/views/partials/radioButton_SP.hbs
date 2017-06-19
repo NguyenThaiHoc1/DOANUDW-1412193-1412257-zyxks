@@ -1,11 +1,220 @@
-<div class="btn-group" data-toggle="buttons">
-  <label class="btn btn-primary active">
-    <input type="radio" name="options" id="option1" autocomplete="off" checked> Tất cả
-  </label>
-  <label class="btn btn-primary">
-    <input type="radio" name="options" id="option2" autocomplete="off"> Mua Ngay
-  </label>
-  <label class="btn btn-primary">
-    <input type="radio" name="options" id="option3" autocomplete="off"> Đấu Giá
-  </label>
+{{#if urlType}}
+<div class="btn-group" data-toggle="buttons" id="inline_radio">
+    <button class="btn btn-primary"type="button" name="button" id="option1"> Default</button>
+    <button class="btn btn-primary"type="button" name="button" id="option2"> Small Price</button>
+    <button class="btn btn-primary"type="button" name="button" id="option3"> Turn Best</button>
 </div>
+{{/if}}
+<script type="text/javascript">
+  $(function () {
+      $('#inline_radio').on('click', '#option1', function () {
+            var Editurl = "{{urlType}}".split("&#x3D;");
+            var part2 = Editurl[1].split("&amp;");
+            var stringurl = Editurl[0] + "=" + part2[0] + "&" + part2[1] + "=" + Editurl[2];
+            stringurl += "&type=0";
+            $.ajax({
+                url: stringurl,
+                method: "GET",
+                contentType : "application/json",
+                success : function (res) {
+                    var ul = $("#rowProduct");
+                    ul.html("");
+                    if(res.length > 0) {
+                      res.forEach(function (SV) {
+                        var StrigResulfHTML = '';
+                        var x = new Date(SV.sogiay);
+                        var y = new Date();
+                        if(x > y){
+                            StrigResulfHTML = '<span class="countdown" style="color:blue;" data-countdown="'+ SV.sogiay +'">'+ SV.sogiay +'</span>';
+                        } else {
+                            StrigResulfHTML = '<span class="countdown" style="color:red;" >'+ 'Finished' +'</span>';
+                        }
+                        var stringProname = "";
+                        if(SV.proname.length > 20) {
+                          stringProname = SV.proname.substring(0,20) + "...";
+                        }
+                        else {
+                          stringProname = SV.proname;
+                        }
+                        ul.append('\
+                      <div class="item">\
+                        <div class="col-md-4 col-sm-6">\
+                          <span class="thumbnail text-center">\
+                              <img src="{{this.image1}}'+ SV.image1 +'" alt="..." class="img-responsive" style="width: 350px; height:280px;">\
+                                <h6 class="text-danger" style="font-size: 15px;">'+ stringProname +'</h6>\
+                                  <div class="ratings">\
+                                    <p style="font-size: 11px; color: red">Highestbuyerid: {{this.userBid}}'+ SV.userBid +'</p>\
+                                  </div>\
+                                  <p style="font-size: 11px;"><span class="price">Best price in time: {{this.priceAuction}}'+ SV.priceAuction +'</span> </p>\
+                                  <p style="font-size: 10px; color: blue">['+ SV.soluotdaugia +' turn]</p>\
+                                  <p class="DateEnd" style="font-size: 13px;"> '+ StrigResulfHTML +'</p>\
+                                  <input class="idText" type="hidden" name="id" value="'+ SV.proid +'">\
+                                  <hr class="line">\
+                                  <div class="row">\
+                                      <div class="col-md-6 col-sm-6">\
+                                        <button button-add="addwishlist" type="button" class="btn btn-link watchlistItem">Add to Wishlist</button>\
+                                      </div>\
+                                      <div class="col-md-6 col-sm-6">\
+                                        <a href="/item/{{this.proid}}'+ SV.proid +'"><button class="btn btn-danger right" button-bid="bidnow"> BID NOW</button></a>\
+                                      </div>\
+                                  </div>\
+                          </span>\
+                        </div>\
+                      </div>\
+                        ');
+                      });
+                    }
+                    else {
+                      ul.append('<div class="container">\
+                        <h4>No Prodcut In This Times</h4>\
+                      </div>')
+                    }
+                },
+                complete: function () {
+                  $.getScript("/js/PopupMessageClick.js");
+                  $.getScript("/js/countDownt.js");
+                }
+            });
+      });
+
+      $('#inline_radio').on('click', '#option2', function () {
+            var Editurl = "{{urlType}}".split("&#x3D;");
+            var part2 = Editurl[1].split("&amp;");
+            var stringurl = Editurl[0] + "=" + part2[0] + "&" + part2[1] + "=" + Editurl[2];
+            stringurl += "&type=1";
+            $.ajax({
+                url: stringurl,
+                method: "GET",
+                contentType : "application/json",
+                success : function (res) {
+                    var ul = $("#rowProduct");
+                    ul.html("");
+                    if(res.length > 0) {
+                      res.forEach(function (SV) {
+                      var StrigResulfHTML = '';
+                      var x = new Date(SV.sogiay);
+                      var y = new Date();
+                      if(x > y){
+                          StrigResulfHTML = '<span class="countdown" style="color:blue;" data-countdown="'+ SV.sogiay +'">'+ SV.sogiay +'</span>';
+                      } else {
+                          StrigResulfHTML = '<span class="countdown" style="color:red;" >'+ 'Finished' +'</span>';
+                      }
+
+                      var stringProname = "";
+                      if(SV.proname.length > 20) {
+                        stringProname = SV.proname.substring(0,20);
+                      }
+                      else {
+                        stringProname = SV.proname;
+                      }
+                      ul.append('\
+                    <div class="item">\
+                      <div class="col-md-4 col-sm-6">\
+                        <span class="thumbnail text-center">\
+                            <img src="{{this.image1}}'+ SV.image1 +'" alt="..." class="img-responsive" style="width: 350px; height:280px;">\
+                              <h6 class="text-danger" style="font-size: 15px;">'+ stringProname +'</h6>\
+                                <div class="ratings">\
+                                  <p style="font-size: 11px; color: red">Highestbuyerid: {{this.userBid}}'+ SV.userBid +'</p>\
+                                </div>\
+                                <p style="font-size: 11px;"><span class="price">Best price in time: {{this.priceAuction}}'+ SV.priceAuction +'</span> </p>\
+                                <p style="font-size: 10px; color: blue">['+ SV.soluotdaugia +' turn]</p>\
+                                <p class="DateEnd" style="font-size: 13px;"> '+ StrigResulfHTML +'</p>\
+                                <input class="idText" type="hidden" name="id" value="'+ SV.proid +'">\
+                                <hr class="line">\
+                                <div class="row">\
+                                    <div class="col-md-6 col-sm-6">\
+                                      <button button-add="addwishlist" type="button" class="btn btn-link watchlistItem">Add to Wishlist</button>\
+                                    </div>\
+                                    <div class="col-md-6 col-sm-6">\
+                                      <a href="/item/{{this.proid}}'+ SV.proid +'"><button class="btn btn-danger right" button-bid="bidnow"> BID NOW</button></a>\
+                                    </div>\
+                                </div>\
+                        </span>\
+                      </div>\
+                    </div>\
+                      ');
+                    });
+                    }
+                    else {
+                      ul.append('<div class="container">\
+                        <h4>No Prodcut In This Time</h4>\
+                      </div>')
+                    }
+                },
+                complete: function () {
+                  $.getScript("/js/PopupMessageClick.js");
+                  $.getScript("/js/countDownt.js");
+                }
+            });
+      });
+
+      $('#inline_radio').on('click', '#option3', function () {
+            var Editurl = "{{urlType}}".split("&#x3D;");
+            var part2 = Editurl[1].split("&amp;");
+            var stringurl = Editurl[0] + "=" + part2[0] + "&" + part2[1] + "=" + Editurl[2];
+            stringurl += "&type=2";
+            $.ajax({
+                url: stringurl,
+                method: "GET",
+                contentType : "application/json",
+                success : function (res) {
+                    var ul = $("#rowProduct");
+                    ul.html("");
+                  if(res.length > 0) {
+                    res.forEach(function (SV) {
+                      var StrigResulfHTML = '';
+                      var x = new Date(SV.sogiay);
+                      var y = new Date();
+                      if(x > y){
+                          StrigResulfHTML = '<span class="countdown" style="color:blue;" data-countdown="'+ SV.sogiay +'">'+ SV.sogiay +'</span>';
+                      } else {
+                          StrigResulfHTML = '<span class="countdown" style="color:red;" >'+ 'Finished' +'</span>';
+                      }
+                      var stringProname = "";
+                      if(SV.proname.length > 20) {
+                        stringProname = SV.proname.substring(0,20);
+                      }
+                      else {
+                        stringProname = SV.proname;
+                      }
+                      ul.append('\
+                    <div class="item">\
+                      <div class="col-md-4 col-sm-6">\
+                        <span class="thumbnail text-center">\
+                            <img src="{{this.image1}}'+ SV.image1 +'" alt="..." class="img-responsive" style="width: 350px; height:280px;">\
+                              <h6 class="text-danger" style="font-size: 15px;">'+ stringProname +'</h6>\
+                                <div class="ratings">\
+                                  <p style="font-size: 11px; color: red">Highestbuyerid: {{this.userBid}}'+ SV.userBid +'</p>\
+                                </div>\
+                                <p style="font-size: 11px;"><span class="price">Best price in time: {{this.priceAuction}}'+ SV.priceAuction +'</span> </p>\
+                                <p style="font-size: 10px; color: blue">['+ SV.soluotdaugia +' turn]</p>\
+                                <p class="DateEnd" style="font-size: 13px;"> '+ StrigResulfHTML +'</p>\
+                                <input class="idText" type="hidden" name="id" value="'+ SV.proid +'">\
+                                <hr class="line">\
+                                <div class="row">\
+                                    <div class="col-md-6 col-sm-6">\
+                                      <button button-add="addwishlist" type="button" class="btn btn-link watchlistItem">Add to Wishlist</button>\
+                                    </div>\
+                                    <div class="col-md-6 col-sm-6">\
+                                      <a href="/item/{{this.proid}}'+ SV.proid +'"><button class="btn btn-danger right" button-bid="bidnow"> BID NOW</button></a>\
+                                    </div>\
+                                </div>\
+                        </span>\
+                      </div>\
+                    </div>\
+                      ');
+                    });
+                  } else {
+                    ul.append('<div class="container">\
+                      <h4>No Prodcut In This Time</h4>\
+                    </div>')
+                  }
+                },
+                complete: function () {
+                  $.getScript("/js/PopupMessageClick.js"); // loading lai khoi javascript nay khi hoan thanh
+                  $.getScript("/js/countDownt.js");
+                }
+            });
+      });
+  });
+</script>

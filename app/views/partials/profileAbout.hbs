@@ -1,0 +1,45 @@
+{{#if user}}
+  <h4>About Me </h4>
+  <p id="PFfullname">
+    Full Name: <span><em>{{user.Firstname}} {{user.Lastname}}</em></span>
+  </p>
+  <p id="PFemail">
+    Email: <span><em>{{user.Email}}</em></span>
+  </p>
+  <p id="PFaddress">
+    Address: <span><em>{{user.Address}}</em></span>
+  </p>
+  <p>
+    Day create account: <span><em>{{user.Days}}</em></span>
+  </p>
+  <p>
+    Positiverating: <strong><em>{{user.Positiverating}}</em></strong>
+  </p>
+  <p>
+    Negativerating: <span><em>{{user.Negativerating}}</em></span>
+  </p>
+  <p>
+    <strong>Rate: 10</strong>
+  </p>
+  <div class="" style="color: red">
+    <p>
+      Permission: <span><em>{{user.Permission}}</em></span>
+    </p>
+    {{{foo user.Permission user.Deadlineseller}}}
+  </div>
+  <!--
+  this.IdUser = id;
+  this.Username = username;
+  this.Password = password;
+  this.Firstname = first_name;
+  this.Lastname = last_name;
+  this.Days = day;
+  this.Permission = permission;
+  this.Email = email;
+  this.Address = address;
+  this.Positiverating = positiverating;
+  this.Negativerating = negativerating;
+  this.Imgurl = imgURL;
+  this.Deadlineseller = f_deadlineseller;
+  -->
+{{/if}}

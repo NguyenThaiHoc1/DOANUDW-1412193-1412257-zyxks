@@ -1,246 +1,239 @@
 <link rel="stylesheet" href="/css/item.css">
 <div class="content">
-    <div class="col-md-4 col-ms-4 col-lg-3">
-        <div id="myCarousel" class="carousel slide" data-ride="carousel">
-            <!-- Indicators -->
-            <ol class="carousel-indicators">
-                <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-                <li data-target="#myCarousel" data-slide-to="1"></li>
-                <li data-target="#myCarousel" data-slide-to="2"></li>
-            </ol>
-            <!-- Wrapper for slides -->
-            <div class="carousel-inner">
-                <div class="item active">
-                    <img src="http://placehold.it/400x400/2ecc71/f5f5f5/&text=Image+1" alt="Preview 1" style="width:100%;">
-                </div>
-                <div class="item">
-                    <img src="http://placehold.it/400x400/3498db/f5f5f5/&text=Image+2" alt="Preview 2" style="width:100%;">
-                </div>
-                <div class="item">
-                    <img src="http://placehold.it/400x400/ff3546/f5f5f5/&text=Image+3" alt="Preview 3" style="width:100%;">
-                </div>
-            </div>
+  <div class="col-md-4 col-ms-4 col-lg-3">
+    <div id="myCarousel" class="carousel slide" data-ride="carousel">
+      <!-- Indicators -->
+      <ol class="carousel-indicators">
+        <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+        <li data-target="#myCarousel" data-slide-to="1"></li>
+        <li data-target="#myCarousel" data-slide-to="2"></li>
+      </ol>
+      <!-- Wrapper for slides -->
+      <div class="carousel-inner">
+        <div class="item active">
+          <img src="{{item.image1}}" alt="Preview 1" style="width:100%;">
         </div>
+        <div class="item">
+          <img src="{{item.image2}}" alt="Preview 2" style="width:100%;">
+        </div>
+        <div class="item">
+          <img src="{{item.image3}}" alt="Preview 3" style="width:100%;">
+        </div>
+      </div>
     </div>
-    <div class="col-md-8 col-ms-8 col-lg-9">
-        <div class="event-time alert alert-danger">
-            <p>Event starts: Saturday, 10:00PM</p>
-            <p><b>[ 1d 5h 34m 51s ]</b></p>
-        </div>
-        <div class="title-info">
-            <h2>SMALL DIP BOWL</h2>
-            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged It has survived not only five centuries, but also the leap ietting industry. Lorem Ipsum has been the industry's unchanged</p>
-        </div>
-        <div class="item-info">
-            <div class="current-bid">
-                <h3><b>$17.95</b></h3>
+  </div>
+  <div class="col-md-8 col-ms-8 col-lg-9">
+    <div class="alert alert-success">
+      <p>Event starts: <span id="datepost">{{item.datepost}}</span></p>
+      <p id="datepost_timer"></p>
+    </div>
+    <div class="alert alert-danger">
+      <p>Ends in <span id="datefinish">{{item.datefinish}}</span></p>
+      <p id="datefinish_timer"></p>
+    </div>
+    <div class="title-info">
+      <h2 id="item-name">{{item.proname}}</h2>
+      <p>{{{item.fulldes}}}</p>
+      <button id="addwishlist" type="button" class="btn btn-link watchlistItem" value="{{item.proid}}">Add to Wishlist</button>
+    </div>
+    <div class="item-info">
+      <div class="current-bid">
+        <h3><b>${{maxbidandstep.maxprice}}</b></h3>
+      </div>
+      <!-- <div class="previous-bid">
+        <p><b>$17.00</b></p>
+      </div> -->
+    </div>
+      {{#if user}}
+          {{#if isTimeNotAvailable}}
+            <p>Now is not the time to bid</p>
+          {{else if isRatingNotAvailable}}
+              <p>Positive rating occupy a low rate</p>
+          {{else}}
+              <div class="btn-bid">
+                  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal" onclick="showSuggest({{maxbidandstep.maxprice}}, {{maxbidandstep.step}})">Bid Now</button>
+              </div>
+          {{/if}}
+      {{else}}
+          <div class="btn-bid">
+              <a href="/register"><button type="button" class="btn btn-default" href="/login">Sign up to bid!</button></a>
+              <p>Already signed up?</p>
+              <a href="/login">
+                  <p>Login!</p>
+              </a>
+          </div>
+      {{/if}}
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" role="dialog">
+      <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Bid</h4>
+              <h6><p class="label label-warning" id="bid-warning">Event sta</p></h6>
+          </div>
+          <div class="modal-body">
+            <div class="beat col-md-6 col-ms-6">
+                <h3>Current Price $<span id="current-price">{{maxbidandstep.maxprice}}</span></h3>
+              <i><p>Step $<span id="bid-step">{{maxbidandstep.step}}</span></p></i>
+              <div class="auto-bid col-md-12 col-ms-12">
+                <p>Auto bid?</p>
+                <div class="btn-group" data-toggle="buttons">
+
+            			<label class="btn btn-primary">
+            				<input type="checkbox" autocomplete="off" checked>
+            				<span class="glyphicon glyphicon-ok"></span>
+            			</label>
+            		</div>
+              </div>
             </div>
-            <div class="previous-bid">
-                <p><b>$17.00</b></p>
+            <div class="form-group col-md-6 col-ms-6">
+              <label for="usr" class="col-md-12 col-ms-12">Suggested price</label>
+              <div class="show-suggest-price" id="show-suggest-price"></div>
+              <div class="show-custom-price" id="show-custom-price">
+                <label>Custom price</label>
+                <input type="number" class="form-control" id="custom-price">
+              </div>
             </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" id="btn-bid">Bid!</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
         </div>
-        <div class="btn-bid">
-            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal">Sign up to bid!</button>
-            <p>Already signed up?</p>
+      </div>
+    </div>
+  </div>
+  <div class="owner-info col-md-12 col-ms-12" id="inner" style="margin-top: 50px;">
+    <div class="bid-info col-md-6 col-ms-6 col-lg-7">
+      <div class="panel panel-default col-md-12 col-ms-12">
+        <div class="panel-body">
+          <div class="starting-bid">
+            <p>Starting bid: </p>
+            <p><strong>$ {{item.startprice}}</strong></p>
+          </div>
+          <div class="bit-user">
+            <p>We've had {{totalPersonBid.count}} people tried to bid!</p>
+          </div>
+          <div class="bit-count">
+            <p>Bid counts: </p>
+            <p>{{maxbidandstep.bidcount}}</p>
+          </div>
+        </div>
+      </div>
+      <div class="history col-md-12 col-ms-12">
+        <h4>History</h4>
+      </div>
+      <div class="history-list col-md-12 col-ms-12">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Username</th>
+              <th>Bid</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each bidhistory}}
+            <tr>
+              <td>{{this.timebid}}</td>
+              <td>{{this.f_Name}}</td>
+              <td>${{this.price}}</td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+      <div class="comment col-md-12 col-ms-12">
+        <div class="comment-title col-md-12 col-ms-12">
+          <h3>Comments :</h3>
+        </div>
+        <div class="content col-md-12 col-ms-12">
+            <form action="/item/{{item.proid}}/comments" method="post" id="commentForm">
+              <div class="textarea-message col-md-9 col-ms-9">
+                <textarea id="message" class="textarea-message form-control" placeholder="Your Message" rows="5" name="content"></textarea>
+              </div>
+              <div class="text-center col-md-3 col-ms-3">
+                <button type="submit" class="button button-style button-style-dark button-style-icon text-center">Submit</button>
+              </div>
+            </form>
+        </div>
+        <div class="previous-comment col-md-12 col-ms-12">
+          <ul>
+            {{#each comment}}
+            <li>
+              <div class="col-sm-2">
+                <div class="thumbnail">
+                  <img class="img-responsive user-photo" src="https://ssl.gstatic.com/accounts/ui/avatar_2x.png">
+                </div>
+                <!-- /thumbnail -->
+              </div>
+              <!-- /col-sm-1 -->
+              <div class="col-sm-10">
+                <div class="panel panel-default">
+                  <div class="panel-heading">
+                    <strong>{{this.f_Name}}</strong> <span class="text-muted">commented on {{this.datepost}}</span>
+                  </div>
+                  <div class="panel-body">
+                    {{this.content}}
+                  </div>
+                  <!-- /panel-body -->
+                </div>
+                <!-- /panel panel-default -->
+              </div>
+              <!-- /col-sm-5 -->
+            </li>
+            {{/each}}
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 col-ms-6 col-lg-5">
+      <div class="owner-buyer">
+        <div class="owner">
+          <div class="owner-avatar">
+            <img src="http://placehold.it/150x150" alt="avatar" class="img-circle">
+          </div>
+          <div class="owner-username">
             <a href="#">
-                <p>Login!</p>
+              <p><b>Seller: {{seller.f_Name}}</b></p>
             </a>
+          </div>
         </div>
-        <!-- Modal -->
-        <div class="modal fade" id="myModal" role="dialog">
-            <div class="modal-dialog">
-                <!-- Modal content-->
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">Bid</h4>
-                    </div>
-                    <div class="modal-body">
-                        <h3>You must beat $17.95</h3>
-                        <div class="form-group">
-                            <label for="usr">New price:</label>
-                            <input type="number" class="form-control" id="price-bid">
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" data-dismiss="modal">Bid!</button>
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
+        <div class="exchange">
+          <span class="glyphicon glyphicon-resize-horizontal"></span>
         </div>
+        <div class="current-buyer">
+          <div class="current-buyer-avatar">
+            <img src="http://placehold.it/150x150" alt="avatar" class="img-circle">
+          </div>
+          <div class="current-buyer-username">
+            <a href="#">
+              <p><b>Current highest: {{highestbuyerid.f_Name}}</b></p>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="about-seller">
+        <h3>Seller information</h3>
+        <div class="panel-body">
+          <a href="#">
+            <p>@{{seller.f_Username}}</p>
+          </a>
+          <p>Total items: {{sellertotalitems.totalitems}}</p>
+          <br>
+          <a href="#">
+            <p>See other items</p>
+          </a>
+          <br>
+        </div>
+      </div>
     </div>
-    <div class="owner-info col-md-12 col-ms-12" id="inner" style="margin-top: 50px;">
-        <div class="bid-info col-md-6 col-ms-6 col-lg-7">
-            <div class="panel panel-default col-md-12 col-ms-12">
-                <div class="panel-body">
-                    <div class="starting-bid">
-                        <p>Starting bid: </p>
-                        <p><strong>US $10.00</strong></p>
-                    </div>
-                    <div class="estimate-bid">
-                        <p>Seller's estimate: </p>
-                        <p>US $3,000.00 - US $3,500.00</p>
-                    </div>
-                    <div class="bit-follower">
-                        <p>Followers: </p>
-                        <p>53</p>
-                    </div>
-                    <div class="bit-user">
-                        <p>We've had 5 people tried to bid!</p>
-                    </div>
-                    <div class="bit-count">
-                        <p>Bid counts: </p>
-                        <p>53 times</p>
-                    </div>
-                </div>
-            </div>
-            <div class="history col-md-12 col-ms-12">
-                <h4>History</h4>
-            </div>
-            <div class="history-list col-md-12 col-ms-12">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Username</th>
-                            <th>Bid</th>
-                            <th>Time</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">2</th>
-                            <td>Jacob</td>
-                            <td>Thornton</td>
-                            <td>@fat</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">3</th>
-                            <td>Larry</td>
-                            <td>the Bird</td>
-                            <td>@twitter</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="comment col-md-12 col-ms-12">
-                <div class="comment-title col-md-12 col-ms-12">
-                    <h3>Comments :</h3>
-                </div>
-                <div class="content col-md-12 col-ms-12">
-                    <div class="textarea-message col-md-9 col-ms-9">
-                        <textarea id="message" class="textarea-message form-control" placeholder="Your Message" rows="5"></textarea>
-                    </div>
-                    <div class="text-center col-md-3 col-ms-3">
-                        <button type="submit" class="button button-style button-style-dark button-style-icon text-center">Submit</button>
-                    </div>
-                </div>
-                <div class="previous-comment col-md-12 col-ms-12">
-                    <ul>
-                        <li>
-                            <div class="col-sm-2">
-                                <div class="thumbnail">
-                                    <img class="img-responsive user-photo" src="https://ssl.gstatic.com/accounts/ui/avatar_2x.png">
-                                </div>
-                                <!-- /thumbnail -->
-                            </div>
-                            <!-- /col-sm-1 -->
-                            <div class="col-sm-10">
-                                <div class="panel panel-default">
-                                    <div class="panel-heading">
-                                        <strong>myusername</strong> <span class="text-muted">commented 5 days ago</span>
-                                    </div>
-                                    <div class="panel-body">
-                                        Panel content
-                                    </div>
-                                    <!-- /panel-body -->
-                                </div>
-                                <!-- /panel panel-default -->
-                            </div>
-                            <!-- /col-sm-5 -->
-                        </li>
-                        <li>
-                            <div class="col-sm-2">
-                                <div class="thumbnail">
-                                    <img class="img-responsive user-photo" src="https://ssl.gstatic.com/accounts/ui/avatar_2x.png">
-                                </div>
-                                <!-- /thumbnail -->
-                            </div>
-                            <!-- /col-sm-1 -->
-                            <div class="col-sm-10">
-                                <div class="panel panel-default">
-                                    <div class="panel-heading">
-                                        <strong>myusername</strong> <span class="text-muted">commented 5 days ago</span>
-                                    </div>
-                                    <div class="panel-body">
-                                        Panel content
-                                    </div>
-                                    <!-- /panel-body -->
-                                </div>
-                                <!-- /panel panel-default -->
-                            </div>
-                            <!-- /col-sm-5 -->
-                        </li>
-                    </ul>
-                    <div class="text-center col-md-12 col-ms-12">
-                        <button type="submit" class="button button-style button-style-dark button-style-icon text-center">Load more..</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6 col-ms-6 col-lg-5">
-            <div class="owner-buyer">
-                <div class="owner">
-                    <div class="owner-avatar">
-                        <img src="http://placehold.it/150x150" alt="avatar" class="img-circle">
-                    </div>
-                    <div class="owner-username">
-                        <a href="#">
-                            <p><b>Seller: RyanisNHP</b></p>
-                        </a>
-                    </div>
-                </div>
-                <div class="exchange">
-                    <span class="glyphicon glyphicon-resize-horizontal"></span>
-                </div>
-                <div class="current-buyer">
-                    <div class="current-buyer-avatar">
-                        <img src="http://placehold.it/150x150" alt="avatar" class="img-circle">
-                    </div>
-                    <div class="current-buyer-username">
-                        <a href="#">
-                            <p><b>Current highest: RyanisNHP</b></p>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="about-seller">
-                <h3>Seller information</h3>
-                <div class="panel-body">
-                    <a href="#">
-                        <p>RyanisNHP</p>
-                    </a>
-                    <p>Total items: 5</p>
-                    <br>
-                    <p>5 followers</p>
-                    <a href="#">
-                        <p>Follow this seller</p>
-                    </a>
-                    <br>
-                    <a href="#">
-                        <p>See other items</p>
-                    </a>
-                    <br>
-                </div>
-            </div>
-        </div>
-    </div>
+  </div>
 </div>
+<script src="/component/moment/moment.js"></script>
+<script src="/component/moment-precise-range/readable-range.js"></script>
+<script src="/component/bootstrap3-dialog/dist/js/bootstrap-dialog.js"></script>
 <script src="/js/item.js"></script>
+<script src="/js/countdown.js"></script>

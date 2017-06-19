@@ -1,23 +1,25 @@
 
 {{#if user}}
 <li class="dropdown">
-    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{user.Username}}<span class="caret"></span></a>
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{user.Firstname}} {{user.Lastname}}<span class="caret"></span></a>
     <ul class="dropdown-menu">
-        <li><a href="#">Profile</a></li>
-        <li><a href="#">1. Comming Soon</a></li>
-        <li><a href="#">2. Comming Soon</a></li>
+        <li><a href="/profile"> <strong>Profile</strong> </a></li>
+        <li><a href="/changepassword"> <strong>ChangePassword</strong> </a></li>
+        <li><a href="/profile/wishlist"> <strong>Wishlist</strong> </a></li>
+        <li><a href="/profile/historyauction"> <strong>History Auction</strong> </a></li>
+        <li><a href="/profile/historyauction"> <strong>History Victory</strong> </a></li>
         <li role="separator" class="divider"></li>
-        <li><a href="#">Log out</a></li>
+        <li><a href="/logout"> <strong>Log out</strong> </a></li>
     </ul>
 </li>
 {{else}}
 <li class="dropdown">
     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> Your account <span class="caret"></span></a>
     <ul class="dropdown-menu">
-        <li><a href="/login">Login</a></li>
-        <li><a href="/register">Sign Up</a></li>
-        <li><a href="/registerDauGia">Đăng đấu giá</a></li>
-        <li><a href="/profile">Profile</a></li>
+        <li><a href="/login"> <strong>Sign In</strong> </a></li>
+        <li><a href="/register"> <strong>Sign Up</strong> </a></li>
+        <!-- <li><a href="/registerDauGia">Đăng đấu giá</a></li>
+        <li><a href="/profile">Profile</a></li> -->
     </ul>
 </li>
 {{/if}}

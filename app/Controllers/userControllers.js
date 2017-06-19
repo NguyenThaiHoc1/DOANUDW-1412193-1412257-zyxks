@@ -1,6 +1,7 @@
 var userDB = require("../models/user.js");
 var querystring = require('querystring');
 var Qs = require('q');
+var request = require('request');
 var objectUser = require("../Object/userObject.js");
 
 function Checking(value) {
@@ -8,7 +9,9 @@ function Checking(value) {
   return resulf;
 }
 
+// changepassword chua sua co gi sua lai
 var userController = {
+
   userCheckEmail : function (req, res) {
         var params = req.url.split('?')[1];
         var data   = querystring.parse(params);
@@ -48,19 +51,33 @@ var userController = {
     });
   },
   userRegister: function (req, res) {
-     if (Checking(req.body.username) || Checking(req.body.password) || Checking(req.body.first_name) || Checking(req.body.last_name) || Checking(req.body.email)){
-       req.flash("messagesFail", "Register is fail !!!");
-       res.redirect("/register");
-     }
-     else {
-       userDB.insertUser(req.body).then(function (rows) {
-         req.flash("messagesSuccess", "Register is success !!!");
-         res.redirect("/login");
-       }).fail(function (err) {
-         req.flash("messagesFail", "Register is fail !!!");
-         res.redirect("/register");
-       });
-     }
+      if(req.body['g-recaptcha-response'] === undefined || req.body['g-recaptcha-response'] === '' || req.body['g-recaptcha-response'] === null) {
+        req.flash("messagesFail", "Please Checking Captcha");
+        res.redirect("/register");
+      } else {
+        var secretKey = "6LdWASUUAAAAAI7CnZ9ohJ1aUkf-P4Pap_qnmvdi";
+        var verificationUrl = "https://www.google.com/recaptcha/api/siteverify?secret=" + secretKey + "&response=" + req.body['g-recaptcha-response'] + "&remoteip=" + req.connection.remoteAddress;
+        request(verificationUrl,function(error,response,body) {
+          body = JSON.parse(body);
+          if(body.success !== undefined && !body.success) {
+            req.flash("messagesFail", "Failed captcha verification");
+            res.redirect("/register");
+          }
+          if ( Checking(req.body.address) || Checking(req.body.username) || Checking(req.body.password) || Checking(req.body.first_name) || Checking(req.body.last_name) || Checking(req.body.email)){
+            req.flash("messagesFail", "Register is fail !!!");
+            res.redirect("/register");
+          }
+          else {
+            userDB.insertUser(req.body).then(function (rows) {
+              req.flash("messagesSuccess", "Register is success !!!");
+              res.redirect("/login");
+            }).fail(function (err) {
+              req.flash("messagesFail", "Register is fail !!!");
+              res.redirect("/register");
+            });
+          }
+        });
+      }
   },
   userLogin: function (req, res) {
       // khuc nay viet dang nhap
@@ -74,13 +91,19 @@ var userController = {
               var fullname = rows[0].f_Name.split(' ');
               var Firstname = fullname[0];
               var Lastname = fullname[1];
-              var newuser = new objectUser(rows[0].f_Username, rows[0].f_Password, Firstname, Lastname, rows[0].f_Email, rows[0].f_DOB, rows[0].f_Permission);
-              if(newuser.validPassword(req.body.password)) {
-                  req.session.user = newuser;
-                  res.redirect("/profile");
-              }else {
-                req.flash("messagesFail", "LogIn is fail !!!");
+              var accessadmin = rows[0].accessadmin;
+              if(accessadmin == 0){
+                req.flash("messagesFail", "Account is Locked");
                 res.redirect("/login");
+              } else {
+                var newuser = new objectUser(rows[0].f_ID, rows[0].f_Username, rows[0].f_Password, Firstname, Lastname, rows[0].f_Email, rows[0].f_Address, rows[0].f_DOB, rows[0].f_Permission, rows[0].positiverating, rows[0].negativerating, rows[0].f_ImageUrl, rows[0].f_deadlineseller);
+                if(newuser.validPassword(req.body.password)) {
+                    req.session.user = newuser;
+                    res.redirect("/profile");
+                }else {
+                  req.flash("messagesFail", "LogIn is fail !!!");
+                  res.redirect("/login");
+                }
               }
             }
             else {
@@ -92,7 +115,17 @@ var userController = {
       }
   },
   userLogout: function (req, res) {
-    // destroy()
+    // user destroy
+    req.session.destroy(); // huy session hien tai
+    res.redirect('/');
+  },
+  getchangepassword: function (req, res) {
+    res.render("_Users/changepassword", {
+      user: req.session.user,
+      successMess : res.locals.Success,
+      FailMess : res.locals.Fail,
+      layout: "applicationnoHeader"
+    });
   },
   changepassword: function (req, res) {
     // chuc nang nay duoc su dung cho nhung ai da dang nhap
@@ -100,8 +133,10 @@ var userController = {
       req.flash("messagesFail", "ChangePassword is fail !!!");
       res.redirect("/changepassword");
     } else {
-      console.log(req.session.user);
-       var userchange = new objectUser(req.session.user.Username,req.session.user.Password,req.session.user.Firstname,req.session.user.Lastname,req.session.user.Email, req.session.user.Days,req.session.user.Permission);
+      var userchange = new objectUser(req.session.user.IdUser ,req.session.user.Username,
+           req.session.user.Password, req.session.user.Firstname, req.session.user.Lastname, req.session.Email, req.session.user.Address,
+           req.session.user.Days,req.session.user.Permission, req.session.user.Positiverating,
+           req.session.user.Negativerating, req.session.user.Imgurl, req.session.user.Deadlineseller);
        if(userchange.validPassword(req.body.oldpassword)) {
          userchange.SettingPassword(userchange.encryptPassword(req.body.password));
          userDB.changepassword(userchange).then(function (rows) {
@@ -118,6 +153,46 @@ var userController = {
        }
     }
   },
+  registerPage: function (req, res) {
+    res.render("_featureWEB/register", {
+        user: req.session.user,
+        successMess : res.locals.Success,
+        FailMess : res.locals.Fail,
+        layout: "applicationnoHeader"
+    });
+  },
+  loginPage: function (req, res) {
+    res.render("_featureWEB/loginusers", {
+        successMess : res.locals.Success,
+        FailMess : res.locals.Fail,
+        layout: "applicationnoHeader"
+    });
+  },
+  changeInformation: function (req, res) {
+    if (Checking(req.body.email) || Checking(req.body.first_name) || Checking(req.body.last_name) || Checking(req.body.address)){
+      req.flash("messagesFail", "Update profile is fail !!!");
+      res.redirect("/profile");
+    } else {
+        var userchange = new objectUser(req.session.user.IdUser ,req.session.user.Username,
+          req.session.user.Password, req.body.first_name, req.body.last_name, req.body.email, req.body.address,
+          req.session.user.Days,req.session.user.Permission, req.session.user.Positiverating,
+          req.session.user.Negativerating, req.session.user.Imgurl, req.session.user.Deadlineseller);
+        var objects = {
+          Userid : req.session.user.IdUser,
+          email: req.body.email,
+          name: req.body.first_name + ' ' +req.body.last_name,
+          address: req.body.address
+        }
+        userDB.UpdateUser(objects).then(function () {
+          req.session.user = userchange;
+          req.flash("messagesSuccess", "Update is Success !");
+          res.redirect("/profile");
+        }).fail(function (err) {
+          req.flash("messagesFail", "Update is Fail");
+          res.redirect("/profile");
+        })
+    }
+  },
   testingCallback: function (req, res, next) {
       Qs.all([userDB.Testing1(), userDB.Testing2()]).spread(function (a, b) {
           console.log(a);
@@ -125,5 +200,6 @@ var userController = {
           console.log(b);
       });
   }
+  // chi la test callback ma thoi
 }
 module.exports = userController;

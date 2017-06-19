@@ -1,0 +1,41 @@
+<link rel="stylesheet" href="/css/profile/profile.css">
+<div class="container-fluid">
+    <div class="row">
+        <div class="fb-profile">
+            {{> profileAvarta}}
+        </div>
+    </div>
+</div>
+<div class="container-fluid" style="margin-top:20px;">
+  <div class="row">
+    <div class="btn-pref btn-group btn-group-justified btn-group-lg" role="group" aria-label="...">
+            <div class="btn-group" role="group">
+                <button type="button" id="stars" class="btn btn-primary" href="#tab1" data-toggle="tab"><span class="glyphicon glyphicon-heart" aria-hidden="true"></span>
+                    <div class="hidden-xs">Wishlist</div>
+                </button>
+            </div>
+    </div>
+    <div class="well">
+            <div class="tab-content">
+              <div class="tab-pane fade in active" id="tab1">
+                <div class="bs-callout bs-callout-danger">
+                  {{> wishlist}}
+                 </div>
+                 <hr class="line">
+                 {{#if wishlist.length}}
+                 <div class="row" aria-label="..." style="text-align:center;">
+                   <ul class="pagination">
+                     {{{foo}}}
+                   </ul>
+                </div>
+                {{else}}
+                <div class="row" style="text-align:center;">
+                    <h4>No Items In Here <a href="/">Continue Auction</a></h4>
+                </div>
+                {{/if}}
+              </div>
+           </div>
+    </div>
+  </div>
+</div>
+<script src="/js/profile/profile.js"></script>
