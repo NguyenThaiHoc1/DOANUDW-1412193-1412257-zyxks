@@ -23,13 +23,18 @@
     </div>
   </div>
   <div class="col-md-8 col-ms-8 col-lg-9">
-    <div class="event-time alert alert-danger">
-      <p>Event starts: {{item.datepost}}</p>
-      <p><b>[ Ends in {{item.datefinish}} ]</b></p>
+    <div class="alert alert-success">
+      <p>Event starts: <span id="datepost">{{item.datepost}}</span></p>
+      <p id="datepost_timer"></p>
+    </div>
+    <div class="alert alert-danger">
+      <p>Ends in <span id="datefinish">{{item.datefinish}}</span></p>
+      <p id="datefinish_timer"></p>
     </div>
     <div class="title-info">
-      <h2>{{item.proname}}</h2>
+      <h2 id="item-name">{{item.proname}}</h2>
       <p>{{{item.fulldes}}}</p>
+      <button id="addwishlist" type="button" class="btn btn-link watchlistItem" value="{{item.proid}}">Add to Wishlist</button>
     </div>
     <div class="item-info">
       <div class="current-bid">
@@ -39,13 +44,25 @@
         <p><b>$17.00</b></p>
       </div> -->
     </div>
-    <div class="btn-bid">
-      <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal" onclick="showSuggest({{maxbidandstep.maxprice}}, {{maxbidandstep.step}})">Sign up to bid!</button>
-      <p>Already signed up?</p>
-      <a href="/login">
-        <p>Login!</p>
-      </a>
-    </div>
+      {{#if user}}
+          {{#if isTimeNotAvailable}}
+            <p>Now is not the time to bid</p>
+          {{else if isRatingNotAvailable}}
+              <p>Positive rating occupy a low rate</p>
+          {{else}}
+              <div class="btn-bid">
+                  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal" onclick="showSuggest({{maxbidandstep.maxprice}}, {{maxbidandstep.step}})">Bid Now</button>
+              </div>
+          {{/if}}
+      {{else}}
+          <div class="btn-bid">
+              <a href="/register"><button type="button" class="btn btn-default" href="/login">Sign up to bid!</button></a>
+              <p>Already signed up?</p>
+              <a href="/login">
+                  <p>Login!</p>
+              </a>
+          </div>
+      {{/if}}
     <!-- Modal -->
     <div class="modal fade" id="myModal" role="dialog">
       <div class="modal-dialog">
@@ -54,11 +71,12 @@
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal">&times;</button>
             <h4 class="modal-title">Bid</h4>
+              <h6><p class="label label-warning" id="bid-warning">Event sta</p></h6>
           </div>
           <div class="modal-body">
             <div class="beat col-md-6 col-ms-6">
-              <h3>You must beat ${{maxbidandstep.maxprice}}</h3>
-              <i><p>Step ${{maxbidandstep.step}}</p></i>
+                <h3>Current Price $<span id="current-price">{{maxbidandstep.maxprice}}</span></h3>
+              <i><p>Step $<span id="bid-step">{{maxbidandstep.step}}</span></p></i>
               <div class="auto-bid col-md-12 col-ms-12">
                 <p>Auto bid?</p>
                 <div class="btn-group" data-toggle="buttons">
@@ -80,7 +98,7 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary" data-dismiss="modal">Bid!</button>
+            <button type="button" class="btn btn-primary" id="btn-bid">Bid!</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
           </div>
         </div>
@@ -132,12 +150,14 @@
           <h3>Comments :</h3>
         </div>
         <div class="content col-md-12 col-ms-12">
-          <div class="textarea-message col-md-9 col-ms-9">
-            <textarea id="message" class="textarea-message form-control" placeholder="Your Message" rows="5"></textarea>
-          </div>
-          <div class="text-center col-md-3 col-ms-3">
-            <button type="submit" class="button button-style button-style-dark button-style-icon text-center">Submit</button>
-          </div>
+            <form action="/item/{{item.proid}}/comments" method="post" id="commentForm">
+              <div class="textarea-message col-md-9 col-ms-9">
+                <textarea id="message" class="textarea-message form-control" placeholder="Your Message" rows="5" name="content"></textarea>
+              </div>
+              <div class="text-center col-md-3 col-ms-3">
+                <button type="submit" class="button button-style button-style-dark button-style-icon text-center">Submit</button>
+              </div>
+            </form>
         </div>
         <div class="previous-comment col-md-12 col-ms-12">
           <ul>
@@ -212,4 +232,8 @@
     </div>
   </div>
 </div>
+<script src="/component/moment/moment.js"></script>
+<script src="/component/moment-precise-range/readable-range.js"></script>
+<script src="/component/bootstrap3-dialog/dist/js/bootstrap-dialog.js"></script>
 <script src="/js/item.js"></script>
+<script src="/js/countdown.js"></script>
