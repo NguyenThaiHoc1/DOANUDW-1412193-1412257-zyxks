@@ -3,7 +3,7 @@ var q = require('q');
 var search = {
   getCatogory: function () {
     var d = q.defer();
-    var sql = 'select catid, catname from category;';
+    var sql = 'select catid, catname from category where active = 1;';
     db.query(sql, function (error, results) {
       if (error){
         d.reject(error);
@@ -16,7 +16,7 @@ var search = {
     var d = q.defer();
     var sql = '';
     if(object.catogory == 0){
-      sql = 'select * from product a, category b where a.catid = b.catid and proname LIKE ?';
+      sql = 'select * from product a, category b where a.catid = b.catid and proname LIKE ? and b.active = 1;';
       db.query(sql,['%' + object.searchinput + '%'], function (error, results) {
         if (error){
           d.reject(error);
@@ -26,7 +26,7 @@ var search = {
       return d.promise;
     }
     else {
-      sql = 'select * from product a, category b where a.catid = b.catid and a.catid = ? and a.proname LIKE ?;';
+      sql = 'select * from product a, category b where a.catid = b.catid and a.catid = ? and a.proname LIKE ? and b.active = 1;';
       db.query(sql, [object.catogory, '%' + object.searchinput + '%'], function (error, results) {
         if (error){
           d.reject(error);
@@ -38,7 +38,7 @@ var search = {
   },
   getRowPro: function () {
     var d = q.defer();
-    var sql = 'select count(*) from product'
+    var sql = 'select count(*) from product a, category b where a.catid = b.catid and b.active = 1;'
     connection.query(sql, function(err, results) {
           if (err){
            d.reject(err);
@@ -52,7 +52,7 @@ var search = {
 
     if(typePage == 1){
       if(object.catogory == 0){
-        var sql1 = 'select b.image1, b.proid, b.proname, b.tinydes, TIMESTAMPDIFF(Second , now() , b.datefinish) sogiay,\
+        var sql1 = 'select b.image1, b.proid, b.proname, b.tinydes, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\') sogiay,\
                     case\
                           	  when a.price is null then b.startprice \
                               when a.price is not null then a.price\
@@ -74,8 +74,8 @@ var search = {
                     															 where history.productid = b.proid\
                     															 group by history.productid)\
                     end as soluotdaugia\
-                    from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid\
-                    where b.proname LIKE ?\
+                    from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid, dackweb.category cato\
+                    where b.proname LIKE ? and b.catid = cato.catid and cato.active = 1\
                     and not exists (\
                     						select *\
                                             from dackweb.bidhistory c\
@@ -88,7 +88,7 @@ var search = {
                                                                 and a.price < e.price\
                     									)\
                     			 )\
-                    group by b.proid, b.proname, b.tinydes, TIMESTAMPDIFF(Second , now() , b.datefinish), a.price, a.userid\
+                    group by b.proid, b.proname, b.tinydes, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\'), a.price, a.userid\
                     order by \
                     case\
                     	  when a.price is null then b.startprice \
@@ -96,7 +96,7 @@ var search = {
                     end ASC\
                     LIMIT ? , ?;';
       } else {
-        var sql1 = 'select b.image1, b.proid, b.proname, b.tinydes, TIMESTAMPDIFF(Second , now() , b.datefinish) sogiay,\
+        var sql1 = 'select b.image1, b.proid, b.proname, b.tinydes, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\') sogiay,\
                     case\
                           	  when a.price is null then b.startprice \
                               when a.price is not null then a.price\
@@ -118,8 +118,8 @@ var search = {
                     															 where history.productid = b.proid\
                     															 group by history.productid)\
                     end as soluotdaugia\
-                    from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid\
-                    where b.catid = ? and b.proname LIKE ?\
+                    from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid, dackweb.category cato\
+                    where b.catid = ? and b.proname LIKE ? and b.catid = cato.catid and cato.active = 1\
                     and not exists (\
                     						select *\
                                             from dackweb.bidhistory c\
@@ -132,7 +132,7 @@ var search = {
                                                                 and a.price < e.price\
                     									)\
                     			 )\
-                    group by b.proid, b.proname, b.tinydes, TIMESTAMPDIFF(Second , now() , b.datefinish), a.price, a.userid\
+                    group by b.proid, b.proname, b.tinydes, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\'), a.price, a.userid\
                     order by \
                     case\
                     	  when a.price is null then b.startprice \
@@ -143,7 +143,7 @@ var search = {
     }
     else if (typePage == 0) {
       if(object.catogory == 0){
-        var sql1 = 'select b.image1, b.proid, b.proname, b.tinydes, TIMESTAMPDIFF(Second , now() , b.datefinish) sogiay,\
+        var sql1 = 'select b.image1, b.proid, b.proname, b.tinydes, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\') sogiay,\
                     case\
                           	  when a.price is null then b.startprice \
                               when a.price is not null then a.price\
@@ -165,8 +165,8 @@ var search = {
                     															 where history.productid = b.proid\
                     															 group by history.productid)\
                     end as soluotdaugia\
-                    from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid\
-                    where b.proname LIKE ?\
+                    from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid, dackweb.category cato\
+                    where b.proname LIKE ? and b.catid = cato.catid and cato.active = 1\
                     and not exists (\
                     						select *\
                                             from dackweb.bidhistory c\
@@ -179,11 +179,11 @@ var search = {
                                                                 and a.price < e.price\
                     									)\
                     			 )\
-                    group by b.proid, b.proname, b.tinydes, TIMESTAMPDIFF(Second , now() , b.datefinish), a.price, a.userid\
+                    group by b.proid, b.proname, b.tinydes,DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\') , a.price, a.userid\
                     LIMIT ? , ?;'
       }
       else {
-        var sql1 = 'select b.image1, b.proid, b.proname, b.tinydes, TIMESTAMPDIFF(Second , now() , b.datefinish) sogiay,\
+        var sql1 = 'select b.image1, b.proid, b.proname, b.tinydes, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\') sogiay,\
                     case\
                           	  when a.price is null then b.startprice \
                               when a.price is not null then a.price\
@@ -205,8 +205,8 @@ var search = {
                     															 where history.productid = b.proid\
                     															 group by history.productid)\
                     end as soluotdaugia\
-                    from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid\
-                    where b.catid = ? and b.proname LIKE ?\
+                    from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid, dackweb.category cato\
+                    where b.catid = ? and b.proname LIKE ? and b.catid = cato.catid and cato.active = 1\
                     and not exists (\
                     						select *\
                                             from dackweb.bidhistory c\
@@ -219,13 +219,13 @@ var search = {
                                                                 and a.price < e.price\
                     									)\
                     			 )\
-                    group by b.proid, b.proname, b.tinydes, TIMESTAMPDIFF(Second , now() , b.datefinish), a.price, a.userid\
+                    group by b.proid, b.proname, b.tinydes, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\'), a.price, a.userid\
                     LIMIT ? , ?;'
       }
     }
     else if (typePage == 2) {
       if(object.catogory == 0){
-        var sql1 = 'select b.image1, b.proid, b.proname, b.tinydes, TIMESTAMPDIFF(Second , now() , b.datefinish) sogiay,\
+        var sql1 = 'select b.image1, b.proid, b.proname, b.tinydes, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\') sogiay,\
                     case\
                           	  when a.price is null then b.startprice \
                               when a.price is not null then a.price\
@@ -247,8 +247,8 @@ var search = {
                     															 where history.productid = b.proid\
                     															 group by history.productid)\
                     end as soluotdaugia\
-                    from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid\
-                    where b.proname LIKE ?\
+                    from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid, dackweb.category cato\
+                    where b.proname LIKE ? and b.catid = cato.catid and cato.active = 1\
                     and not exists (\
                     						select *\
                                             from dackweb.bidhistory c\
@@ -261,7 +261,7 @@ var search = {
                                                                 and a.price < e.price\
                     									)\
                     			 )\
-                    group by b.proid, b.proname, b.tinydes, TIMESTAMPDIFF(Second , now() , b.datefinish), a.price, a.userid\
+                    group by b.proid, b.proname, b.tinydes, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\'), a.price, a.userid\
                     order by \
                     case \
                              when  (select count(*)  \
@@ -279,7 +279,7 @@ var search = {
                     LIMIT ? , ?;';
       }
       else {
-        var sql1 = 'select b.image1, b.proid, b.proname, b.tinydes, TIMESTAMPDIFF(Second , now() , b.datefinish) sogiay,\
+        var sql1 = 'select b.image1, b.proid, b.proname, b.tinydes, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\') sogiay,\
                     case\
                           	  when a.price is null then b.startprice \
                               when a.price is not null then a.price\
@@ -302,7 +302,7 @@ var search = {
                     															 group by history.productid)\
                     end as soluotdaugia\
                     from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid\
-                    where b.catid = ? and b.proname LIKE ?\
+                    where b.catid = ? and b.proname LIKE ? and b.catid = cato.catid and cato.active = 1, dackweb.category cato\
                     and not exists (\
                     						select *\
                                             from dackweb.bidhistory c\
@@ -315,7 +315,7 @@ var search = {
                                                                 and a.price < e.price\
                     									)\
                     			 )\
-                    group by b.proid, b.proname, b.tinydes, TIMESTAMPDIFF(Second , now() , b.datefinish), a.price, a.userid\
+                    group by b.proid, b.proname, b.tinydes, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\'), a.price, a.userid\
                     order by \
                     case \
                              when  (select count(*)  \

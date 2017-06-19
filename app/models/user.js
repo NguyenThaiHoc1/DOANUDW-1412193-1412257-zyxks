@@ -16,7 +16,7 @@ var user = {
   },
   findbyUserName: function (username) {
     var d = q.defer();
-    var sql = 'select * from user where f_Username = ?';
+    var sql = 'select * from user where f_Username = ? and f_Permission != \'admin\';';
     db.query(sql, [username],function (error, results) {
       if (error){
         d.reject(error);
@@ -79,6 +79,17 @@ var user = {
     var d = q.defer();
     var sql = 'Select * from user where f_ID = 2';
     db.query(sql,function (error, results) {
+      if (error){
+        d.reject(error);
+      }
+      d.resolve(results);
+    });
+    return d.promise;
+  },
+  UpdateUser: function (Objects) {
+    var d = q.defer();
+    var sql = 'Update user set f_Email = ?, f_Name = ?, f_Address = ? where f_ID = ?';
+    db.query(sql,[Objects.email, Objects.name, Objects.address, Objects.Userid], function (error, results) {
       if (error){
         d.reject(error);
       }

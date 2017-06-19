@@ -16,8 +16,6 @@ module.exports = function(app) {
 
     app.get("/contact", index.contact.Defaultpage);
 
-    app.get("/profile", checking.isLoggedIn, index.profile.Defaultpage);
-
     app.get("/registerDauGia", checking.isLoggedIn, index.dangdaugia.Defaultpage);
 
     app.get("/login", checking.isLoggedLong, index.user.loginPage);
@@ -46,11 +44,16 @@ module.exports = function(app) {
 
     app.post("/wishlist", checking.isLoggedIn, index.wishlist.additemwishlist);
 
+    app.get("/profile", checking.isLoggedIn, index.profile.Defaultpage);
+
     app.get("/profile/wishlist", checking.isLoggedIn, index.profile.wishlistUserPage);
 
-    app.get("/profile/historyauction", checking.isLoggedIn, index.profile.wishlistUserPage);
+    app.get("/profile/historyauction", checking.isLoggedIn, index.profile.historyauctionPage);
 
-    app.get("/profile/historyvictory", checking.isLoggedIn, index.profile.wishlistUserPage);
+    app.get("/profile/historyvictory", checking.isLoggedIn, index.profile.historyvictoryPage);
+
+    app.post("/profile", index.user.changeInformation);
+
 
     // cai nay la test co the xoa
     app.get("/popup", function (req, res) {
@@ -58,10 +61,18 @@ module.exports = function(app) {
         layout: "application"
       });
     })
-    // login Admin
-    app.get("/test1", function (req, res) {
-       res.render("_featureWEB/loginAdmin", {
-         layout: false
-       });
-    });
+
+    app.get("/admin", index.admin.Defaultpage);
+
+    app.post("/admin", index.admin.adminLogin);
+
+    //admin functions
+    app.get("/acceptsellrequest", index.admin.acceptSellRequest);
+    app.get("/denysellrequest", index.admin.denySellRequest);
+    app.get("/changecategorystate", index.admin.changeCategoryState);
+    app.get("/addcategory", index.admin.addCategory);
+    app.get("/editcategoryname", index.admin.editCategoryName);
+    app.get("/changeuserstate", index.admin.changeUserState);
+    app.get("/resetpassword", index.admin.resetPassword);
+
 }

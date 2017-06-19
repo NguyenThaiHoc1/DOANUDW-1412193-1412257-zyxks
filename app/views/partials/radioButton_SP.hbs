@@ -21,6 +21,14 @@
                     ul.html("");
                     if(res.length > 0) {
                       res.forEach(function (SV) {
+                        var StrigResulfHTML = '';
+                        var x = new Date(SV.sogiay);
+                        var y = new Date();
+                        if(x > y){
+                            StrigResulfHTML = '<span class="countdown" style="color:blue;" data-countdown="'+ SV.sogiay +'">'+ SV.sogiay +'</span>';
+                        } else {
+                            StrigResulfHTML = '<span class="countdown" style="color:red;" >'+ 'Finished' +'</span>';
+                        }
                         var stringProname = "";
                         if(SV.proname.length > 20) {
                           stringProname = SV.proname.substring(0,20) + "...";
@@ -39,7 +47,7 @@
                                   </div>\
                                   <p style="font-size: 11px;"><span class="price">Best price in time: {{this.priceAuction}}'+ SV.priceAuction +'</span> </p>\
                                   <p style="font-size: 10px; color: blue">['+ SV.soluotdaugia +' turn]</p>\
-                                  <p style="font-size: 13px;">Auction End in {{this.sogiay}}'+ SV.sogiay +' Second</p>\
+                                  <p class="DateEnd" style="font-size: 13px;"> '+ StrigResulfHTML +'</p>\
                                   <input class="idText" type="hidden" name="id" value="'+ SV.proid +'">\
                                   <hr class="line">\
                                   <div class="row">\
@@ -64,6 +72,7 @@
                 },
                 complete: function () {
                   $.getScript("/js/PopupMessageClick.js");
+                  $.getScript("/js/countDownt.js");
                 }
             });
       });
@@ -82,6 +91,15 @@
                     ul.html("");
                     if(res.length > 0) {
                       res.forEach(function (SV) {
+                      var StrigResulfHTML = '';
+                      var x = new Date(SV.sogiay);
+                      var y = new Date();
+                      if(x > y){
+                          StrigResulfHTML = '<span class="countdown" style="color:blue;" data-countdown="'+ SV.sogiay +'">'+ SV.sogiay +'</span>';
+                      } else {
+                          StrigResulfHTML = '<span class="countdown" style="color:red;" >'+ 'Finished' +'</span>';
+                      }
+
                       var stringProname = "";
                       if(SV.proname.length > 20) {
                         stringProname = SV.proname.substring(0,20);
@@ -100,7 +118,7 @@
                                 </div>\
                                 <p style="font-size: 11px;"><span class="price">Best price in time: {{this.priceAuction}}'+ SV.priceAuction +'</span> </p>\
                                 <p style="font-size: 10px; color: blue">['+ SV.soluotdaugia +' turn]</p>\
-                                <p style="font-size: 13px;">Auction End in {{this.sogiay}}'+ SV.sogiay +' Second</p>\
+                                <p class="DateEnd" style="font-size: 13px;"> '+ StrigResulfHTML +'</p>\
                                 <input class="idText" type="hidden" name="id" value="'+ SV.proid +'">\
                                 <hr class="line">\
                                 <div class="row">\
@@ -125,6 +143,7 @@
                 },
                 complete: function () {
                   $.getScript("/js/PopupMessageClick.js");
+                  $.getScript("/js/countDownt.js");
                 }
             });
       });
@@ -143,6 +162,14 @@
                     ul.html("");
                   if(res.length > 0) {
                     res.forEach(function (SV) {
+                      var StrigResulfHTML = '';
+                      var x = new Date(SV.sogiay);
+                      var y = new Date();
+                      if(x > y){
+                          StrigResulfHTML = '<span class="countdown" style="color:blue;" data-countdown="'+ SV.sogiay +'">'+ SV.sogiay +'</span>';
+                      } else {
+                          StrigResulfHTML = '<span class="countdown" style="color:red;" >'+ 'Finished' +'</span>';
+                      }
                       var stringProname = "";
                       if(SV.proname.length > 20) {
                         stringProname = SV.proname.substring(0,20);
@@ -161,7 +188,7 @@
                                 </div>\
                                 <p style="font-size: 11px;"><span class="price">Best price in time: {{this.priceAuction}}'+ SV.priceAuction +'</span> </p>\
                                 <p style="font-size: 10px; color: blue">['+ SV.soluotdaugia +' turn]</p>\
-                                <p style="font-size: 13px;">Auction End in {{this.sogiay}}'+ SV.sogiay +' Second</p>\
+                                <p class="DateEnd" style="font-size: 13px;"> '+ StrigResulfHTML +'</p>\
                                 <input class="idText" type="hidden" name="id" value="'+ SV.proid +'">\
                                 <hr class="line">\
                                 <div class="row">\
@@ -185,6 +212,7 @@
                 },
                 complete: function () {
                   $.getScript("/js/PopupMessageClick.js"); // loading lai khoi javascript nay khi hoan thanh
+                  $.getScript("/js/countDownt.js");
                 }
             });
       });

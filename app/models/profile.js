@@ -64,11 +64,42 @@ var profile = {
     });
     return d.promise;
   },
-  productAuc: function (id, start, end) {
-
+  getHistoryaucbyID: function (id) {
+    // ta se ghi lai lich su bid cua 1 id nao do trong bang bidhistory
+    var d = q.defer();
+    var sql = 'select * from bidhistory where userid = ?';
+    db.query(sql, [id], function (error, results) {
+      if (error){
+        d.reject(error);
+      }
+      d.resolve(results);
+    });
+    return d.promise;
   },
-  victory: function (id, start, end) {
-
+  getHistoryaucbylimitID: function (id, start, end) {
+    // xuat thong tin san pham va gia da bid
+    // 1 duong link den san pham (proid)
+    // ten san pham (proname)
+    // thoi gian ket thuc san pham (TIMESTAMPDIFF(Second , now() , b.datefinish))
+    // thoi gian bid (timebid)
+    // gia da bid luc do (price)
+    //
+    var d = q.defer();
+    var sql = 'select b.image1, b.proid, b.proname, \
+            Case \
+            when TIMESTAMPDIFF(Second , now() , b.datefinish)  > 0 then b.datefinish\
+            when TIMESTAMPDIFF(Second , now() , b.datefinish) <= 0 then \'This Finish\'\
+            end as thoigian, a.timebid, a.price\
+            from dackweb.bidhistory a, dackweb.product b \
+            where a.productid = b.proid and a.userid = ?\
+            LIMIT ?, ?;';
+    db.query(sql, [id, start, end], function (error, results) {
+      if (error){
+        d.reject(error);
+      }
+      d.resolve(results);
+    });
+    return d.promise;
   }
 }
 

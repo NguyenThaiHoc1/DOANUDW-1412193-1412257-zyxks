@@ -10,7 +10,7 @@ var home = {
                 limit 0, 5;\
                 ';
       */
-      var sql = 'select b.image1, b.proid, b.proname, b.tinydes, TIMESTAMPDIFF(Second , now() , b.datefinish) sogiay,\
+      var sql = 'select b.image1, b.proid, b.proname, b.tinydes, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\') sogiay,\
                   case\
                             when a.price is null then b.startprice \
                             when a.price is not null then a.price\
@@ -32,8 +32,8 @@ var home = {
                                                  where history.productid = b.proid\
                                                  group by history.productid)\
                   end as soluotdaugia\
-                  from bidhistory a right join product b on a.productid = b.proid\
-                  and not exists (\
+                  from bidhistory a right join product b on a.productid = b.proid, dackweb.category cato\
+                  where b.catid = cato.catid and cato.active = 1 and not exists (\
                               select *\
                                           from bidhistory c\
                               where c.productid = a.productid\
@@ -69,7 +69,7 @@ var home = {
                   order by count(*) DESC\
                   limit 0, 5;';
       */
-      var sql = 'select b.image1, b.proid, b.proname, b.tinydes, TIMESTAMPDIFF(Second , now() , b.datefinish) sogiay,\
+      var sql = 'select b.image1, b.proid, b.proname, b.tinydes, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\') sogiay,\
                   case\
                             when a.price is null then b.startprice \
                             when a.price is not null then a.price\
@@ -91,8 +91,8 @@ var home = {
                                                  where history.productid = b.proid\
                                                  group by history.productid)\
                   end as soluotdaugia\
-                  from bidhistory a right join product b on a.productid = b.proid\
-                  and not exists (\
+                  from bidhistory a right join product b on a.productid = b.proid, dackweb.category cato\
+                  where b.catid = cato.catid and cato.active = 1 and not exists (\
                               select *\
                                           from bidhistory c\
                               where c.productid = a.productid\
@@ -137,7 +137,7 @@ var home = {
                 limit 0, 5;\
                 ';
       */
-      var sql = 'select b.image1, b.proid, b.proname, b.tinydes, TIMESTAMPDIFF(Second , now() , b.datefinish) sogiay,\
+      var sql = 'select b.image1, b.proid, b.proname, b.tinydes, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\') sogiay,\
                   case\
                             when a.price is null then b.startprice \
                             when a.price is not null then a.price\
@@ -159,8 +159,8 @@ var home = {
                                                  where history.productid = b.proid\
                                                  group by history.productid)\
                   end as soluotdaugia\
-                  from bidhistory a right join product b on a.productid = b.proid\
-                  and not exists (\
+                  from bidhistory a right join product b on a.productid = b.proid, dackweb.category cato\
+                  where b.catid = cato.catid and cato.active = 1 and not exists (\
                               select *\
                                           from bidhistory c\
                               where c.productid = a.productid\
@@ -185,7 +185,7 @@ var home = {
     },
     getCatogory: function () {
       var d = q.defer();
-      var sql = 'select catid, catname from category;';
+      var sql = 'select catid, catname from category where active = 1;';
       db.query(sql, function (error, results) {
         if (error){
           d.reject(error);
