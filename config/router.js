@@ -10,6 +10,13 @@ module.exports = function(app) {
 
     app.get("/item/:id", index.item.loadWithID);
 
+    app.post("/item/:id/comments", checking.isLoggedIn, index.item.addComment);
+
+    app.post("/item/:id/send_email_confirm_bid", checking.isLoggedIn, index.item.sendEmailConfirmBid);
+
+    app.post("/item/:id/bid", checking.isLoggedIn, index.item.bid);
+
+
     app.get("/register", checking.isLoggedLong, index.user.registerPage);
 
     app.get("/about", index.about.Defaultpage);
