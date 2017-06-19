@@ -4,7 +4,7 @@ var q = require('q');
 var catogory = {
     getCatogory: function() {
         var d = q.defer();
-        var sql = 'select catid, catname from category;';
+        var sql = 'select catid, catname from category where active = 1;';
         db.query(sql, function(error, results) {
             if (error) {
                 d.reject(error);
@@ -15,7 +15,7 @@ var catogory = {
     },
     findCatogoryID: function(id) {
         var d = q.defer();
-        var sql = 'select * from product where catid = ?';
+        var sql = 'select * from product a, category b where a.catid = b.catid and a.catid = ? and b.active = 1;';
         db.query(sql, [id], function(error, results) {
             if (error) {
                 d.reject(error);
@@ -53,8 +53,8 @@ var catogory = {
                           															 where history.productid = b.proid\
                           															 group by history.productid)\
                           end as soluotdaugia\
-                          from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid\
-                          where b.catid = ?\
+                          from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid, dackweb.category cato\
+                          where b.catid = ? and b.catid = cato.catid and cato.active = 1\
                           and not exists (\
                           						select *\
                                                   from dackweb.bidhistory c\
@@ -101,8 +101,8 @@ var catogory = {
                           															 where history.productid = b.proid\
                           															 group by history.productid)\
                           end as soluotdaugia\
-                          from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid\
-                          where b.catid = ?\
+                          from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid, dackweb.category cato\
+                          where b.catid = ? and b.catid = cato.catid and cato.active = 1\
                           and not exists (\
                           						select *\
                                                   from dackweb.bidhistory c\
@@ -144,8 +144,8 @@ var catogory = {
                           															 where history.productid = b.proid\
                           															 group by history.productid)\
                           end as soluotdaugia\
-                          from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid\
-                          where b.catid = ?\
+                          from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid, dackweb.category cato\
+                          where b.catid = ? and b.catid = cato.catid and cato.active = 1\
                           and not exists (\
                           						select *\
                                                   from dackweb.bidhistory c\

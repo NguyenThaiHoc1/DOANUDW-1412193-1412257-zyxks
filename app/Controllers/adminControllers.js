@@ -126,17 +126,8 @@ var adminControllers = {
           categories: categories_rows,
           layout: false
         }
-        res.render("_admin/admin", vm); 
-      });
-      /*
-      adminDB.FindSellRequest().then(function(rows) {
-        var vm = {
-          users: rows,
-          layout: false
-        }
         res.render("_admin/admin", vm);
       });
-      */
     };
   },
 };

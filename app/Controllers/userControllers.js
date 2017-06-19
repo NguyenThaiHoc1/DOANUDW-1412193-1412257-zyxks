@@ -91,14 +91,19 @@ var userController = {
               var fullname = rows[0].f_Name.split(' ');
               var Firstname = fullname[0];
               var Lastname = fullname[1];
-              // username, password, first_name, last_name, email, address, day, permission
-              var newuser = new objectUser(rows[0].f_ID, rows[0].f_Username, rows[0].f_Password, Firstname, Lastname, rows[0].f_Email, rows[0].f_Address, rows[0].f_DOB, rows[0].f_Permission, rows[0].positiverating, rows[0].negativerating, rows[0].f_ImageUrl, rows[0].f_deadlineseller);
-              if(newuser.validPassword(req.body.password)) {
-                  req.session.user = newuser;
-                  res.redirect("/profile");
-              }else {
-                req.flash("messagesFail", "LogIn is fail !!!");
+              var accessadmin = rows[0].accessadmin;
+              if(accessadmin == 0){
+                req.flash("messagesFail", "Account is Locked");
                 res.redirect("/login");
+              } else {
+                var newuser = new objectUser(rows[0].f_ID, rows[0].f_Username, rows[0].f_Password, Firstname, Lastname, rows[0].f_Email, rows[0].f_Address, rows[0].f_DOB, rows[0].f_Permission, rows[0].positiverating, rows[0].negativerating, rows[0].f_ImageUrl, rows[0].f_deadlineseller);
+                if(newuser.validPassword(req.body.password)) {
+                    req.session.user = newuser;
+                    res.redirect("/profile");
+                }else {
+                  req.flash("messagesFail", "LogIn is fail !!!");
+                  res.redirect("/login");
+                }
               }
             }
             else {

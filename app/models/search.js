@@ -3,7 +3,7 @@ var q = require('q');
 var search = {
   getCatogory: function () {
     var d = q.defer();
-    var sql = 'select catid, catname from category;';
+    var sql = 'select catid, catname from category where active = 1;';
     db.query(sql, function (error, results) {
       if (error){
         d.reject(error);
@@ -16,7 +16,7 @@ var search = {
     var d = q.defer();
     var sql = '';
     if(object.catogory == 0){
-      sql = 'select * from product a, category b where a.catid = b.catid and proname LIKE ?';
+      sql = 'select * from product a, category b where a.catid = b.catid and proname LIKE ? and b.active = 1;';
       db.query(sql,['%' + object.searchinput + '%'], function (error, results) {
         if (error){
           d.reject(error);
@@ -26,7 +26,7 @@ var search = {
       return d.promise;
     }
     else {
-      sql = 'select * from product a, category b where a.catid = b.catid and a.catid = ? and a.proname LIKE ?;';
+      sql = 'select * from product a, category b where a.catid = b.catid and a.catid = ? and a.proname LIKE ? and b.active = 1;';
       db.query(sql, [object.catogory, '%' + object.searchinput + '%'], function (error, results) {
         if (error){
           d.reject(error);
@@ -38,7 +38,7 @@ var search = {
   },
   getRowPro: function () {
     var d = q.defer();
-    var sql = 'select count(*) from product'
+    var sql = 'select count(*) from product a, category b where a.catid = b.catid and b.active = 1;'
     connection.query(sql, function(err, results) {
           if (err){
            d.reject(err);
@@ -74,8 +74,8 @@ var search = {
                     															 where history.productid = b.proid\
                     															 group by history.productid)\
                     end as soluotdaugia\
-                    from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid\
-                    where b.proname LIKE ?\
+                    from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid, dackweb.category cato\
+                    where b.proname LIKE ? and b.catid = cato.catid and cato.active = 1\
                     and not exists (\
                     						select *\
                                             from dackweb.bidhistory c\
@@ -118,8 +118,8 @@ var search = {
                     															 where history.productid = b.proid\
                     															 group by history.productid)\
                     end as soluotdaugia\
-                    from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid\
-                    where b.catid = ? and b.proname LIKE ?\
+                    from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid, dackweb.category cato\
+                    where b.catid = ? and b.proname LIKE ? and b.catid = cato.catid and cato.active = 1\
                     and not exists (\
                     						select *\
                                             from dackweb.bidhistory c\
@@ -165,8 +165,8 @@ var search = {
                     															 where history.productid = b.proid\
                     															 group by history.productid)\
                     end as soluotdaugia\
-                    from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid\
-                    where b.proname LIKE ?\
+                    from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid, dackweb.category cato\
+                    where b.proname LIKE ? and b.catid = cato.catid and cato.active = 1\
                     and not exists (\
                     						select *\
                                             from dackweb.bidhistory c\
@@ -205,8 +205,8 @@ var search = {
                     															 where history.productid = b.proid\
                     															 group by history.productid)\
                     end as soluotdaugia\
-                    from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid\
-                    where b.catid = ? and b.proname LIKE ?\
+                    from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid, dackweb.category cato\
+                    where b.catid = ? and b.proname LIKE ? and b.catid = cato.catid and cato.active = 1\
                     and not exists (\
                     						select *\
                                             from dackweb.bidhistory c\
@@ -247,8 +247,8 @@ var search = {
                     															 where history.productid = b.proid\
                     															 group by history.productid)\
                     end as soluotdaugia\
-                    from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid\
-                    where b.proname LIKE ?\
+                    from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid, dackweb.category cato\
+                    where b.proname LIKE ? and b.catid = cato.catid and cato.active = 1\
                     and not exists (\
                     						select *\
                                             from dackweb.bidhistory c\
@@ -302,7 +302,7 @@ var search = {
                     															 group by history.productid)\
                     end as soluotdaugia\
                     from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid\
-                    where b.catid = ? and b.proname LIKE ?\
+                    where b.catid = ? and b.proname LIKE ? and b.catid = cato.catid and cato.active = 1, dackweb.category cato\
                     and not exists (\
                     						select *\
                                             from dackweb.bidhistory c\

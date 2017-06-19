@@ -16,7 +16,7 @@ var user = {
   },
   findbyUserName: function (username) {
     var d = q.defer();
-    var sql = 'select * from user where f_Username = ?';
+    var sql = 'select * from user where f_Username = ? and f_Permission != \'admin\';';
     db.query(sql, [username],function (error, results) {
       if (error){
         d.reject(error);

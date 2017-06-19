@@ -104,7 +104,7 @@
                         </tr>
                         {{/each}}
                       </tbody>
-                      
+
                     </table>
                   </div>
 
@@ -135,12 +135,12 @@
                             <td>
                               <button class="btn btn-warning" type="submit">Khóa</button>
                               <input type="text" value="{{f_username}}" style="display:none" name="f_Username">
-                            
+
                           {{else}}
                             <td>
                               <button class="btn btn-success" type="submit">Mở khóa</button>
                               <input type="text" value="{{f_username}}" style="display:none" name="f_Username">
-                            
+
                           {{/if}}
                           </form>
                           <form class="resetpassword" action="/resetpassword" method="get">
@@ -151,7 +151,7 @@
                         </tr>
                         {{/each}}
                       </tbody>
-                      
+
                     </table>
                   </div>
 
@@ -211,7 +211,7 @@
         <h4 class="modal-title" id="editCategoryLabel"></h4>
       </div>
       <div class="modal-body">
-        
+
     <form action="/editcategoryname" method="get">
       <input type="text" name="f_New_Catname">
       <input type="text" name="f_Old_Catname" id="f_Old_Catname" style="display:none">
@@ -232,12 +232,12 @@
     $('#table2').DataTable();
     $('#table3').DataTable();
     $('.resetpassword').submit(function() {
-      var c = confirm("Bạn có chắc muốn reset mật khẩu của tài khoản " + 
+      var c = confirm("Bạn có chắc muốn reset mật khẩu của tài khoản " +
         $(this).find('input').first().attr('value') + " ? Tài khoản này sẽ bị mất tài khoản cũ và thay bằng một chuỗi ký tự ngẫu nhiên.");
       return c;
     });
     $('.editModal').click(function() {
-      
+
       $('#editCategoryLabel').html('Sửa tên danh mục ' + $(this).attr('catname'));
       $('#f_Old_Catname').attr('value', $(this).attr('catname'));
       $('#editCategory').modal();
