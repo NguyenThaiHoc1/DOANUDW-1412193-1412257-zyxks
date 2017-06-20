@@ -1,4 +1,3 @@
-var userDB = require("../models/user.js");
 var adminDB = require("../models/admin.js");
 var querystring = require('querystring');
 var Qs = require('q');
@@ -19,7 +18,7 @@ var adminControllers = {
         req.flash("messagesFail", "LogIn is fail !!!");
         res.redirect("/admin");
       } else {
-        userDB.findbyUserName(req.body.fusername).then(function (rows) {
+        adminDB.FindAccByUsername(req.body.fusername).then(function (rows) {
             if(rows.length > 0) {
               var fullname = rows[0].f_Name.split(' ');
               var Firstname = fullname[0];
@@ -52,6 +51,8 @@ var adminControllers = {
       return;
     }
     adminDB.AcceptSellRequest(req.query.f_Username).then(function (rows) {
+      req.session.user.Deadlineseller = rows[0]['f_deadlineseller'];
+      req.session.user.Permission = 'seller';
       res.redirect('/admin');
     });
   },

@@ -14,24 +14,35 @@ var currentPage = 1;
 
 var profileController = {
   Defaultpage : function (req, res) {
-    res.render("_profile/profiletest", {
-        user: req.session.user,
-        successMess : res.locals.Success,
-        FailMess : res.locals.Fail,
-        layout: "applicationnoHeader", // layout for profile Page
-        helpers: {
-          foo: function (Permission, days) {
-            if(Permission === 'user'){
-              return new handle.SafeString('');
-            } else {
-              var html = '';
-              html += '<p>\
-              Expired time: <strong><em>'+ days +'</em></strong>\
-              </p>'
-              return new handle.SafeString(html);
-            }
+    var username = req.session.user.Username;
+    var expireDate = req.session.user.Deadlineseller;
+    var permission = req.session.user.Permission;
+    Qs.all([profileDb.isWaitingForPermission(username), profileDb.isDenied(username)])
+      .spread(function (rslt1, rslt2) {
+        var currentTime = new Date();
+        expireDate = new Date(Date.parse(expireDate));
+        var isUser = (permission === 'user') ? 1 : 0;
+        var isExpired = (expireDate !== undefined && currentTime > expireDate) ? 1 : 0;
+        var isWaitingForPermission = rslt1;
+        var isDenied = rslt2;
+        res.render("_profile/profiletest", {
+          user: req.session.user,
+          successMess : res.locals.Success,
+          FailMess : res.locals.Fail,
+
+          username: username,
+          expireDate: expireDate,
+          isUser: isUser,
+          isExpired: isExpired,
+          isWaitingForPermission: rslt1,
+          isDenied: rslt2,
+          isAbleToRequest: ((isUser || isExpired) && !rslt1),
+
+          layout: "applicationnoHeader", // layout for profile Page
+          helpers: {
+            foo: function(a,b) {}
           }
-        }
+        });
     });
   },
   wishlistUserPage : function (req, res) {

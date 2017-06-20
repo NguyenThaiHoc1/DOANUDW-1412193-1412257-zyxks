@@ -100,6 +100,27 @@ var profile = {
       d.resolve(results);
     });
     return d.promise;
+  },
+  isWaitingForPermission: function(username) {
+    var d = q.defer();
+    var sql = "select * from sellrequest,user where f_id=f_id_user and f_username=? and f_result is null";
+    db.query(sql, [username], function(err, rslt) {
+      if (err)
+        d.reject(err);
+      d.resolve(rslt.length);
+    })
+    return d.promise;
+  },
+  isDenied: function(username) {
+    var d = q.defer();
+    var sql = "select * from sellrequest,user where f_id=f_id_user and f_username=? order by f_time desc";
+    db.query(sql, [username], function(err, rslt) {
+      if (err)
+        d.reject(err);
+      var realResult = (rslt[0]['f_Result'] !== null && rslt[0]['f_Result'] == 0)
+      d.resolve(realResult);
+    })
+    return d.promise;
   }
 }
 

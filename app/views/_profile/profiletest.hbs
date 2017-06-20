@@ -23,6 +23,27 @@
                 <div class="bs-callout bs-callout-danger" style="text-align:center;">
                     {{> profileAbout}}
                     {{> profile_ChangeInfomation}}
+                    <br/>
+                    {{#if expireDate}}
+                      <p>
+                        Expire time: <strong><em>{{expireDate}}</em></strong>
+                      </p>
+                    {{/if}}
+                    {{#if isExpired}}
+                      <p>Đã hết hạn đăng tin đấu giá!</p>
+                    {{/if}}
+                    {{#if isWaitingForPermission}}
+                      <p>Đang chờ quản trị duyệt yêu cầu đăng đấu giá.</p>
+                    {{/if}}
+                    {{#if isDenied}}
+                      <p>Quản trị đã từ chối yêu cầu đăng đấu giá.</p>
+                    {{/if}}
+                    {{#if isAbleToRequest}}
+                      <form action='/requestselling' method='get'>
+                        <button class='btn btn-success' type='submit'>Gia hạn bán hàng trong vòng 7 ngày!</button>
+                        <input type='text' style='display:none' name='f_Username' value='{{username}}'>
+                      </form>
+                    {{/if}}
                  </div>
                  <hr class="line">
               </div>

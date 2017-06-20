@@ -193,6 +193,15 @@ var userController = {
         })
     }
   },
+  requestSelling: function(req, res) {
+    if (req.session.user === undefined) {
+      res.redirect("/");
+      return;
+    }
+    userDB.RequestSelling(req.query.f_Username).then(function (rows) {
+      res.redirect('/profile');
+    });
+  },
   testingCallback: function (req, res, next) {
       Qs.all([userDB.Testing1(), userDB.Testing2()]).spread(function (a, b) {
           console.log(a);
