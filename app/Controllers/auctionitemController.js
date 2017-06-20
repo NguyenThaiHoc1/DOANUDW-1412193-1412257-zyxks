@@ -57,12 +57,12 @@ var auctionitemController = {
         var transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
-                user: 'thaihocmap123@gmail.com',
-                pass: ''
+                user: 'dackweb0@gmail.com',
+                pass: 'wtf935730'
             }
         });
         var mailOptions = {
-            from: 'thaihocmap123@gmail.com',
+            from: 'dackweb0@gmail.com',
             to: email,
             subject: 'Confirm Bid Price',
             text: 'You bid \"'+'{{name}}'+'\"\nWith price '+price+'\nClick link below to confirm:\n' +

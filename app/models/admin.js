@@ -5,6 +5,17 @@ var randstr = require("randomstring");
 var bcrypt = require('bcrypt-nodejs');
 
 var admin = {
+  FindAccByUsername: function(username) {
+    var d = q.defer();
+    var sql = "select * from user where f_Username = ? and f_Permission = 'admin'";
+    db.query(sql, [username],function (error, results) {
+      if (error){
+        d.reject(error);
+      }
+      d.resolve(results);
+    });
+    return d.promise;
+  },
   FindSellRequest: function() {
     var d = q.defer();
     var sql = "select f_username,f_email,f_name,positiverating,negativerating,DATE_FORMAT(f_time,'%d/%m/%Y %H:%i:%s') as f_time \
@@ -60,8 +71,13 @@ var admin = {
       db.query(sql, [username], function (err,rslt) {
         if (err)
           d.reject(err);
+        sql = "select * from user where f_username=?"
+        db.query(sql, [username], function (err0,rslt0) {
+          if (err0)
+            d.reject(err0);
+          d.resolve(rslt0);
+        })
       })
-      d.resolve(rslt);
     });
     return d.promise;
   },

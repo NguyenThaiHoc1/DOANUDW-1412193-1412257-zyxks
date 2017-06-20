@@ -45,6 +45,8 @@ module.exports = function(app) {
 
     app.post("/changepassword", index.user.changepassword);
 
+    app.get("/requestselling", index.user.requestSelling);
+
     app.get("/timkiem", index.search.searchMenuPage);
 
     app.get("/danhmuc", index.catogory.searchCatogory);
