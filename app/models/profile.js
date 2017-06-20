@@ -117,7 +117,10 @@ var profile = {
     db.query(sql, [username], function(err, rslt) {
       if (err)
         d.reject(err);
-      var realResult = (rslt[0]['f_Result'] !== null && rslt[0]['f_Result'] == 0)
+      var realResult = false;
+      if (rslt.length > 0) {
+        var realResult = (rslt[0]['f_Result'] !== null && rslt[0]['f_Result'] == 0)
+      }
       d.resolve(realResult);
     })
     return d.promise;
