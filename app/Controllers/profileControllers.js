@@ -1,6 +1,7 @@
 var profileDb = require("../models/profile.js");
 var Qs = require("q");
 var handle = require('handlebars'); // --- module mới dùng để xử lý helpers
+var objectUser = require("../Object/userObject.js");
 
 var totalRec = 0,
 
@@ -17,27 +18,36 @@ var profileController = {
     var username = req.session.user.Username;
     var expireDate = req.session.user.Deadlineseller;
     var permission = req.session.user.Permission;
-    Qs.all([profileDb.isWaitingForPermission(username), profileDb.isDenied(username)])
-      .spread(function (rslt1, rslt2) {
+    Qs.all([profileDb.isWaitingForPermission(username), profileDb.isDenied(username), profileDb.findbyUserName(username)])
+      .spread(function (rslt1, rslt2, temp3) {
         var currentTime = new Date();
         expireDate = new Date(Date.parse(expireDate));
         var isUser = (permission === 'user') ? 1 : 0;
         var isExpired = (expireDate !== undefined && currentTime > expireDate) ? 1 : 0;
         var isWaitingForPermission = rslt1;
-        var isDenied = rslt2;
+        var isDenied = undefined;
+
+        if(rslt2.length > 0) {
+          isDenied = (!(rslt2[0]['f_Result'] !== null && rslt2[0]['f_Result'] == 0) ) ? undefined : true;
+        }
+
+        var fullname = temp3[0].f_Name.split(' ');
+        var Firstname = fullname[0];
+        var Lastname = fullname[1];
+        var newuser = new objectUser(temp3[0].f_ID, temp3[0].f_Username, temp3[0].f_Password, Firstname, Lastname, temp3[0].f_Email, temp3[0].f_Address, temp3[0].f_DOB, temp3[0].f_Permission, temp3[0].positiverating, temp3[0].negativerating, temp3[0].f_ImageUrl, temp3[0].f_deadlineseller);
+        req.session.user = newuser;
+
         res.render("_profile/profiletest", {
           user: req.session.user,
           successMess : res.locals.Success,
           FailMess : res.locals.Fail,
-
           username: username,
           expireDate: expireDate,
           isUser: isUser,
           isExpired: isExpired,
           isWaitingForPermission: rslt1,
-          isDenied: rslt2,
+          isDenied: isDenied,
           isAbleToRequest: ((isUser || isExpired) && !rslt1),
-
           layout: "applicationnoHeader", // layout for profile Page
           helpers: {
             foo: function(a,b) {}

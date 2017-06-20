@@ -51,8 +51,6 @@ var adminControllers = {
       return;
     }
     adminDB.AcceptSellRequest(req.query.f_Username).then(function (rows) {
-      req.session.user.Deadlineseller = rows[0]['f_deadlineseller'];
-      req.session.user.Permission = 'seller';
       res.redirect('/admin');
     });
   },

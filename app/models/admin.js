@@ -89,7 +89,7 @@ var admin = {
         d.reject(err);
       var changedstate = (rslt[0]['active']===1) ? 0 : 1;
       //console.log(rslt[0]['active'].active);
-      sql = "update category set active=" + changedstate + 
+      sql = "update category set active=" + changedstate +
         " where catname=?"
       db.query(sql, [catname], function (err, rslt) {
         if (err)
@@ -126,8 +126,8 @@ var admin = {
       if (err || rslt.length==0)
         d.reject(err);
       var changedstate = (rslt[0]['accessadmin']===1) ? 0 : 1;
-      
-      sql = "update user set accessadmin=" + changedstate + 
+
+      sql = "update user set accessadmin=" + changedstate +
         " where f_username=?"
       db.query(sql, [username], function (err, rslt) {
         if (err)
