@@ -30,8 +30,8 @@ var auctionitemController = {
         bidhistory : temp6,
         comment : temp7,
         maxbidandstep : temp8,
-        isTimeNotAvailable: isTimeNotAvailable,
-        isRatingNotAvailable: isRatingNotAvailable
+        isTimeNotAvailable: (isTimeNotAvailable === true) ? undefined : isTimeNotAvailable,
+        isRatingNotAvailable: (isRatingNotAvailable === true) ? undefined : isRatingNotAvailable
       });
     });
   },
@@ -57,12 +57,12 @@ var auctionitemController = {
         var transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
-                user: 'cainaykhongthat@gmail.com',
-                pass: 'matkhaucuamail'
+                user: 'thaihocmap123@gmail.com',
+                pass: ''
             }
         });
         var mailOptions = {
-            from: 'cainaykhongthat@gmail.com',
+            from: 'thaihocmap123@gmail.com',
             to: email,
             subject: 'Confirm Bid Price',
             text: 'You bid \"'+'{{name}}'+'\"\nWith price '+price+'\nClick link below to confirm:\n' +

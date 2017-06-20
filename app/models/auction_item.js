@@ -127,7 +127,7 @@ var item = {
   },
   getCatogory: function() {
       var d = q.defer();
-      var sql = 'select catid, catname from category;';
+      var sql = 'select catid, catname from category where active = 1;';
       db.query(sql, function(error, results) {
           if (error) {
               d.reject(error);

@@ -14,7 +14,7 @@ module.exports = function(app) {
 
     app.post("/item/:id/send_email_confirm_bid", checking.isLoggedIn, index.item.sendEmailConfirmBid);
 
-    app.post("/item/:id/bid", checking.isLoggedIn, index.item.bid);
+    app.get("/item/:id/bid", checking.isLoggedIn, index.item.bid);
 
 
     app.get("/register", checking.isLoggedLong, index.user.registerPage);
