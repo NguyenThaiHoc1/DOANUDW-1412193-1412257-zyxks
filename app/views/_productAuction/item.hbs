@@ -51,9 +51,16 @@
           {{else if isRatingNotAvailable}}
               <p>Positive rating occupy a low rate</p>
           {{else}}
-              <div class="btn-bid">
-                  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal" onclick="showSuggest({{maxbidandstep.maxprice}}, {{maxbidandstep.step}})">Bid Now</button>
-              </div>
+              <!-- Khuc nay minh se check-->
+              {{#if checkingSellerItem}}
+                <div class="btn-bid">
+                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#enquirypopup">Eliminate Buyer</button>
+                </div>
+              {{else}}
+                <div class="btn-bid">
+                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal" onclick="showSuggest({{maxbidandstep.maxprice}}, {{maxbidandstep.step}})">Bid Now</button>
+                </div>
+              {{/if}}
           {{/if}}
       {{else}}
           <div class="btn-bid">
@@ -64,6 +71,58 @@
               </a>
           </div>
       {{/if}}
+
+
+    <!-- Modal: thong ke danh sach-->
+    <div id="enquirypopup" class="modal fade in" role="dialog">
+       <div class="modal-dialog">
+         <!-- Modal content-->
+         <div class="modal-content row">
+           <div class="modal-header custom-modal-header">
+             <button type="button" class="close" data-dismiss="modal">×</button>
+             <h4 class="modal-title">Eliminate Buyer</h4>
+           </div>
+           <div class="modal-body">
+             <form action="/seller/updateDescription" method="post">
+               <div class="form-group">
+                 <table class="table table-hover table-bordered" id="table1">
+                   <thead>
+                     <tr>
+                       <th style="display:none;">UserID</th>
+                       <th>f_ImageUrl</th>
+                       <th>Username</th>
+                       <th>Name</th>
+                       <th>Positiverating</th>
+                       <th>Negativerating</th>
+                       <th>Date of create</th>
+                     </tr>
+                   </thead>
+                   <tbody class="mess">
+                     {{#each BuyerAuction}}
+                       <tr>
+                         <td class="idPro" valign="middle" align="center" style="display:none;">{{this.f_ID}}</td>
+                         <td class="name" valign="middle" align="center">
+                           <img src="{{this.f_ImageUrl}}" class="img-responsive img-box img-thumbnail" style="height: 100px; width: 100px;">
+                         </td>
+                         <td valign="middle" align="center">{{this.f_Username}}</td>
+                         <td valign="middle" align="center">{{this.f_Name}}</td>
+                         <td valign="middle" align="center">{{this.positiverating}}</td>
+                         <td valign="middle" align="center">{{this.negativerating}}</td>
+                         <td valign="middle" align="center">{{this.f_DOB}}</td>
+                       </tr>
+                     {{/each}}
+                   </tbody>
+                 </table>
+               </div>
+               <button type="submit" class="btn btn-primary" id="sentButton">Update</button>
+             </form>
+             <!-- dung jquery xu ly -->
+           </div>
+         </div>
+       </div>
+     </div>
+
+
     <!-- Modal -->
     <div class="modal fade" id="myModal" role="dialog">
       <div class="modal-dialog">
@@ -234,7 +293,7 @@
           </a>
           <p>Total items: {{sellertotalitems.totalitems}}</p>
           <br>
-          <a href="http://localhost:8080/timkiem?searchinput=&catogory=0">
+          <a href="/timkiem?searchinput=&catogory=0">
             <p>See other items of Web</p>
           </a>
           <br>
@@ -248,3 +307,4 @@
 <script src="/component/bootstrap3-dialog/dist/js/bootstrap-dialog.js"></script>
 <script src="/js/item.js"></script>
 <script src="/js/countdown.js"></script>
+<script src="/js/datatable.js"></script>

@@ -5,8 +5,10 @@ var Qs = require('q');
 var auctionitemController = {
   loadWithID : function (req, res) {
     var usersx;
+    var CheckedSellerItem;
     if(req.session.user === undefined) {
         usersx = undefined;
+        CheckedSellerItem = undefined;
     }else {
       usersx = (req.session.user.Permission === 'seller') ? true : undefined;
     }
@@ -26,9 +28,18 @@ var auctionitemController = {
       if (user){
           isRatingNotAvailable = user.Positiverating / (user.Negativerating + user.Positiverating) < 0.8;
       }
+      // item 1 giu ID thang ban nao ?
+
+      if (req.session.user !== undefined) {
+        if(req.session.user.IdUser === item.sellerid) {
+            CheckedSellerItem = true;
+        }
+      }
+    
       res.render("_productAuction/item", {
         user : user,
         checkingSeller: usersx,
+        checkingSellerItem: CheckedSellerItem,
         catogorylist : temp9,
         layout : "application",
         item : item,
