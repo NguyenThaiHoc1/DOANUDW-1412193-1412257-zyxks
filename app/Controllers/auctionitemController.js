@@ -82,7 +82,7 @@ var auctionitemController = {
             if (error) {
                 return console.log(error);
             }
-            console.log('Message %s sent: %s', info.messageId, info.response);
+            //console.log('Message %s sent: %s', info.messageId, info.response);
         });
     },
     bid: function (req, res) {
@@ -92,7 +92,7 @@ var auctionitemController = {
             var price = req.query.price;  // gia request gui
             var idUser = user.IdUser;
             var booleand = true;
-            auctionitemdb.loadHighestBuyerInfo(idUser).then(function (data) {
+            auctionitemdb.loadHighestBuyerInfo(idItem).then(function (data) {
                   if(data.length > 0){
                     var timebid=momment().format('YYYY/MM/DD H:mm:ss');
                     var priccGuess = (price - data[0].priceAuction);

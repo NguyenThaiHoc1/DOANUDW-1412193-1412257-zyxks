@@ -79,9 +79,9 @@ $("#btn-bid").click(function () {
     var bidStep = parseInt($("#bid-step").text());
     var bidWarning = $("#bid-warning");
     if (!isNaN(customPrice) && !useSuggerPrice){
-        if(customPrice<currentPrice){
+        if(customPrice<=currentPrice){
             bidWarning.show();
-            bidWarning.text("Custom price must be large current price")
+            bidWarning.text("Custom price must be larger current price")
             bidPrice = NaN;
         }
         else if((customPrice - currentPrice) % bidStep !== 0){
