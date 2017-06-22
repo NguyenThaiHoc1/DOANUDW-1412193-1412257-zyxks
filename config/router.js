@@ -63,25 +63,35 @@ module.exports = function(app) {
 
     app.post("/profile", index.user.changeInformation);
 
+    app.get("/admin", index.admin.Defaultpage);
 
-    // cai nay la test co the xoa
+    app.post("/admin", index.admin.adminLogin);
+
+    //admin functions
+
+    app.get("/acceptsellrequest", index.admin.acceptSellRequest);
+
+    app.get("/denysellrequest", index.admin.denySellRequest);
+
+    app.get("/changecategorystate", index.admin.changeCategoryState);
+
+    app.get("/addcategory", index.admin.addCategory);
+
+    app.get("/editcategoryname", index.admin.editCategoryName);
+
+    app.get("/changeuserstate", index.admin.changeUserState);
+
+    app.get("/resetpassword", index.admin.resetPassword);
+
+    // text cai nay la test co the xoa
     app.get("/popup", function (req, res) {
       res.render("testingPopup",{
         layout: "application"
       });
     })
 
-    app.get("/admin", index.admin.Defaultpage);
+    // dang lam ne
+    app.get("/testtingO",checking.isLoggedIn, checking.checkingSeller ,index.seller.Defaultpage); // trang nguoi ban
 
-    app.post("/admin", index.admin.adminLogin);
-
-    //admin functions
-    app.get("/acceptsellrequest", index.admin.acceptSellRequest);
-    app.get("/denysellrequest", index.admin.denySellRequest);
-    app.get("/changecategorystate", index.admin.changeCategoryState);
-    app.get("/addcategory", index.admin.addCategory);
-    app.get("/editcategoryname", index.admin.editCategoryName);
-    app.get("/changeuserstate", index.admin.changeUserState);
-    app.get("/resetpassword", index.admin.resetPassword);
-
+    app.post("/seller/updateDescription", index.seller.UpdateSellerDetail);
 }

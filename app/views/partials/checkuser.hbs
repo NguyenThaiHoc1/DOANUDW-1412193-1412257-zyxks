@@ -8,6 +8,10 @@
         <li><a href="/profile/wishlist"> <strong>Wishlist</strong> </a></li>
         <li><a href="/profile/historyauction"> <strong>History Auction</strong> </a></li>
         <li><a href="/profile/historyauction"> <strong>History Victory</strong> </a></li>
+        {{#if checkingSeller}}
+          <li><a href="/testtingO"> <strong>Manager Auction Posted</strong> </a></li>
+          <li><a href="#"> <strong>Post auction</strong> </a></li>
+        {{/if}}
         <li role="separator" class="divider"></li>
         <li><a href="/logout"> <strong>Log out</strong> </a></li>
     </ul>
@@ -18,8 +22,6 @@
     <ul class="dropdown-menu">
         <li><a href="/login"> <strong>Sign In</strong> </a></li>
         <li><a href="/register"> <strong>Sign Up</strong> </a></li>
-        <!-- <li><a href="/registerDauGia">Đăng đấu giá</a></li>
-        <li><a href="/profile">Profile</a></li> -->
     </ul>
 </li>
 {{/if}}

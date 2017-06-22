@@ -35,6 +35,7 @@
       <h2 id="item-name">{{item.proname}}</h2>
       <p>{{{item.fulldes}}}</p>
       <button id="addwishlist" type="button" class="btn btn-link watchlistItem" value="{{item.proid}}">Add to Wishlist</button>
+      {{> Checkerror}}
     </div>
     <div class="item-info">
       <div class="current-bid">
@@ -193,7 +194,13 @@
       <div class="owner-buyer">
         <div class="owner">
           <div class="owner-avatar">
-            <img src="http://placehold.it/150x150" alt="avatar" class="img-circle">
+            <div class="current-buyer-avatar">
+              {{#if seller}}
+                <img src="{{seller.f_ImageUrl}}" alt="avatar" class="img-circle" style="width: 150px; height: 150px;">
+              {{else}}
+                <img src="http://placehold.it/150x150" alt="avatar" class="img-circle">
+              {{/if}}
+            </div>
           </div>
           <div class="owner-username">
             <a href="#">
@@ -206,11 +213,15 @@
         </div>
         <div class="current-buyer">
           <div class="current-buyer-avatar">
-            <img src="http://placehold.it/150x150" alt="avatar" class="img-circle">
+            {{#if highesybuyerIMG}}
+              <img src="{{highesybuyerIMG}}" alt="avatar" class="img-circle" style="width: 150px; height: 150px;">
+            {{else}}
+              <img src="http://placehold.it/150x150" alt="avatar" class="img-circle">
+            {{/if}}
           </div>
           <div class="current-buyer-username">
             <a href="#">
-              <p><b>Current highest: {{highestbuyerid.f_Name}}</b></p>
+              <p><b>Current highest: {{highestbuyerid}}</b></p>
             </a>
           </div>
         </div>
@@ -223,8 +234,8 @@
           </a>
           <p>Total items: {{sellertotalitems.totalitems}}</p>
           <br>
-          <a href="#">
-            <p>See other items</p>
+          <a href="http://localhost:8080/timkiem?searchinput=&catogory=0">
+            <p>See other items of Web</p>
           </a>
           <br>
         </div>

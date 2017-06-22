@@ -26,6 +26,14 @@ var functionCheck = {
     }else {
       return next();
     }
+  },
+  checkingSeller : function (req, res, next) {
+    if (req.session.user.Permission !== 'seller'){
+      req.flash("messagesFail", "You have not Seller Privilege !");
+      res.redirect('/profile');
+    }else {
+      next();
+    }
   }
 }
 

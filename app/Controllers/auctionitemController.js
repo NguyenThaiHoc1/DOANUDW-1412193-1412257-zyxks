@@ -15,6 +15,8 @@ var auctionitemController = {
       var moment_finish = momment(item.datefinish);
       var isTimeNotAvailable = !(moment_post.isBefore(moment_now) && moment_now.isBefore(moment_finish));
       var isRatingNotAvailable = false;
+      var Stringresulf = (temp3.length > 0) ? temp3[0].f_Name : 'No Bid';
+      var StringUrlBuyerBest = (temp3.length > 0)  ? temp3[0].f_ImageUrl : undefined;
       if (user){
           isRatingNotAvailable = user.Positiverating / (user.Negativerating + user.Positiverating) < 0.8;
       }
@@ -24,7 +26,8 @@ var auctionitemController = {
         layout : "application",
         item : item,
         seller : temp2,
-        highestbuyerid : temp3,
+        highestbuyerid : Stringresulf,
+        highesybuyerIMG : StringUrlBuyerBest,
         sellertotalitems : temp4,
         totalPersonBid : temp5,
         bidhistory : temp6,
@@ -79,14 +82,43 @@ var auctionitemController = {
         var user = req.session.user;
         if (user){
             var idItem = req.params.id;
-            var price = req.query.price;
+            var price = req.query.price;  // gia request gui
             var idUser = user.IdUser;
-            var timebid=momment().format('YYYY/MM/DD H:mm:ss');
-            auctionitemdb.bid(idUser, idItem, price, timebid).then(function () {
-                return res.redirect('/item/'+idItem);
+            var booleand = true;
+            auctionitemdb.loadHighestBuyerInfo(idUser).then(function (data) {
+                  if(data.length > 0){
+                    var timebid=momment().format('YYYY/MM/DD H:mm:ss');
+                    var priccGuess = (price - data[0].priceAuction);
+                    if (priccGuess < 0) {
+                      booleand = false;
+                    } else if ( (priccGuess % data[0].step) !== 0) {
+                      booleand = false;
+                    } else {
+                      booleand = true;
+                    }
+                    if(booleand === true) {
+                      auctionitemdb.bid(idUser, idItem, price, timebid).then(function () {
+                          return res.redirect('/item/'+idItem);
+                      }).fail(function (err) {
+                          console.log(err);
+                          res.end('fail');
+                      });
+                    } else {
+                      req.flash("messagesFail", "Bid Price is not success ! Please try again");
+                      res.redirect("/item/" + idItem);
+                    }
+                  }else {
+                    var timebid=momment().format('YYYY/MM/DD H:mm:ss');
+                    auctionitemdb.bid(idUser, idItem, price, timebid).then(function () {
+                        return res.redirect('/item/'+idItem);
+                    }).fail(function (err) {
+                        console.log(err);
+                        res.end('fail');
+                    });
+                  }
             }).fail(function (err) {
-                console.log(err);
-                res.end('fail');
+              console.log(err);
+              res.end('fail');
             });
         }
         else{

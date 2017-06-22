@@ -40,6 +40,7 @@ var profileController = {
 
         res.render("_profile/profiletest", {
           user: req.session.user,
+          checkingSeller: (req.session.user.Permission === 'seller') ? true : undefined,
           successMess : res.locals.Success,
           FailMess : res.locals.Fail,
           username: username,

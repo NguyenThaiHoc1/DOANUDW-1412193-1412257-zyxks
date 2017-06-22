@@ -84,7 +84,7 @@ $("#btn-bid").click(function () {
             bidWarning.text("Custom price must be large current price")
             bidPrice = NaN;
         }
-        else if(customPrice % bidStep !== 0){
+        else if((customPrice - currentPrice) % bidStep !== 0){
             bidWarning.show();
             bidWarning.text("Custom price must be divisible by step")
             bidPrice = NaN;
@@ -97,8 +97,7 @@ $("#btn-bid").click(function () {
     console.log(bidPrice);
     if(!isNaN(bidPrice)){
         $('#myModal').modal('toggle');
-        BootstrapDialog.show(
-            {
+        BootstrapDialog.show({
             title: 'Notify',
             message: 'Your price is:  '+bidPrice+"\n We will send you a email to confirm",
             buttons: [

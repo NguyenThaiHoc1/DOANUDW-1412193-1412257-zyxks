@@ -22,7 +22,8 @@
     "eonasdan-bootstrap-datetimepicker": "^4.17.47",
     "jquery-validation": "^1.16.0",
     "jquery.countdown": "^2.2.0",
-     "moment-precise-range": "^1.0.1",
-     "bootstrap3-dialog": "bootstrap-dialog#^1.35.4"
+    "moment-precise-range": "^1.0.1",
+    "bootstrap3-dialog": "bootstrap-dialog#^1.35.4",
+    "tinymce": "tinymce-dist#^4.6.4"
   }
 }
