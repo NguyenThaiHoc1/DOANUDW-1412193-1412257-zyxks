@@ -33,6 +33,8 @@ var auctionitemController = {
         layout : "application",
         item : item,
         seller : temp2,
+        successMess : res.locals.Success,
+        FailMess : res.locals.Fail,
         highestbuyerid : Stringresulf,
         highesybuyerIMG : StringUrlBuyerBest,
         sellertotalitems : temp4,
@@ -105,6 +107,7 @@ var auctionitemController = {
                     }
                     if(booleand === true) {
                       auctionitemdb.bid(idUser, idItem, price, timebid).then(function () {
+                          req.flash("messagesSuccess", "Bid Price is successed");
                           return res.redirect('/item/'+idItem);
                       }).fail(function (err) {
                           console.log(err);
@@ -116,13 +119,26 @@ var auctionitemController = {
                     }
                   }else {
 
-                    var timebid=momment().format('YYYY/MM/DD H:mm:ss');
-                    auctionitemdb.bid(idUser, idItem, price, timebid).then(function () {
-                        return res.redirect('/item/'+idItem);
-                    }).fail(function (err) {
-                        console.log(err);
-                        res.end('fail');
+                    auctionitemdb.loadWithID(idItem).then(function (data) {
+                        if(price >= data.startprice) {
+                            var timebid=momment().format('YYYY/MM/DD H:mm:ss');
+                            auctionitemdb.bid(idUser, idItem, price, timebid).then(function () {
+                                req.flash("messagesSuccess", "Bid Price is successed");
+                                return res.redirect('/item/'+idItem);
+                            }).fail(function (err) {
+                                console.log(err);
+                                res.end('fail');
+                            });
+                        }else {
+                            req.flash("messagesFail", "Bid Price is not success ! Please try again");
+                            res.redirect("/item/" + idItem);
+                        }
+
+                    }).fail(function (error) {
+                      console.log(err);
+                      res.end('fail');
                     });
+
                   }
             }).fail(function (err) {
               console.log(err);
