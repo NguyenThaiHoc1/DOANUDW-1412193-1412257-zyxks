@@ -4,6 +4,12 @@ var Qs = require('q');
 
 var auctionitemController = {
   loadWithID : function (req, res) {
+    var usersx;
+    if(req.session.user === undefined) {
+        usersx = undefined;
+    }else {
+      usersx = (req.session.user.Permission === 'seller') ? true : undefined;
+    }
     var proId = req.params.id;
     Qs.all([auctionitemdb.loadWithID(proId), auctionitemdb.loadSellerInfo(proId), auctionitemdb.loadHighestBuyerInfo(proId), auctionitemdb.loadTotalItemSeller(proId),
                     auctionitemdb.loadTotalPersonBid(proId), auctionitemdb.loadBidHistory(proId), auctionitemdb.loadComment(proId),auctionitemdb.getMaxBidAndStep(proId)
@@ -22,7 +28,7 @@ var auctionitemController = {
       }
       res.render("_productAuction/item", {
         user : user,
-        checkingSeller: (req.session.user.Permission === 'seller') ? true : undefined,
+        checkingSeller: usersx,
         catogorylist : temp9,
         layout : "application",
         item : item,
@@ -109,6 +115,7 @@ var auctionitemController = {
                       res.redirect("/item/" + idItem);
                     }
                   }else {
+
                     var timebid=momment().format('YYYY/MM/DD H:mm:ss');
                     auctionitemdb.bid(idUser, idItem, price, timebid).then(function () {
                         return res.redirect('/item/'+idItem);
