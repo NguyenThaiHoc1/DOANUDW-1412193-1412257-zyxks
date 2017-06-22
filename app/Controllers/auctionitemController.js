@@ -35,7 +35,7 @@ var auctionitemController = {
             CheckedSellerItem = true;
         }
       }
-    
+
       res.render("_productAuction/item", {
         user : user,
         checkingSeller: usersx,
