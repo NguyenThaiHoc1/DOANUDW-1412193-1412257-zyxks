@@ -122,6 +122,7 @@ var userController = {
   getchangepassword: function (req, res) {
     res.render("_Users/changepassword", {
       user: req.session.user,
+      checkingSeller: (req.session.user.Permission === 'seller') ? true : undefined,
       successMess : res.locals.Success,
       FailMess : res.locals.Fail,
       layout: "applicationnoHeader"

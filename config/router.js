@@ -16,7 +16,6 @@ module.exports = function(app) {
 
     app.get("/item/:id/bid", checking.isLoggedIn, index.item.bid);
 
-
     app.get("/register", checking.isLoggedLong, index.user.registerPage);
 
     app.get("/about", index.about.Defaultpage);

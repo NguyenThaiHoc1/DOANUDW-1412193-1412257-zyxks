@@ -37,6 +37,7 @@ var catogoryController = {
                 var  breachcumGen = (req.query.danhmuc == 0) ? "All Catogory" : temp2[parseInt(req.query.danhmuc) - 1].catname;
                 res.render("_productAuction/SPDAUGIA", {
                   user: req.session.user,
+                  checkingSeller: (req.session.user.Permission === 'seller') ? true : undefined,
                   layout : "application",
                   catogorylist : temp2,
                   productlist : data,

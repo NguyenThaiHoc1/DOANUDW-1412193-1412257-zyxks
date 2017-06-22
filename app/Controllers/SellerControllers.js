@@ -14,6 +14,7 @@ var sellerController = {
     Qs.all([sellerDB.GetAuctionPosted(req.session.user.IdUser)]).spread(function (temp1) {
       res.render("_profile/profileSeller", {
         user: req.session.user,
+        checkingSeller: (req.session.user.Permission === 'seller') ? true : undefined,
         successMess : res.locals.Success,
         FailMess : res.locals.Fail,
         checkingSeller: (req.session.user.Permission === 'seller') ? true : undefined,

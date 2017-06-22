@@ -70,6 +70,7 @@ var profileController = {
         profileDb.getWishlistbylimitID(req.session.user.IdUser, start, pageSize).then(function (data) {
           res.render("_profile/profilewishlist",{
               user: req.session.user,
+              checkingSeller: (req.session.user.Permission === 'seller') ? true : undefined,
               wishlist: data,
               layout: "applicationnoHeader",
               helpers: {
@@ -114,6 +115,8 @@ var profileController = {
         profileDb.getHistoryaucbylimitID(req.session.user.IdUser, start, pageSize).then(function (data) {
           res.render("_profile/profilehistoryAuc",{
               user: req.session.user,
+              checkingSeller: (req.session.user.Permission === 'seller') ? true : undefined,
+              checkingSeller: (req.session.user.Permission === 'seller') ? true : undefined,
               historyAuction: data,
               layout: "applicationnoHeader",
               helpers: {
@@ -156,6 +159,7 @@ var profileController = {
   historyvictoryPage : function (req, res) {
     res.render("_profile/profilehistoryvictory",{
         user: req.session.user,
+        checkingSeller: (req.session.user.Permission === 'seller') ? true : undefined,
         layout: "applicationnoHeader"
     });
   }

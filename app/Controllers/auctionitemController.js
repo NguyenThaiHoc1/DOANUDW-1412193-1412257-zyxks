@@ -22,6 +22,7 @@ var auctionitemController = {
       }
       res.render("_productAuction/item", {
         user : user,
+        checkingSeller: (req.session.user.Permission === 'seller') ? true : undefined,
         catogorylist : temp9,
         layout : "application",
         item : item,
