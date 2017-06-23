@@ -34,51 +34,18 @@ var item = {
   },
   loadHighestBuyerInfo : function (proId) {
     var d = q.defer();
-    var obj = {
-      proID: proId
-    };
-    var sql = mustache.render('select b.step, c.f_ImageUrl, c.f_Username, c.f_Name, \
-                  case\
-                            when a.price is null then b.startprice \
-                            when a.price is not null then a.price\
-                  end as priceAuction, \
-                  case \
-                            when a.userid is null then "No Bid"\
-                            when a.userid is not null then a.userid\
-                  end as userBid, \
-                  case \
-                             when  (select count(*)  \
-                             from bidhistory history\
-                             where history.productid = b.proid\
-                             group by history.productid) is null then 0\
-                           when  (select count(*) \
-                             from bidhistory history\
-                             where history.productid = b.proid\
-                             group by history.productid) is not null then (select count(*)  \
-                                                 from bidhistory history\
-                                                 where history.productid = b.proid\
-                                                 group by history.productid)\
-                  end as soluotdaugia\
-                  from bidhistory a right join product b on a.productid = b.proid, dackweb.user c\
-                  where a.userid = c.f_ID and b.proid = {{proID}} and not exists (\
-                              select *\
-                                          from bidhistory c\
-                              where c.productid = a.productid\
-                                          and a.userid = c.userid\
-                                          and  exists(\
-                                        select * \
-                                                              from bidhistory e \
-                                                              where e.productid = c.productid\
-                                                              and a.price < e.price\
-                                    )\
-                         )\
-                  group by b.proid, b.proname, b.tinydes, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\'), a.price, a.userid\
-                  order by \
-                  case\
-                      when a.price is null then b.startprice \
-                      when a.price is not null then a.price\
-                  end ASC;',obj);
-    db.query(sql,function (error, results) {
+    var sql = 'select b.f_ImageUrl ,b.f_Name, a.price, f.step from bidhistory a, user b ,product f\
+                  where a.userid = b.f_ID and f.proid = a.productid\
+                  and a.productid = ?\
+                  and not exists (select * from dackweb.favorite favo\
+				          where favo.idproduct = ? and a.userid = favo.iduser)\
+                  and a.price >= ( select max(c.price) \
+				                            from bidhistory c \
+                                    where c.productid = ?\
+                                    and not exists (select * from dackweb.favorite favo\
+								                                    where favo.idproduct = ? and c.userid = favo.iduser)\
+              );';
+    db.query(sql,[proId, proId, proId, proId], function (error, results) {
       if (error){
         d.reject(error);
       }
@@ -119,8 +86,16 @@ var item = {
     var obj = {
       proID: proId
     };
-    var sql = mustache.render('SELECT user.f_Name, bidhistory.timebid, bidhistory.price FROM bidhistory, user where bidhistory.productid = {{proID}} and bidhistory.userid = user.f_ID order by timebid desc',obj);
-    db.query(sql,function (error, results) {
+      var sql = 'SELECT user.f_Name, bidhistory.timebid, bidhistory.price \
+                FROM bidhistory, user \
+                where bidhistory.productid = ?\
+                and bidhistory.userid = user.f_ID\
+                and not exists( select * \
+                				from favorite favo\
+                                where favo.idproduct = ? and favo.iduser = user.f_ID\
+                			   )\
+                order by timebid desc;';
+      db.query(sql, [proId, proId], function (error, results) {
       if (error){
         d.reject(error);
       }
@@ -136,7 +111,7 @@ var item = {
     var obj = {
       proID: proId
     };
-    var sql = mustache.render('SELECT user.f_Name, comment.datepost, comment.content FROM comment, user where productid = {{proID}} and comment.userid = user.f_ID order by datepost desc',obj);
+    var sql = mustache.render('SELECT user.f_ImageUrl ,user.f_Name, comment.datepost, comment.content FROM comment, user where productid = {{proID}} and comment.userid = user.f_ID order by datepost desc',obj);
     db.query(sql,function (error, results) {
       if (error){
         d.reject(error);
@@ -153,8 +128,12 @@ var item = {
     var obj = {
       proID: proId
     };
-    var sql = mustache.render('SELECT step, max(price) as maxprice, startprice, count(*) as bidcount FROM bidhistory, product where bidhistory.productid = {{proID}} and product.proid = bidhistory.productid',obj);
-    db.query(sql,function (error, results) {
+    var sql = 'SELECT step, max(price) as maxprice, startprice, count(*) as bidcount \
+    FROM bidhistory, product \
+    where bidhistory.productid = ? and product.proid = bidhistory.productid\
+    and not exists (select * from dackweb.favorite favo\
+				where favo.idproduct = ? and bidhistory.userid = favo.iduser);';
+    db.query(sql, [proId, proId], function (error, results) {
       if (error){
         d.reject(error);
       }
@@ -188,6 +167,11 @@ var item = {
       return d.promise;
   },
   bid: function (userid, productid, price, timebid) {
+    console.log(userid);
+    console.log(productid);
+    console.log(price);
+    console.log(timebid);
+
     var d = q.defer();
     var sql = 'insert into bidhistory (userid, productid, price, timebid) values (?, ?, ?, ?);';
     db.query(sql, [userid, productid, price, timebid],function (error, results) {
@@ -195,6 +179,75 @@ var item = {
             d.reject(error);
         }
         d.resolve(results);
+    });
+    return d.promise;
+  },
+  loadingUserBuyer: function (proId) {
+    var d = q.defer();
+    var obj = {
+      proID: proId
+    };
+    var sql = 'SELECT distinct bidhistory.productid, user.f_ID, user.f_ImageUrl, \
+              user.f_Username, user.f_Name, user.positiverating, \
+              user.negativerating, DATE_FORMAT(user.f_DOB,\'%Y-%m-%d\') sogiay ,\
+              case \
+				when (not exists (select * from dackweb.favorite favo\
+              				where favo.idproduct = ? and favo.iduser = user.f_ID)) = true then \'0\'\
+				when (not exists (select * from dackweb.favorite favo\
+              				where favo.idproduct = ? and favo.iduser = user.f_ID)) = false then \'1\'\
+			  end state_User\
+              FROM bidhistory, user \
+              where bidhistory.productid = ?\
+              and bidhistory.userid = user.f_ID;';
+    db.query(sql,[proId, proId, proId], function (error, results) {
+      if (error){
+        d.reject(error);
+      }
+      d.resolve(results);
+    });
+    return d.promise;
+  },
+  eliminateUserDB: function (Objective) {
+    var d = q.defer();
+    var sql = 'insert into dackweb.favorite(idproduct, iduser) values (?, ?);';
+    db.query(sql, [Objective.idproductblock, Objective.iduserblock], function (error, results) {
+      if (error){
+        d.reject(error);
+      }
+      d.resolve(results);
+    });
+    return d.promise;
+  },
+  unlockAccount: function (Objective) {
+    var d = q.defer();
+    var sql = 'delete from dackweb.favorite where idproduct = ? and iduser = ?';
+    db.query(sql, [Objective.idproductblock, Objective.iduserblock], function (error, results) {
+      if (error){
+        d.reject(error);
+      }
+      d.resolve(results);
+    });
+    return d.promise;
+  },
+  getEmailUser: function (UserID) {
+    var d = q.defer();
+    var sql = 'select * from dackweb.user where f_ID = ?';
+    db.query(sql, [UserID], function (error, results) {
+      if (error){
+        d.reject(error);
+      }
+      d.resolve(results);
+    });
+    return d.promise;
+  },
+  CheckingUserBlock: function (ProID, UserID) {
+    var d = q.defer();
+    var sql = 'select * from dackweb.user a, favorite b where a.f_ID = b.iduser and b.idproduct = ? and a.f_ID = ?;';
+    db.query(sql, [ProID, UserID], function (error, results) {
+      if (error){
+        d.reject(error);
+      }
+      d.resolve(results);
     });
     return d.promise;
   }
