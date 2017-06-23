@@ -16,6 +16,10 @@ module.exports = function(app) {
 
     app.get("/item/:id/bid", checking.isLoggedIn, index.item.bid);
 
+    app.post("/item/:id/eliminate", checking.isLoggedIn, checking.checkingSeller, index.item.eliminateUser);
+
+    app.post("/item/:id/unblockElimanate", checking.isLoggedIn, checking.checkingSeller, index.item.unblockElimanate);
+
     app.get("/register", checking.isLoggedLong, index.user.registerPage);
 
     app.get("/about", index.about.Defaultpage);
