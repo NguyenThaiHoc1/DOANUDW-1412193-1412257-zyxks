@@ -1,17 +1,39 @@
 <link rel="stylesheet" href="/css/DangDauGia.css">
 <h1>Đăng Ký Đấu Giá</h1>
-<form>
+<!--<form action='/item' method='post' enctype="multipart/form-data">-->
+<form action='/item' method='post'>
     <div class="form-group">
-        <label for="exampleInputEmail1">Tiêu đề</label>
-        <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email">
+        <label for="exampleInputEmail1">Tên Sản Phẩm</label>
+        <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Apple iPad 2017" name="proname">
     </div>
     <div class="form-group">
         <label for="noidung">Mô tả</label>
-        <textarea name="fnoidung" id="noidung" rows="8" cols="80" class="form-control" placeholder="Nội dung"></textarea>
+        <textarea id="summernote" rows="8" cols="80" class="form-control" name="fulldes"></textarea>
     </div>
     <div class="form-group">
-        <label for="">Giá Khởi điểm</label>
-        <input type="text" class="form-control" id="" placeholder="Price">
+        <label for="">Giá Khởi Điểm</label>
+        <input type="text" class="form-control" id="" placeholder="200000" name="startprice">
+    </div>
+    <div class="form-group">
+        <label for="">Bước Giá</label>
+        <input type="text" class="form-control" id="" placeholder="30000" name="step">
+    </div>
+    <div class="form-group">
+        <label for="">Giá Mua Ngay</label>
+        <input type="text" class="form-control" id="" placeholder="1000000" name="beatprice">
+    </div>
+    <div class="form-group">
+        <label for="">Có Giai Hạn?</label>
+        <input type="checkbox" class="form-control" id="" name="autoextend">
+    </div>
+    <div class="form-group">
+        <label for="exampleInputPassword1">Thời gian kết thúc</label>
+        <div class='input-group date' id='datetimepicker1'>
+            <input type='text' class="form-control" name="datefinish"/>
+            <span class="input-group-addon">
+              <span class="glyphicon glyphicon-calendar"></span>
+            </span>
+        </div>
     </div>
     <div class="form-group">
         <label for="sel1">Thể Loại</label>
@@ -19,21 +41,12 @@
             <option value="1" require>Thể Thao</option>
             <option value="2">Đồ Cổ</option>
             <option value="3">Đồ giải trí</option>
-    </select>
-    </div>
-    <div class="form-group">
-        <label for="exampleInputPassword1">Thời gian kết thúc</label>
-        <div class='input-group date' id='datetimepicker1'>
-            <input type='text' class="form-control" />
-            <span class="input-group-addon">
-              <span class="glyphicon glyphicon-calendar"></span>
-            </span>
-        </div>
+        </select>
     </div>
     <div class="form-group" id="hinhanh1">
         <label for="">Hình ảnh 1</label>
         <div class="input-group image-preview">
-            <input type="text" class="form-control image-preview-filename" disabled="disabled" style="background-color:black;">
+            <input type="text" name="image1" class="form-control image-preview-filename" disabled="disabled" style="background-color:black;">
             <!-- don't give a name === doesn't send on POST/GET -->
             <span class="input-group-btn">
                     <!-- image-preview-clear button -->
@@ -51,7 +64,25 @@
     <div class="form-group" id="hinhanh2">
         <label for="">Hình ảnh 2</label>
         <div class="input-group image-preview">
-            <input type="text" class="form-control image-preview-filename" disabled="disabled" style="background-color:black;">
+            <input type="text" name="image2" class="form-control image-preview-filename" disabled="disabled" style="background-color:black;">
+            <!-- don't give a name === doesn't send on POST/GET -->
+            <span class="input-group-btn">
+                    <!-- image-preview-clear button -->
+                    <button type="button" class="btn btn-default image-preview-clear" style="display:none;">
+                        <span class="glyphicon glyphicon-remove"></span> Clear
+            </button>
+            <div class="btn btn-default image-preview-input">
+                <span class="glyphicon glyphicon-folder-open"></span>
+                <span class="image-preview-input-title">Browse</span>
+                <input type="file" accept="image/png, image/jpeg, image/gif" name="input-file-preview" />
+            </div>
+            </span>
+        </div>
+    </div>
+    <div class="form-group" id="hinhanh3">
+        <label for="">Hình ảnh 3</label>
+        <div class="input-group image-preview">
+            <input type="text" name="image3" class="form-control image-preview-filename" disabled="disabled" style="background-color:black;">
             <!-- don't give a name === doesn't send on POST/GET -->
             <span class="input-group-btn">
                     <!-- image-preview-clear button -->
@@ -68,4 +99,6 @@
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
+<script src="/component/summernote/dist/summernote.min.js"></script>
+<link href="/component/summernote/dist/summernote.css" rel="stylesheet">
 <script src="/js/DangDauGia.js"></script>

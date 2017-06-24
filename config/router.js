@@ -10,15 +10,14 @@ module.exports = function(app) {
 
     app.get("/item/:id", index.item.loadWithID);
 
+    app.post("/item", checking.isLoggedIn, index.item.publish);
+
     app.post("/item/:id/comments", checking.isLoggedIn, index.item.addComment);
 
     app.post("/item/:id/send_email_confirm_bid", checking.isLoggedIn, index.item.sendEmailConfirmBid);
 
     app.get("/item/:id/bid", checking.isLoggedIn, index.item.bid);
 
-    app.post("/item/:id/eliminate", checking.isLoggedIn, checking.checkingSeller, index.item.eliminateUser);
-
-    app.post("/item/:id/unblockElimanate", checking.isLoggedIn, checking.checkingSeller, index.item.unblockElimanate);
 
     app.get("/register", checking.isLoggedLong, index.user.registerPage);
 
@@ -56,7 +55,8 @@ module.exports = function(app) {
 
     app.post("/wishlist", checking.isLoggedIn, index.wishlist.additemwishlist);
 
-    app.get("/profile", checking.isLoggedIn, index.profile.Defaultpage);
+    //TODO revert
+    app.get("/profile", checking.isLoggedIn, index.dangdaugia.Defaultpage);
 
     app.get("/profile/wishlist", checking.isLoggedIn, index.profile.wishlistUserPage);
 
@@ -66,35 +66,25 @@ module.exports = function(app) {
 
     app.post("/profile", index.user.changeInformation);
 
-    app.get("/admin", index.admin.Defaultpage);
 
-    app.post("/admin", index.admin.adminLogin);
-
-    //admin functions
-
-    app.get("/acceptsellrequest", index.admin.acceptSellRequest);
-
-    app.get("/denysellrequest", index.admin.denySellRequest);
-
-    app.get("/changecategorystate", index.admin.changeCategoryState);
-
-    app.get("/addcategory", index.admin.addCategory);
-
-    app.get("/editcategoryname", index.admin.editCategoryName);
-
-    app.get("/changeuserstate", index.admin.changeUserState);
-
-    app.get("/resetpassword", index.admin.resetPassword);
-
-    // text cai nay la test co the xoa
+    // cai nay la test co the xoa
     app.get("/popup", function (req, res) {
       res.render("testingPopup",{
         layout: "application"
       });
     })
 
-    // dang lam ne
-    app.get("/testtingO",checking.isLoggedIn, checking.checkingSeller ,index.seller.Defaultpage); // trang nguoi ban
+    app.get("/admin", index.admin.Defaultpage);
 
-    app.post("/seller/updateDescription", index.seller.UpdateSellerDetail);
+    app.post("/admin", index.admin.adminLogin);
+
+    //admin functions
+    app.get("/acceptsellrequest", index.admin.acceptSellRequest);
+    app.get("/denysellrequest", index.admin.denySellRequest);
+    app.get("/changecategorystate", index.admin.changeCategoryState);
+    app.get("/addcategory", index.admin.addCategory);
+    app.get("/editcategoryname", index.admin.editCategoryName);
+    app.get("/changeuserstate", index.admin.changeUserState);
+    app.get("/resetpassword", index.admin.resetPassword);
+
 }
