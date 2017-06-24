@@ -97,4 +97,28 @@ module.exports = function(app) {
     app.get("/testtingO",checking.isLoggedIn, checking.checkingSeller ,index.seller.Defaultpage); // trang nguoi ban
 
     app.post("/seller/updateDescription", index.seller.UpdateSellerDetail);
+
+    // Handle Error Page
+    app.use(function(req, res, next){
+        res.status(404);
+        if (req.accepts('html')) {
+          res.render('_errorPage/404', {
+            url: '/',
+            Topic: '404 Not Found',
+            content: "Oh noes everything broke",
+            layout: 'applicationnoHeader'
+          });
+          return;
+        }
+    });
+
+    app.use(function(err, req, res, next) {
+      res.status(err.status || 500);
+      res.render('_errorPage/404', {
+        Topic: 'Server Process Is Error',
+        content: err.message,
+        tryagain: req.url,
+        layout: 'applicationnoHeader'
+      });
+    });
 }

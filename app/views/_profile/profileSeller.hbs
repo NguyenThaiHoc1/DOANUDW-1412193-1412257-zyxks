@@ -5,6 +5,7 @@
     <div class="row">
         <div class="fb-profile">
             {{> profileAvarta}}
+            <h4>(Seller)</h4>
         </div>
     </div>
 </div>
@@ -16,7 +17,7 @@
                 <div class="btn-pref btn-group btn-group-justified btn-group-lg" role="group" aria-label="...">
                         <div class="btn-group" role="group">
                             <button type="button" id="stars" class="btn btn-primary" href="#duyet" data-toggle="tab"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
-                                <div class="hidden-xs">About</div>
+                                <div class="hidden-xs">History Posted Auc</div>
                             </button>
                         </div>
                         <div class="btn-group" role="group">
@@ -59,7 +60,7 @@
                                 <img src="{{this.image1}}" class="img-responsive img-box img-thumbnail" style="height: 100px; width: 100px;">
                               </td>
                               <td valign="middle" align="center">{{this.sku}}</td>
-                              <td valign="middle" align="center">{{{trimString this.proname}}}</td>
+                              <td valign="middle" align="center"><a href="/item/{{this.proid}}">{{{trimString this.proname}}}</a></td>
                               <td valign="middle" align="center" style="display:none;">{{this.tinydes}}</td>
                               <td class="fulldes" style="display:none;"> {{this.fulldes}} </td>
                               <td valign="middle" align="center">{{this.warranty}}</td>
