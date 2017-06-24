@@ -2,6 +2,17 @@ var db = require("./database.js");
 var q = require('q');
 
 var profile = {
+  findbyUserName: function (username) {
+    var d = q.defer();
+    var sql = 'select * from user where f_Username = ? and f_Permission != \'admin\';';
+    db.query(sql, [username],function (error, results) {
+      if (error){
+        d.reject(error);
+      }
+      d.resolve(results);
+    });
+    return d.promise;
+  },
   getWishlistbyID: function (id) {
     // - lay tat cac cac wishlist cua 1 id nao do
     var d = q.defer();
@@ -98,6 +109,29 @@ var profile = {
         d.reject(error);
       }
       d.resolve(results);
+    });
+    return d.promise;
+  },
+  isWaitingForPermission: function(username) {
+    var d = q.defer();
+    var sql = "select * from sellrequest,user where f_id=f_id_user and f_username=? and f_result is null";
+    db.query(sql, [username], function(err, rslt) {
+      if (err)
+        d.reject(err);
+      d.resolve(rslt.length);
+    })
+    return d.promise;
+  },
+  isDenied: function(username) {
+    var d = q.defer();
+    var sql = "select * from sellrequest,user where f_id=f_id_user and f_username=? order by f_time desc";
+    db.query(sql, [username], function(err, rslt) {
+      if (err)  {
+        d.reject(err);
+      }
+      else {
+        d.resolve(rslt);
+      }
     });
     return d.promise;
   }

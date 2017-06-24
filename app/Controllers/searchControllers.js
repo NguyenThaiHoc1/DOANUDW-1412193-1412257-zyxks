@@ -20,6 +20,12 @@ var searchController = {
         searchinput : req.query.searchinput,
         catogory : req.query.catogory
     }
+    var usersx;
+    if(req.session.user === undefined) {
+        usersx = undefined;
+    }else {
+      usersx = (req.session.user.Permission === 'seller') ? true : undefined;
+    }
     Qs.all([searchDB.searchPage(object), searchDB.getCatogory()]).spread(function (temp1, temp2) {
             // start phan trang
             var urlTemp = req.url.split("&page=")[0];
@@ -41,6 +47,7 @@ var searchController = {
                 var  breachcumGen = (object.catogory == 0) ? "All Catogory" : temp2[parseInt(object.catogory) - 1].catname;
                 res.render("_productAuction/SPDAUGIA", {
                   user: req.session.user,
+                  checkingSeller: usersx,
                   layout : "application",
                   catogorylist : temp2,
                   productlist : data,

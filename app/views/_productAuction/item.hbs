@@ -35,6 +35,7 @@
       <h2 id="item-name">{{item.proname}}</h2>
       <p>{{{item.fulldes}}}</p>
       <button id="addwishlist" type="button" class="btn btn-link watchlistItem" value="{{item.proid}}">Add to Wishlist</button>
+      {{> Checkerror}}
     </div>
     <div class="item-info">
       <div class="current-bid">
@@ -46,13 +47,22 @@
     </div>
       {{#if user}}
           {{#if isTimeNotAvailable}}
-            <p>Now is not the time to bid</p>
+              <p>Now is not the time to bid</p>
           {{else if isRatingNotAvailable}}
               <p>Positive rating occupy a low rate</p>
+          {{else if CheckElimanate}}
+              <p style="color:red;">You can not allow the auction product</p>
           {{else}}
-              <div class="btn-bid">
-                  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal" onclick="showSuggest({{maxbidandstep.maxprice}}, {{maxbidandstep.step}})">Bid Now</button>
-              </div>
+              <!-- Khuc nay minh se check-->
+              {{#if checkingSellerItem}}
+                <div class="btn-bid">
+                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#enquirypopup">Eliminate Buyer</button>
+                </div>
+              {{else}}
+                <div class="btn-bid">
+                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal" onclick="showSuggest({{maxbidandstep.maxprice}}, {{maxbidandstep.step}})">Bid Now</button>
+                </div>
+              {{/if}}
           {{/if}}
       {{else}}
           <div class="btn-bid">
@@ -63,6 +73,84 @@
               </a>
           </div>
       {{/if}}
+
+
+    <!-- Modal: thong ke danh sach-->
+    <div id="enquirypopup" class="modal fade in" role="dialog">
+       <div class="modal-dialog">
+         <!-- Modal content-->
+         <div class="modal-content row">
+           <div class="modal-header custom-modal-header">
+             <button type="button" class="close" data-dismiss="modal">×</button>
+             <h4 class="modal-title">Eliminate Buyer</h4>
+           </div>
+           <div class="modal-body">
+             <form action="/seller/updateDescription" method="post">
+               <div class="form-group">
+                 <table class="table table-hover table-bordered" id="table1">
+                   <thead>
+                     <tr>
+                       <th style="display:none;">ProID</th>
+                       <th style="display:none;">UserID</th>
+                       <th>f_ImageUrl</th>
+                       <th style="display:none;">Username</th>
+                       <th>Name</th>
+                       <th>Positiverating</th>
+                       <th>Negativerating</th>
+                       <th>Date of create</th>
+                       <th>Eliminate</th>
+                     </tr>
+                   </thead>
+                   <tbody class="mess">
+                     {{#each BuyerAuction}}
+                       <tr>
+                         <td class="fsidPro" valign="middle" align="center" style="display:none;">{{this.productid}}</td>
+                         <td class="fsidUser" valign="middle" align="center" style="display:none;">{{this.f_ID}}</td>
+                         <td class="fsImgUser" valign="middle" align="center">
+                           <img src="{{this.f_ImageUrl}}" class="img-responsive img-box img-thumbnail" style="height: 100px; width: 100px;">
+                         </td>
+                         <td class="fsUsernames" valign="middle" align="center" style="display:none;">{{this.f_Username}}</td>
+                         <td class="fsName" valign="middle" align="center">{{this.f_Name}}</td>
+                         <td class="fsPositi" valign="middle" align="center">{{this.positiverating}}</td>
+                         <td class="fsNegative" valign="middle" align="center">{{this.negativerating}}</td>
+                         <td class="fsSogiay" valign="middle" align="center">{{this.sogiay}}</td>
+                         <td>
+                          {{{CheckingState state_User}}}
+                        </td>
+                       </tr>
+                     {{/each}}
+                   </tbody>
+                 </table>
+               </div>
+               <button type="submit" class="btn btn-primary" id="sentButton">Update</button>
+             </form>
+             <!-- dung jquery xu ly -->
+           </div>
+         </div>
+       </div>
+     </div>
+
+     <div class="modal fade" id="AccpecBlock" role="dialog">
+       <div class="modal-dialog">
+         <div class="modal-content">
+           <div class="modal-header">
+             <button type="button" class="close" data-dismiss="modal">&times;</button>
+             <h4 class="modal-title">Confirm</h4>
+           </div>
+           <div class="modal-body">
+             <p>You Want to block user: <span id="userConfirm"></span></p>
+           </div>
+           <div class="modal-footer">
+             <button type="button" class="btn btn-primary" id="btn-bid">OK</button>
+             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+           </div>
+         </div>
+       </div>
+     </div>
+
+
+
+
     <!-- Modal -->
     <div class="modal fade" id="myModal" role="dialog">
       <div class="modal-dialog">
@@ -71,7 +159,7 @@
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal">&times;</button>
             <h4 class="modal-title">Bid</h4>
-              <h6><p class="label label-warning" id="bid-warning">Event sta</p></h6>
+              <h6><p class="label label-warning" id="bid-warning1">Event sta</p></h6>
           </div>
           <div class="modal-body">
             <div class="beat col-md-6 col-ms-6">
@@ -98,7 +186,7 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary" id="btn-bid">Bid!</button>
+            <button type="button" class="btn btn-primary" id="btn-bid1">Bid!</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
           </div>
         </div>
@@ -165,7 +253,7 @@
             <li>
               <div class="col-sm-2">
                 <div class="thumbnail">
-                  <img class="img-responsive user-photo" src="https://ssl.gstatic.com/accounts/ui/avatar_2x.png">
+                  <img class="img-responsive user-photo" src="{{this.f_ImageUrl}}" style="height: 75px; width: 100px;">
                 </div>
                 <!-- /thumbnail -->
               </div>
@@ -193,7 +281,13 @@
       <div class="owner-buyer">
         <div class="owner">
           <div class="owner-avatar">
-            <img src="http://placehold.it/150x150" alt="avatar" class="img-circle">
+            <div class="current-buyer-avatar">
+              {{#if seller}}
+                <img src="{{seller.f_ImageUrl}}" alt="avatar" class="img-circle" style="width: 150px; height: 150px;">
+              {{else}}
+                <img src="http://placehold.it/150x150" alt="avatar" class="img-circle">
+              {{/if}}
+            </div>
           </div>
           <div class="owner-username">
             <a href="#">
@@ -206,11 +300,15 @@
         </div>
         <div class="current-buyer">
           <div class="current-buyer-avatar">
-            <img src="http://placehold.it/150x150" alt="avatar" class="img-circle">
+            {{#if highesybuyerIMG}}
+              <img src="{{highesybuyerIMG}}" alt="avatar" class="img-circle" style="width: 150px; height: 150px;">
+            {{else}}
+              <img src="http://placehold.it/150x150" alt="avatar" class="img-circle">
+            {{/if}}
           </div>
           <div class="current-buyer-username">
             <a href="#">
-              <p><b>Current highest: {{highestbuyerid.f_Name}}</b></p>
+              <p><b>Current highest: {{highestbuyerid}}</b></p>
             </a>
           </div>
         </div>
@@ -223,8 +321,8 @@
           </a>
           <p>Total items: {{sellertotalitems.totalitems}}</p>
           <br>
-          <a href="#">
-            <p>See other items</p>
+          <a href="/timkiem?searchinput=&catogory=0">
+            <p>See other items of Web</p>
           </a>
           <br>
         </div>
@@ -237,3 +335,90 @@
 <script src="/component/bootstrap3-dialog/dist/js/bootstrap-dialog.js"></script>
 <script src="/js/item.js"></script>
 <script src="/js/countdown.js"></script>
+<script src="/js/datatable.js"></script>
+<script type="text/javascript">
+  function BlockAccount() {
+      $("#table1").on('click', '[button-add="addfriendBTN"]', function () {
+        var li = $(this).closest("tr");
+        var idClient = li.find(".fsidUser").text();
+        var userName = li.find(".fsName").text();
+        var idProduct = li.find(".fsidPro").text();
+        var idUser = li.find(".fsidUser").text();
+
+        BootstrapDialog.show({
+            title: 'Confirm',
+            message: 'You want to block user: ' + userName,
+            buttons: [{
+                  label: 'Close',
+                  action: function(dialog){
+                      dialog.close();
+                  }
+            },
+            {
+                  label: 'OK',
+                  cssClass: 'btn-primary',
+                  action: function(dialog) {
+                      $.ajax({
+                          url: '/item/'+ idProduct +'/eliminate',
+                          method: 'POST',
+                          contentType : "application/json",
+                          data: JSON.stringify({iduserblock: idUser, idproductblock: idProduct}),
+                          success: function (data) {
+                              console.log(data);
+                          },
+                          complete: function () {
+                            window.location.reload();
+                          }
+                      });
+                      dialog.close();
+                  }
+            }]
+        });
+      });
+  }
+  function UnblockAccount() {
+      $("#table1").on('click', '[button-unlock="unlockAccount"]', function () {
+      var li = $(this).closest("tr");
+      var idClient = li.find(".fsidUser").text();
+      var userName = li.find(".fsName").text();
+      var idProduct = li.find(".fsidPro").text();
+      var idUser = li.find(".fsidUser").text();
+
+      BootstrapDialog.show({
+          title: 'Confirm',
+          message: 'You want to unblock user: ' + userName,
+          buttons: [{
+                label: 'Close',
+                action: function(dialog){
+                    dialog.close();
+                }
+          },
+          {
+                label: 'OK',
+                cssClass: 'btn-primary',
+                action: function(dialog) {
+                    $.ajax({
+                        url: '/item/'+ idProduct +'/unblockElimanate',
+                        method: 'POST',
+                        contentType : "application/json",
+                        data: JSON.stringify({iduserblock: idUser, idproductblock: idProduct}),
+                        success: function (data) {
+                            console.log(data);
+                        },
+                        complete: function () {
+                          window.location.reload();
+                        }
+                    });
+                    dialog.close();
+                }
+          }]
+      });
+    });
+  }
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip(); // cho phep hien thi cac cuc nho
+    $('#table1').DataTable();
+    BlockAccount();
+    UnblockAccount();
+  });
+</script>

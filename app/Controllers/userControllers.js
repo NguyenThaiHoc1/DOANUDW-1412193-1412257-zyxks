@@ -122,6 +122,7 @@ var userController = {
   getchangepassword: function (req, res) {
     res.render("_Users/changepassword", {
       user: req.session.user,
+      checkingSeller: (req.session.user.Permission === 'seller') ? true : undefined,
       successMess : res.locals.Success,
       FailMess : res.locals.Fail,
       layout: "applicationnoHeader"
@@ -192,6 +193,15 @@ var userController = {
           res.redirect("/profile");
         })
     }
+  },
+  requestSelling: function(req, res) {
+    if (req.session.user === undefined) {
+      res.redirect("/");
+      return;
+    }
+    userDB.RequestSelling(req.query.f_Username).then(function (rows) {
+      res.redirect('/profile');
+    });
   },
   testingCallback: function (req, res, next) {
       Qs.all([userDB.Testing1(), userDB.Testing2()]).spread(function (a, b) {

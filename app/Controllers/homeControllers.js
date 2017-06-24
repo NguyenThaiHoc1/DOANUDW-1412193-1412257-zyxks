@@ -4,9 +4,16 @@ var handle = require('handlebars'); // --- module mới dùng để xử lý hel
 
 var homeController = {
   homedefaultPage : function (req, res) {
+      var usersx;
+      if(req.session.user === undefined) {
+          usersx = undefined;
+      }else {
+        usersx = (req.session.user.Permission === 'seller') ? true : undefined;
+      }
       Qs.all([homeDB.top5mostauctionbid(), homeDB.top5bestprice() ,homeDB.top5cometoend(), homeDB.getCatogory()]).spread(function (temp1, temp2, temp3, temp4) {
         res.render("home", {
           user: req.session.user,
+          checkingSeller: usersx,
           layout : "application",
           mostauctionbid : temp1,
           bestprice : temp2,

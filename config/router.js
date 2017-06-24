@@ -14,8 +14,11 @@ module.exports = function(app) {
 
     app.post("/item/:id/send_email_confirm_bid", checking.isLoggedIn, index.item.sendEmailConfirmBid);
 
-    app.post("/item/:id/bid", checking.isLoggedIn, index.item.bid);
+    app.get("/item/:id/bid", checking.isLoggedIn, index.item.bid);
 
+    app.post("/item/:id/eliminate", checking.isLoggedIn, checking.checkingSeller, index.item.eliminateUser);
+
+    app.post("/item/:id/unblockElimanate", checking.isLoggedIn, checking.checkingSeller, index.item.unblockElimanate);
 
     app.get("/register", checking.isLoggedLong, index.user.registerPage);
 
@@ -45,6 +48,8 @@ module.exports = function(app) {
 
     app.post("/changepassword", index.user.changepassword);
 
+    app.get("/requestselling", index.user.requestSelling);
+
     app.get("/timkiem", index.search.searchMenuPage);
 
     app.get("/danhmuc", index.catogory.searchCatogory);
@@ -61,25 +66,35 @@ module.exports = function(app) {
 
     app.post("/profile", index.user.changeInformation);
 
+    app.get("/admin", index.admin.Defaultpage);
 
-    // cai nay la test co the xoa
+    app.post("/admin", index.admin.adminLogin);
+
+    //admin functions
+
+    app.get("/acceptsellrequest", index.admin.acceptSellRequest);
+
+    app.get("/denysellrequest", index.admin.denySellRequest);
+
+    app.get("/changecategorystate", index.admin.changeCategoryState);
+
+    app.get("/addcategory", index.admin.addCategory);
+
+    app.get("/editcategoryname", index.admin.editCategoryName);
+
+    app.get("/changeuserstate", index.admin.changeUserState);
+
+    app.get("/resetpassword", index.admin.resetPassword);
+
+    // text cai nay la test co the xoa
     app.get("/popup", function (req, res) {
       res.render("testingPopup",{
         layout: "application"
       });
     })
 
-    app.get("/admin", index.admin.Defaultpage);
+    // dang lam ne
+    app.get("/testtingO",checking.isLoggedIn, checking.checkingSeller ,index.seller.Defaultpage); // trang nguoi ban
 
-    app.post("/admin", index.admin.adminLogin);
-
-    //admin functions
-    app.get("/acceptsellrequest", index.admin.acceptSellRequest);
-    app.get("/denysellrequest", index.admin.denySellRequest);
-    app.get("/changecategorystate", index.admin.changeCategoryState);
-    app.get("/addcategory", index.admin.addCategory);
-    app.get("/editcategoryname", index.admin.editCategoryName);
-    app.get("/changeuserstate", index.admin.changeUserState);
-    app.get("/resetpassword", index.admin.resetPassword);
-
+    app.post("/seller/updateDescription", index.seller.UpdateSellerDetail);
 }

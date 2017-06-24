@@ -5,6 +5,17 @@ var randstr = require("randomstring");
 var bcrypt = require('bcrypt-nodejs');
 
 var admin = {
+  FindAccByUsername: function(username) {
+    var d = q.defer();
+    var sql = "select * from user where f_Username = ? and f_Permission = 'admin'";
+    db.query(sql, [username],function (error, results) {
+      if (error){
+        d.reject(error);
+      }
+      d.resolve(results);
+    });
+    return d.promise;
+  },
   FindSellRequest: function() {
     var d = q.defer();
     var sql = "select f_username,f_email,f_name,positiverating,negativerating,DATE_FORMAT(f_time,'%d/%m/%Y %H:%i:%s') as f_time \
@@ -60,8 +71,13 @@ var admin = {
       db.query(sql, [username], function (err,rslt) {
         if (err)
           d.reject(err);
+        sql = "select * from user where f_username=?"
+        db.query(sql, [username], function (err0,rslt0) {
+          if (err0)
+            d.reject(err0);
+          d.resolve(rslt0);
+        })
       })
-      d.resolve(rslt);
     });
     return d.promise;
   },
@@ -73,7 +89,7 @@ var admin = {
         d.reject(err);
       var changedstate = (rslt[0]['active']===1) ? 0 : 1;
       //console.log(rslt[0]['active'].active);
-      sql = "update category set active=" + changedstate + 
+      sql = "update category set active=" + changedstate +
         " where catname=?"
       db.query(sql, [catname], function (err, rslt) {
         if (err)
@@ -110,8 +126,8 @@ var admin = {
       if (err || rslt.length==0)
         d.reject(err);
       var changedstate = (rslt[0]['accessadmin']===1) ? 0 : 1;
-      
-      sql = "update user set accessadmin=" + changedstate + 
+
+      sql = "update user set accessadmin=" + changedstate +
         " where f_username=?"
       db.query(sql, [username], function (err, rslt) {
         if (err)

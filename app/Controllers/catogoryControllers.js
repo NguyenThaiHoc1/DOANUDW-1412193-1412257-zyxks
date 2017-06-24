@@ -17,6 +17,12 @@ var typePage = 0;
 
 var catogoryController = {
   searchCatogory : function (req, res) {
+    var usersx;
+    if(req.session.user === undefined) {
+        usersx = undefined;
+    }else {
+      usersx = (req.session.user.Permission === 'seller') ? true : undefined;
+    }
     Qs.all([catogoryDB.findCatogoryID(req.query.danhmuc), catogoryDB.getCatogory()]).spread(function (temp1, temp2) {
             var urlTemp = req.url.split("&page=")[0];
             totalRec      = temp1.length;
@@ -37,6 +43,7 @@ var catogoryController = {
                 var  breachcumGen = (req.query.danhmuc == 0) ? "All Catogory" : temp2[parseInt(req.query.danhmuc) - 1].catname;
                 res.render("_productAuction/SPDAUGIA", {
                   user: req.session.user,
+                  checkingSeller: usersx,
                   layout : "application",
                   catogorylist : temp2,
                   productlist : data,
