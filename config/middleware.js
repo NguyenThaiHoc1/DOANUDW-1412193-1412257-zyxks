@@ -22,5 +22,4 @@ module.exports = function (app) {
       res.locals.Fail = req.flash('messagesFail');
       next();
   });
-  
 }

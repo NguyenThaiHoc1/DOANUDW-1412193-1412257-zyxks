@@ -167,11 +167,6 @@ var item = {
       return d.promise;
   },
   bid: function (userid, productid, price, timebid) {
-    console.log(userid);
-    console.log(productid);
-    console.log(price);
-    console.log(timebid);
-
     var d = q.defer();
     var sql = 'insert into bidhistory (userid, productid, price, timebid) values (?, ?, ?, ?);';
     db.query(sql, [userid, productid, price, timebid],function (error, results) {
