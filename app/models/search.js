@@ -49,7 +49,6 @@ var search = {
   },
   getPageNumber: function (start, pageSize, object, typePage) {
     var d = q.defer();
-
     if(typePage == 1){
       if(object.catogory == 0){
         var sql1 = 'select b.image1, b.proid, b.proname, b.tinydes, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\') sogiay,\
@@ -59,7 +58,7 @@ var search = {
                     end as priceAuction, \
                     case \
                           	  when a.userid is null then "No Bid"\
-                              when a.userid is not null then a.userid\
+                              when a.userid is not null then USx.f_Name\
                     end as userBid, \
                     case \
                                when  (select count(*)  \
@@ -74,19 +73,29 @@ var search = {
                     															 where history.productid = b.proid\
                     															 group by history.productid)\
                     end as soluotdaugia\
-                    from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid, dackweb.category cato\
+                    from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid, dackweb.category cato, dackweb.user USx\
                     where b.proname LIKE ? and b.catid = cato.catid and cato.active = 1\
+                    and USx.f_ID = a.userid\
+                    and not exists( select * \
+                				  from favorite favo\
+                                  where favo.idproduct = b.proid and favo.iduser = USx.f_ID)\
                     and not exists (\
                     						select *\
                                             from dackweb.bidhistory c\
                     						where c.productid = a.productid\
                                             and a.userid = c.userid\
+											and not exists(select * \
+														   from favorite favo\
+														   where favo.idproduct = c.productid and favo.iduser = c.userid)\
                                             and  exists(\
                     											select * \
                                                                 from dackweb.bidhistory e \
                                                                 where e.productid = c.productid\
                                                                 and a.price < e.price\
-                    									)\
+                                                                and not exists( select * \
+																from favorite favo\
+																where favo.idproduct = e.productid and favo.iduser = e.userid)\
+                              )\
                     			 )\
                     group by b.proid, b.proname, b.tinydes, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\'), a.price, a.userid\
                     order by \
@@ -103,7 +112,7 @@ var search = {
                     end as priceAuction, \
                     case \
                           	  when a.userid is null then "No Bid"\
-                              when a.userid is not null then a.userid\
+                              when a.userid is not null then USx.f_Name\
                     end as userBid, \
                     case \
                                when  (select count(*)  \
@@ -118,18 +127,28 @@ var search = {
                     															 where history.productid = b.proid\
                     															 group by history.productid)\
                     end as soluotdaugia\
-                    from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid, dackweb.category cato\
+                    from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid, dackweb.category cato, dackweb.user USx\
                     where b.catid = ? and b.proname LIKE ? and b.catid = cato.catid and cato.active = 1\
+                    and USx.f_ID = a.userid\
+                    and not exists( select * \
+                				  from favorite favo\
+                                  where favo.idproduct = b.proid and favo.iduser = USx.f_ID)\
                     and not exists (\
                     						select *\
                                             from dackweb.bidhistory c\
                     						where c.productid = a.productid\
                                             and a.userid = c.userid\
+                                            and not exists(select * \
+											  from favorite favo\
+											  where favo.idproduct = c.productid and favo.iduser = c.userid)\
                                             and  exists(\
                     											select * \
                                                                 from dackweb.bidhistory e \
                                                                 where e.productid = c.productid\
                                                                 and a.price < e.price\
+                                                                and not exists(select * \
+																			  from favorite favo\
+																			  where favo.idproduct = e.productid and favo.iduser = e.userid)\
                     									)\
                     			 )\
                     group by b.proid, b.proname, b.tinydes, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\'), a.price, a.userid\
@@ -150,7 +169,7 @@ var search = {
                     end as priceAuction, \
                     case \
                           	  when a.userid is null then "No Bid"\
-                              when a.userid is not null then a.userid\
+                              when a.userid is not null then USx.f_Name\
                     end as userBid, \
                     case \
                                when  (select count(*)  \
@@ -165,19 +184,29 @@ var search = {
                     															 where history.productid = b.proid\
                     															 group by history.productid)\
                     end as soluotdaugia\
-                    from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid, dackweb.category cato\
+                    from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid, dackweb.category cato, dackweb.user USx\
                     where b.proname LIKE ? and b.catid = cato.catid and cato.active = 1\
+                    and USx.f_ID = a.userid\
+                    and not exists( select * \
+                				  from favorite favo\
+                                  where favo.idproduct = b.proid and favo.iduser = USx.f_ID)\
                     and not exists (\
                     						select *\
                                             from dackweb.bidhistory c\
                     						where c.productid = a.productid\
                                             and a.userid = c.userid\
+                                            and not exists(select * \
+											  from favorite favo\
+											  where favo.idproduct = c.productid and favo.iduser = c.userid)\
                                             and  exists(\
                     											select * \
                                                                 from dackweb.bidhistory e \
                                                                 where e.productid = c.productid\
                                                                 and a.price < e.price\
-                    									)\
+                                                                and not exists( select * \
+																from favorite favo\
+																where favo.idproduct = e.productid and favo.iduser = e.userid)\
+                              )\
                     			 )\
                     group by b.proid, b.proname, b.tinydes,DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\') , a.price, a.userid\
                     LIMIT ? , ?;'
@@ -190,7 +219,7 @@ var search = {
                     end as priceAuction, \
                     case \
                           	  when a.userid is null then "No Bid"\
-                              when a.userid is not null then a.userid\
+                              when a.userid is not null then USx.f_Name\
                     end as userBid, \
                     case \
                                when  (select count(*)  \
@@ -205,19 +234,29 @@ var search = {
                     															 where history.productid = b.proid\
                     															 group by history.productid)\
                     end as soluotdaugia\
-                    from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid, dackweb.category cato\
+                    from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid, dackweb.category cato, dackweb.user USx\
                     where b.catid = ? and b.proname LIKE ? and b.catid = cato.catid and cato.active = 1\
+                    and USx.f_ID = a.userid\
+                    and not exists( select * \
+                				  from favorite favo\
+                                  where favo.idproduct = b.proid and favo.iduser = USx.f_ID)\
                     and not exists (\
                     						select *\
                                             from dackweb.bidhistory c\
                     						where c.productid = a.productid\
                                             and a.userid = c.userid\
+                                            and not exists(select * \
+											  from favorite favo\
+											  where favo.idproduct = c.productid and favo.iduser = c.userid)\
                                             and  exists(\
                     											select * \
                                                                 from dackweb.bidhistory e \
                                                                 where e.productid = c.productid\
                                                                 and a.price < e.price\
-                    									)\
+                                                                and not exists( select * \
+															  from favorite favo\
+															  where favo.idproduct = e.productid and favo.iduser = e.userid)\
+                              )\
                     			 )\
                     group by b.proid, b.proname, b.tinydes, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\'), a.price, a.userid\
                     LIMIT ? , ?;'
@@ -232,7 +271,7 @@ var search = {
                     end as priceAuction, \
                     case \
                           	  when a.userid is null then "No Bid"\
-                              when a.userid is not null then a.userid\
+                              when a.userid is not null then USx.f_Name\
                     end as userBid, \
                     case \
                                when  (select count(*)  \
@@ -247,19 +286,29 @@ var search = {
                     															 where history.productid = b.proid\
                     															 group by history.productid)\
                     end as soluotdaugia\
-                    from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid, dackweb.category cato\
+                    from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid, dackweb.category cato, dackweb.user USx\
                     where b.proname LIKE ? and b.catid = cato.catid and cato.active = 1\
+                    and USx.f_ID = a.userid\
+                    and not exists( select * \
+                				  from favorite favo\
+                                  where favo.idproduct = b.proid and favo.iduser = USx.f_ID)\
                     and not exists (\
                     						select *\
                                             from dackweb.bidhistory c\
                     						where c.productid = a.productid\
                                             and a.userid = c.userid\
+                                            and not exists(select * \
+											  from favorite favo\
+											  where favo.idproduct = c.productid and favo.iduser = c.userid)\
                                             and  exists(\
                     											select * \
                                                                 from dackweb.bidhistory e \
                                                                 where e.productid = c.productid\
                                                                 and a.price < e.price\
-                    									)\
+                                                                and not exists( select * \
+															  from favorite favo\
+															  where favo.idproduct = e.productid and favo.iduser = e.userid)\
+                              )\
                     			 )\
                     group by b.proid, b.proname, b.tinydes, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\'), a.price, a.userid\
                     order by \
@@ -286,7 +335,7 @@ var search = {
                     end as priceAuction, \
                     case \
                           	  when a.userid is null then "No Bid"\
-                              when a.userid is not null then a.userid\
+                              when a.userid is not null then USx.f_Name\
                     end as userBid, \
                     case \
                                when  (select count(*)  \
@@ -301,19 +350,29 @@ var search = {
                     															 where history.productid = b.proid\
                     															 group by history.productid)\
                     end as soluotdaugia\
-                    from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid\
-                    where b.catid = ? and b.proname LIKE ? and b.catid = cato.catid and cato.active = 1, dackweb.category cato\
+                    from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid, dackweb.category cato, dackweb.user USx\
+                    where b.catid = ? and b.proname LIKE ? and b.catid = cato.catid and cato.active = 1\
+                    and USx.f_ID = a.userid\
+                    and not exists( select * \
+                				  from favorite favo\
+                                  where favo.idproduct = b.proid and favo.iduser = USx.f_ID)\
                     and not exists (\
                     						select *\
                                             from dackweb.bidhistory c\
                     						where c.productid = a.productid\
                                             and a.userid = c.userid\
+                                            and not exists(select * \
+											  from favorite favo\
+											  where favo.idproduct = c.productid and favo.iduser = c.userid)\
                                             and  exists(\
                     											select * \
                                                                 from dackweb.bidhistory e \
                                                                 where e.productid = c.productid\
                                                                 and a.price < e.price\
-                    									)\
+                                                                and not exists( select * \
+															  from favorite favo\
+															  where favo.idproduct = e.productid and favo.iduser = e.userid)\
+                              )\
                     			 )\
                     group by b.proid, b.proname, b.tinydes, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\'), a.price, a.userid\
                     order by \
@@ -330,7 +389,7 @@ var search = {
                     															 where history.productid = b.proid \
                     															 group by history.productid) \
                     end  DESC \
-                    LIMIT ? , ?;'
+                    LIMIT ? , ?;';
       }
     }
     if (object.catogory == 0) {

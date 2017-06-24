@@ -5,7 +5,7 @@ var objectUser = require("../Object/userObject.js");
 
 var totalRec = 0,
 
-pageSize  = 2;
+pageSize  = 6;
 
 pageCount = 0;
 

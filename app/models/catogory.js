@@ -33,19 +33,19 @@ var catogory = {
           } else {
               var sql1 = 'select b.image1, b.proid, b.proname, b.tinydes, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\') sogiay,\
                           case\
-                                	  when a.price is null then b.startprice \
+                                	  when a.price is null then b.startprice\
                                     when a.price is not null then a.price\
-                          end as priceAuction, \
-                          case \
+                          end as priceAuction,\
+                          case\
                                 	  when a.userid is null then "No Bid"\
-                                    when a.userid is not null then a.userid\
-                          end as userBid, \
-                          case \
-                                     when  (select count(*)  \
+                                    when a.userid is not null then USx.f_Name\
+                          end as userBid,\
+                          case\
+                                     when  (select count(*)\
                           					 from dackweb.bidhistory history\
                           					 where history.productid = b.proid\
                           					 group by history.productid) is null then 0\
-                          			   when  (select count(*)  \
+                          			   when  (select count(*)\
                           					 from dackweb.bidhistory history\
                           					 where history.productid = b.proid\
                           					 group by history.productid) is not null then (select count(*)  \
@@ -53,19 +53,29 @@ var catogory = {
                           															 where history.productid = b.proid\
                           															 group by history.productid)\
                           end as soluotdaugia\
-                          from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid, dackweb.category cato\
+                          from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid, dackweb.category cato, dackweb.user USx\
                           where b.catid = ? and b.catid = cato.catid and cato.active = 1\
+                          and USx.f_ID = a.userid \
+                          and not exists( select * \
+                				  from favorite favo\
+                                  where favo.idproduct = b.proid and favo.iduser = USx.f_ID)\
                           and not exists (\
                           						select *\
                                                   from dackweb.bidhistory c\
                           						where c.productid = a.productid\
                                                   and a.userid = c.userid\
+                                                  and not exists(select * \
+											  from favorite favo\
+											  where favo.idproduct = c.productid and favo.iduser = c.userid)\
                                                   and  exists(\
                           											select * \
                                                                       from dackweb.bidhistory e \
                                                                       where e.productid = c.productid\
                                                                       and a.price < e.price\
-                          									)\
+                                                                      and not exists( select * \
+															  from favorite favo\
+															  where favo.idproduct = e.productid and favo.iduser = e.userid)\
+                              )\
                           			 )\
                           group by b.proid, b.proname, b.tinydes, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\'), a.price, a.userid\
                           order by \
@@ -81,39 +91,49 @@ var catogory = {
           } else {
               var sql1 = 'select b.image1, b.proid, b.proname, b.tinydes, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\') sogiay,\
                           case\
-                                	  when a.price is null then b.startprice \
+                                	  when a.price is null then b.startprice\
                                     when a.price is not null then a.price\
-                          end as priceAuction, \
-                          case \
+                          end as priceAuction,\
+                          case\
                                 	  when a.userid is null then "No Bid"\
-                                    when a.userid is not null then a.userid\
-                          end as userBid, \
-                          case \
-                                     when  (select count(*)  \
+                                    when a.userid is not null then USx.f_Name\
+                          end as userBid,\
+                          case\
+                                     when  (select count(*)\
                           					 from dackweb.bidhistory history\
                           					 where history.productid = b.proid\
                           					 group by history.productid) is null then 0\
-                          			   when  (select count(*)  \
+                          			   when  (select count(*)\
                           					 from dackweb.bidhistory history\
                           					 where history.productid = b.proid\
-                          					 group by history.productid) is not null then (select count(*)  \
+                          					 group by history.productid) is not null then (select count(*)\
                           															 from dackweb.bidhistory history\
                           															 where history.productid = b.proid\
                           															 group by history.productid)\
                           end as soluotdaugia\
-                          from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid, dackweb.category cato\
+                          from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid, dackweb.category cato, dackweb.user USx\
                           where b.catid = ? and b.catid = cato.catid and cato.active = 1\
+                          and USx.f_ID = a.userid\
+                          and not exists( select * \
+                				  from favorite favo\
+                                  where favo.idproduct = b.proid and favo.iduser = USx.f_ID)\
                           and not exists (\
                           						select *\
                                                   from dackweb.bidhistory c\
                           						where c.productid = a.productid\
                                                   and a.userid = c.userid\
+                                                  and not exists(select * \
+											  from favorite favo\
+											  where favo.idproduct = c.productid and favo.iduser = c.userid)\
                                                   and  exists(\
                           											select * \
                                                                       from dackweb.bidhistory e \
                                                                       where e.productid = c.productid\
                                                                       and a.price < e.price\
-                          									)\
+                                                                      and not exists( select * \
+															  from favorite favo\
+															  where favo.idproduct = e.productid and favo.iduser = e.userid)\
+                              )\
                           			 )\
                           group by b.proid, b.proname, b.tinydes, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\'), a.price, a.userid\
                           LIMIT ? , ?;';
@@ -124,39 +144,49 @@ var catogory = {
           } else {
               var sql1 = 'select b.image1, b.proid, b.proname, b.tinydes, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\') sogiay,\
                           case\
-                                	  when a.price is null then b.startprice \
+                                	  when a.price is null then b.startprice\
                                     when a.price is not null then a.price\
-                          end as priceAuction, \
-                          case \
+                          end as priceAuction,\
+                          case\
                                 	  when a.userid is null then "No Bid"\
-                                    when a.userid is not null then a.userid\
-                          end as userBid, \
-                          case \
-                                     when  (select count(*)  \
+                                    when a.userid is not null then USx.f_Name\
+                          end as userBid,\
+                          case\
+                                     when  (select count(*)\
                           					 from dackweb.bidhistory history\
                           					 where history.productid = b.proid\
                           					 group by history.productid) is null then 0\
-                          			   when  (select count(*)  \
+                          			   when  (select count(*)\
                           					 from dackweb.bidhistory history\
                           					 where history.productid = b.proid\
-                          					 group by history.productid) is not null then (select count(*)  \
+                          					 group by history.productid) is not null then (select count(*)\
                           															 from dackweb.bidhistory history\
                           															 where history.productid = b.proid\
                           															 group by history.productid)\
                           end as soluotdaugia\
-                          from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid, dackweb.category cato\
+                          from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid, dackweb.category cato, dackweb.user USx\
                           where b.catid = ? and b.catid = cato.catid and cato.active = 1\
+						  and USx.f_ID = a.userid\
+                          and not exists( select * \
+                				  from favorite favo\
+                                  where favo.idproduct = b.proid and favo.iduser = USx.f_ID)\
                           and not exists (\
                           						select *\
                                                   from dackweb.bidhistory c\
                           						where c.productid = a.productid\
                                                   and a.userid = c.userid\
+                                                  and not exists(select * \
+																 from favorite favo\
+																 where favo.idproduct = c.productid and favo.iduser = c.userid)\
                                                   and  exists(\
                           											select * \
                                                                       from dackweb.bidhistory e \
                                                                       where e.productid = c.productid\
                                                                       and a.price < e.price\
-                          									)\
+                                                                      and not exists( select * \
+																					  from favorite favo\
+																					  where favo.idproduct = e.productid and favo.iduser = e.userid)\
+                                          )\
                           			 )\
                           group by b.proid, b.proname, b.tinydes, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\'), a.price, a.userid\
                           order by \
