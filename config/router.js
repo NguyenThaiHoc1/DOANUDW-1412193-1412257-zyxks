@@ -12,9 +12,9 @@ module.exports = function(app) {
 
     app.post("/item/:id/comments", checking.isLoggedIn, index.item.addComment);
 
-    app.post("/item/:id/send_email_confirm_bid", checking.isLoggedIn, index.item.sendEmailConfirmBid);
+    app.post("/item/:id/:bidType/send_email_confirm_bid", checking.isLoggedIn, index.item.sendEmailConfirmBid);
 
-    app.get("/item/:id/bid", checking.isLoggedIn, index.item.bid);
+    app.get("/item/:id/:bidType/bid", checking.isLoggedIn, index.item.bid);
 
     app.get("/register", checking.isLoggedLong, index.user.registerPage);
 

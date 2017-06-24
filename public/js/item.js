@@ -112,9 +112,10 @@ $("#btn-bid").click(function () {
                 cssClass: 'btn-primary',
                 action: function(dialog) {
                     var idItem= $("#addwishlist").val();
+                    var bidType= $("#checkboxIsAuto").is(':checked') ? 'auto' : 'manual';
                     var idName= $("#item-name").text();
                     $.ajax({
-                        url: "/item/"+idItem+"/send_email_confirm_bid",
+                        url: "/item/"+idItem+"/"+bidType+"/send_email_confirm_bid",
                         method: 'POST',
                         contentType : "application/json",
                         data: JSON.stringify({price: bidPrice, name: idName}),
