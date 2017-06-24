@@ -1,5 +1,17 @@
 var Router = require("express").Router;
 
+var multer  = require('multer')
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'public/img/product')
+    },
+    filename: function (req, file, cb) {
+        cb(null, 'product' + Date.now()+file.originalname)
+    }
+})
+var upload = multer({ dest: 'public/uploads/' , storage: storage});
+
+
 var index = require("../app/Controllers/index.js");
 
 var checking = require("./OthersfunctionChecking.js");
@@ -10,7 +22,7 @@ module.exports = function(app) {
 
     app.get("/item/:id", index.item.loadWithID);
 
-    app.post("/item", checking.isLoggedIn, index.item.publish);
+    app.post("/item", checking.isLoggedIn, upload.array('input-file-preview', 3), index.item.publish);
 
     app.post("/item/:id/comments", checking.isLoggedIn, index.item.addComment);
 
