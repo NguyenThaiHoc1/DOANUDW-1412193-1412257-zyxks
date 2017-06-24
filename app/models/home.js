@@ -10,7 +10,7 @@ var home = {
                   end as priceAuction, \
                   case \
                             when a.userid is null then "No Bid"\
-                            when a.userid is not null then USx.f_Name\
+                            when a.userid is not null then (select f_Name from dackweb.user where f_ID = a.userid)\
                   end as userBid, \
                   case \
                              when  (select count(*)  \
@@ -25,12 +25,11 @@ var home = {
                                                  where history.productid = b.proid\
                                                  group by history.productid)\
                   end as soluotdaugia\
-                  from bidhistory a right join product b on a.productid = b.proid, dackweb.category cato, dackweb.user USx\
+                  from bidhistory a right join product b on a.productid = b.proid, dackweb.category cato\
                   where b.catid = cato.catid and cato.active = 1 \
-                  and USx.f_ID = a.userid\
                   and not exists( select * \
                 				  from favorite favo\
-                                  where favo.idproduct = b.proid and favo.iduser = USx.f_ID)\
+                                  where favo.idproduct = b.proid and favo.iduser = a.userid)\
                   and not exists (\
                               select *\
                                           from bidhistory c\
@@ -73,7 +72,7 @@ var home = {
                   end as priceAuction, \
                   case \
                             when a.userid is null then "No Bid"\
-                            when a.userid is not null then USx.f_Name\
+                            when a.userid is not null then (select f_Name from dackweb.user where f_ID = a.userid)\
                   end as userBid, \
                   case \
                              when  (select count(*)  \
@@ -88,12 +87,11 @@ var home = {
                                                  where history.productid = b.proid\
                                                  group by history.productid)\
                   end as soluotdaugia\
-                  from bidhistory a right join product b on a.productid = b.proid, dackweb.category cato, dackweb.user USx\
+                  from bidhistory a right join product b on a.productid = b.proid, dackweb.category cato\
                   where b.catid = cato.catid and cato.active = 1 \
-                  and USx.f_ID = a.userid\
                   and not exists( select * \
                 				  from favorite favo\
-                                  where favo.idproduct = b.proid and favo.iduser = USx.f_ID)\
+                                  where favo.idproduct = b.proid and favo.iduser = a.userid)\
                   and not exists (\
                               select *\
 							  from bidhistory c\
@@ -145,7 +143,7 @@ var home = {
                   end as priceAuction, \
                   case \
                             when a.userid is null then "No Bid"\
-                            when a.userid is not null then USx.f_Name\
+                            when a.userid is not null then (select f_Name from dackweb.user where f_ID = a.userid)\
                   end as userBid, \
                   case \
                              when  (select count(*)  \
@@ -160,12 +158,12 @@ var home = {
                                                  where history.productid = b.proid\
                                                  group by history.productid)\
                   end as soluotdaugia\
-                  from bidhistory a right join product b on a.productid = b.proid, dackweb.category cato, dackweb.user USx\
-                  where USx.f_ID = a.userid and TIMESTAMPDIFF(Second , now() , b.datefinish) > 0 and b.catid = cato.catid \
+                  from bidhistory a right join product b on a.productid = b.proid, dackweb.category cato\
+                  where TIMESTAMPDIFF(Second , now() , b.datefinish) > 0 and b.catid = cato.catid \
                   and cato.active = 1 \
                   and not exists( select * \
                 				  from favorite favo\
-                                  where favo.idproduct = b.proid and favo.iduser = USx.f_ID)\
+                                  where favo.idproduct = b.proid and favo.iduser = a.userid)\
                   and not exists (\
                               select *\
                                           from bidhistory c\

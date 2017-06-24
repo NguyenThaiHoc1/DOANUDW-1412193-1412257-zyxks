@@ -38,7 +38,7 @@ var catogory = {
                           end as priceAuction,\
                           case\
                                 	  when a.userid is null then "No Bid"\
-                                    when a.userid is not null then USx.f_Name\
+                                    when a.userid is not null then (select f_Name from dackweb.user where f_ID = a.userid)\
                           end as userBid,\
                           case\
                                      when  (select count(*)\
@@ -53,12 +53,11 @@ var catogory = {
                           															 where history.productid = b.proid\
                           															 group by history.productid)\
                           end as soluotdaugia\
-                          from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid, dackweb.category cato, dackweb.user USx\
+                          from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid, dackweb.category cato\
                           where b.catid = ? and b.catid = cato.catid and cato.active = 1\
-                          and USx.f_ID = a.userid \
                           and not exists( select * \
                 				  from favorite favo\
-                                  where favo.idproduct = b.proid and favo.iduser = USx.f_ID)\
+                                  where favo.idproduct = b.proid and favo.iduser = a.userid )\
                           and not exists (\
                           						select *\
                                                   from dackweb.bidhistory c\
@@ -76,7 +75,7 @@ var catogory = {
 															  from favorite favo\
 															  where favo.idproduct = e.productid and favo.iduser = e.userid)\
                               )\
-                          			 )\
+                            )\
                           group by b.proid, b.proname, b.tinydes, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\'), a.price, a.userid\
                           order by \
                           case\
@@ -96,7 +95,7 @@ var catogory = {
                           end as priceAuction,\
                           case\
                                 	  when a.userid is null then "No Bid"\
-                                    when a.userid is not null then USx.f_Name\
+                                    when a.userid is not null then (select f_Name from dackweb.user where f_ID = a.userid)\
                           end as userBid,\
                           case\
                                      when  (select count(*)\
@@ -111,12 +110,11 @@ var catogory = {
                           															 where history.productid = b.proid\
                           															 group by history.productid)\
                           end as soluotdaugia\
-                          from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid, dackweb.category cato, dackweb.user USx\
+                          from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid, dackweb.category cato\
                           where b.catid = ? and b.catid = cato.catid and cato.active = 1\
-                          and USx.f_ID = a.userid\
                           and not exists( select * \
                 				  from favorite favo\
-                                  where favo.idproduct = b.proid and favo.iduser = USx.f_ID)\
+                                  where favo.idproduct = b.proid and favo.iduser = a.userid)\
                           and not exists (\
                           						select *\
                                                   from dackweb.bidhistory c\
@@ -134,7 +132,7 @@ var catogory = {
 															  from favorite favo\
 															  where favo.idproduct = e.productid and favo.iduser = e.userid)\
                               )\
-                          			 )\
+                            )\
                           group by b.proid, b.proname, b.tinydes, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\'), a.price, a.userid\
                           LIMIT ? , ?;';
           }
@@ -149,7 +147,7 @@ var catogory = {
                           end as priceAuction,\
                           case\
                                 	  when a.userid is null then "No Bid"\
-                                    when a.userid is not null then USx.f_Name\
+                                    when a.userid is not null then (select f_Name from dackweb.user where f_ID = a.userid)\
                           end as userBid,\
                           case\
                                      when  (select count(*)\
@@ -164,12 +162,11 @@ var catogory = {
                           															 where history.productid = b.proid\
                           															 group by history.productid)\
                           end as soluotdaugia\
-                          from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid, dackweb.category cato, dackweb.user USx\
+                          from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid, dackweb.category cato\
                           where b.catid = ? and b.catid = cato.catid and cato.active = 1\
-						  and USx.f_ID = a.userid\
                           and not exists( select * \
                 				  from favorite favo\
-                                  where favo.idproduct = b.proid and favo.iduser = USx.f_ID)\
+                                  where favo.idproduct = b.proid and favo.iduser = a.userid)\
                           and not exists (\
                           						select *\
                                                   from dackweb.bidhistory c\

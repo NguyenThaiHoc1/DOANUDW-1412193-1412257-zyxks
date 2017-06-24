@@ -4,9 +4,25 @@ var index = require("../app/Controllers/index.js");
 
 var checking = require("./OthersfunctionChecking.js");
 
+var multer  = require('multer');
+
+var storage = multer.diskStorage({
+     destination: function (req, file, cb) {
+         cb(null, 'public/img/product')
+     },
+     filename: function (req, file, cb) {
+         cb(null, 'product' + Date.now()+file.originalname)
+     }
+});
+var upload = multer({storage:storage});
+
 module.exports = function(app) {
     // home
     app.get("/", index.home.homedefaultPage);
+
+    // *
+
+    //*
 
     app.get("/item/:id", index.item.loadWithID);
 
@@ -71,7 +87,6 @@ module.exports = function(app) {
     app.post("/admin", index.admin.adminLogin);
 
     //admin functions
-
     app.get("/acceptsellrequest", index.admin.acceptSellRequest);
 
     app.get("/denysellrequest", index.admin.denySellRequest);
@@ -96,9 +111,13 @@ module.exports = function(app) {
     // dang lam ne
     app.get("/testtingO",checking.isLoggedIn, checking.checkingSeller ,index.seller.Defaultpage); // trang nguoi ban
 
-    app.post("/seller/updateDescription", index.seller.UpdateSellerDetail);
+    app.post("/seller/updateDescription",checking.isLoggedIn, checking.checkingSeller, index.seller.UpdateSellerDetail);
 
-    // Handle Error Page
+    app.post("/item", upload.array('input-file-preview', 3), index.item.publish);
+
+    app.get("/seller/SellerPosted", index.dangdaugia.Defaultpage);// trang chinh ne
+
+    // Handle Error Page checking.isLoggedIn, checking.checkingSeller,
     app.use(function(req, res, next){
         res.status(404);
         if (req.accepts('html')) {

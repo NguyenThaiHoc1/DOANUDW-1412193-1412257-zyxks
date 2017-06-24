@@ -2,7 +2,6 @@
 <script>tinymce.init({ selector:'textarea' });</script>
 <link rel="stylesheet" href="/css/DangDauGia.css">
 <h1>Đăng Ký Đấu Giá</h1>
-{{> Checkerror}}
 <form action='/item' method='post' enctype="multipart/form-data">
     <div class="form-group">
         <label for="exampleInputEmail1">Product Name</label>
@@ -14,7 +13,7 @@
     </div>
     <div class="form-group">
         <label for="noidung">Full Description</label>
-        <textarea id="summernote" rows="12" cols="80" class="form-control" name="fulldes"></textarea>
+        <textarea rows="20" cols="80" class="form-control" name="fulldes"></textarea>
     </div>
     <div class="form-group">
         <label for="">Start Price</label>

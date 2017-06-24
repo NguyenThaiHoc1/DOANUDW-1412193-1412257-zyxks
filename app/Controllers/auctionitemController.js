@@ -3,6 +3,8 @@ var momment=require("moment");
 var Qs = require('q');
 var handle = require('handlebars'); // --- module mới dùng để xử lý helpers
 var EmailGmail = require("../Object/Emailer.js");
+var randstr = require("randomstring");
+
 
 var auctionitemController = {
   loadWithID : function (req, res) {
@@ -185,7 +187,6 @@ var auctionitemController = {
         }
     },
     eliminateUser: function (req, res) {
-
       auctionitemdb.getEmailUser(req.body.iduserblock).then(function (data1) {
         auctionitemdb.eliminateUserDB(req.body).then(function (data) {
             var Email =  new EmailGmail(data1[0].f_Email,
@@ -215,6 +216,30 @@ var auctionitemController = {
             res.end('fail');
           });
       });
+    },
+    publish: function (req, res) {
+        var sku = randstr.generate(7);
+        var tinyDes = req.body.tinydes;
+        var sellerid = req.session.user.IdUser;
+        var datepost=momment().format('YYYY/MM/DD H:mm:ss');
+        var proname=req.body.proname;
+        var fulldes=req.body.fulldes;
+        var datefinish=momment(req.body.datefinish).format('YYYY/MM/DD H:mm:ss');
+        var startprice=req.body.startprice;
+        var step=req.body.step;
+        var beatprice=req.body.beatprice;
+        var autoextend=req.body.autoextend==="on";
+        var catid=req.body.catid;
+        var image1 = req.files[0]?req.files[0].filename:undefined;
+        var image2 = req.files[1]?req.files[1].filename:undefined;
+        var image3 = req.files[2]?req.files[2].filename:undefined;
+        auctionitemdb.publish(sku, sellerid, datepost, proname, tinyDes, fulldes, datefinish,startprice , step, beatprice, autoextend,catid, image1, image2, image3).then(function () {
+            req.flash("messagesSuccess", "Product is Ported !");
+            res.redirect("/testtingO");
+        }).fail(function (err) {
+            req.flash("messagesFail", "Product is not Ported !");
+            res.redirect("/testtingO");
+        });
     }
 };
 module.exports = auctionitemController;

@@ -9,4 +9,5 @@ module.exports = function (app) {
   }));
   app.set('view engine', 'hbs');
   app.set("views", path.resolve("app/views"));
+
 };

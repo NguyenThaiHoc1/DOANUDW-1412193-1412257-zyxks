@@ -245,6 +245,17 @@ var item = {
       d.resolve(results);
     });
     return d.promise;
+  },
+  publish: function (sku, sellerid, datepost, proname, tinydes, fulldes, datefinish, startprice, step, beatprice, autoextend, catid, image1, image2, image3) {
+      var d = q.defer();
+      var sql = 'insert into product (sku, tinydes, sellerid, datepost, proname, fulldes, datefinish, startprice, step, beatprice, autoextend, catid, image1, image2, image3) values ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);';
+      db.query(sql, [sku, tinydes, sellerid, datepost, proname, fulldes, datefinish, startprice, step, beatprice, autoextend, catid, image1, image2, image3],function (error, results) {
+          if (error){
+              d.reject(error);
+          }
+          d.resolve(results);
+      });
+      return d.promise;
   }
 };
 
