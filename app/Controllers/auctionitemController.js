@@ -97,6 +97,7 @@ var auctionitemController = {
     },
     sendEmailConfirmBid: function (req, res) {
         var idItem = req.params.id;
+        var bidType = req.params.bidType;
         var user = req.session.user;
         var email = user.Email;
         var price = req.body.price;
@@ -114,7 +115,7 @@ var auctionitemController = {
             from: 'dackweb0@gmail.com',
             to: email,
             subject: 'Confirm Bid Price',
-            text: 'You bid \"'+'{{name}}'+'\"\nWith price '+price+'\nClick link below to confirm:\n' +
+            text: 'You bid \"'+idItem+'\"\nWith price '+price+'\nClick link below to confirm:\n' +
             'http://' + req.headers.host + '/item/'+idItem+'/bid?price='+price
         };
         transporter.sendMail(mailOptions, function (error, info) {
@@ -129,21 +130,18 @@ var auctionitemController = {
         if (user){
             var idItem = req.params.id;
             var price = req.query.price;  // gia request gui
+            var bidType = req.params.bidType;
             var idUser = user.IdUser;
             var booleand = true;
             auctionitemdb.loadHighestBuyerInfo(idItem).then(function (data) {
                   if(data.length > 0){
                     var timebid=momment().format('YYYY/MM/DD H:mm:ss');
                     var priccGuess = (price - data[0].price);
-                    if (priccGuess < 0) {
+                    if (priccGuess <= 0 || priccGuess % data[0].step !== 0) {
                       booleand = false;
-                    } else if ( (priccGuess % data[0].step) !== 0) {
-                      booleand = false;
-                    } else {
-                      booleand = true;
                     }
                     if(booleand === true) {
-                      auctionitemdb.bid(idUser, idItem, price, timebid).then(function () {
+                      auctionitemdb.Bid(idUser, idItem, price, timebid, bidType, req.headers.host).then(function () {
                           req.flash("messagesSuccess", "Bid Price is successed");
                           return res.redirect('/item/'+idItem);
                       }).fail(function (err) {
@@ -159,7 +157,7 @@ var auctionitemController = {
                     auctionitemdb.loadWithID(idItem).then(function (data) {
                         if(price >= data.startprice) {
                             var timebid=momment().format('YYYY/MM/DD H:mm:ss');
-                            auctionitemdb.bid(idUser, idItem, price, timebid).then(function () {
+                            auctionitemdb.Bid(idUser, idItem, price, timebid, bidType, req.headers.host).then(function () {
                                 req.flash("messagesSuccess", "Bid Price is successed");
                                 return res.redirect('/item/'+idItem);
                             }).fail(function (err) {
