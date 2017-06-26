@@ -116,7 +116,7 @@ var auctionitemController = {
             to: email,
             subject: 'Confirm Bid Price',
             text: 'You bid \"'+idItem+'\"\nWith price '+price+'\nClick link below to confirm:\n' +
-            'http://' + req.headers.host + '/item/'+idItem+'/bid?price='+price
+            'http://' + req.headers.host + '/item/'+idItem+'/'+bidType+'/bid?price='+price
         };
         transporter.sendMail(mailOptions, function (error, info) {
             if (error) {
@@ -153,7 +153,6 @@ var auctionitemController = {
                       res.redirect("/item/" + idItem);
                     }
                   }else {
-
                     auctionitemdb.loadWithID(idItem).then(function (data) {
                         if(price >= data.startprice) {
                             var timebid=momment().format('YYYY/MM/DD H:mm:ss');

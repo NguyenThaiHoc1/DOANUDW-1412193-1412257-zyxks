@@ -6,6 +6,15 @@ var checking = require("./OthersfunctionChecking.js");
 
 var multer  = require('multer');
 
+var cron = require('cron');
+
+var cronJob = cron.job("*/5 * * * * *", function(){
+    // tao 1 Job de thuc hien cong viec la xac nhan nguoi thang cuoc
+    // 5s se xac nhan 1 lan
+    index.winner.WrittingWinning();
+
+});
+
 var storage = multer.diskStorage({
      destination: function (req, file, cb) {
          cb(null, 'public/img/product')
@@ -17,12 +26,12 @@ var storage = multer.diskStorage({
 var upload = multer({storage:storage});
 
 module.exports = function(app) {
+
+    // bat dau cong viec
+    cronJob.start();
+
     // home
     app.get("/", index.home.homedefaultPage);
-
-    // *
-
-    //*
 
     app.get("/item/:id", index.item.loadWithID);
 
@@ -31,6 +40,7 @@ module.exports = function(app) {
     app.post("/item/:id/:bidType/send_email_confirm_bid", checking.isLoggedIn, index.item.sendEmailConfirmBid);
 
     app.get("/item/:id/:bidType/bid", checking.isLoggedIn, index.item.bid);
+
 
     app.post("/item/:id/eliminate", checking.isLoggedIn, checking.checkingSeller, index.item.eliminateUser);
 

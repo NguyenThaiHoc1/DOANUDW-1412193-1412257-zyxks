@@ -11,6 +11,7 @@
  var WishlistController = require("./wishlistControllers");
  var adminController = require("./adminControllers");
  var sellerController = require("./SellerControllers");
+ var winningController = require("./CheckingWinning.js");
 
  module.exports = {
    home : homeController,
@@ -25,5 +26,6 @@
    dangdaugia : DangDauGiaController,
    wishlist : WishlistController,
    admin : adminController,
-   seller : sellerController
+   seller : sellerController,
+   winner : winningController
  }
