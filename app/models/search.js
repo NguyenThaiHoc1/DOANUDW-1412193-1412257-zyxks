@@ -229,7 +229,7 @@ var search = {
                     					 group by history.productid) is not null then (select count(*)  \
                     															 from dackweb.bidhistory history\
                     															 where history.productid = b.proid\
-                    															 group by history.productid\
+                    															 group by history.productid)\
                     end as soluotdaugia\
                     from dackweb.bidhistory a right join dackweb.product b on a.productid = b.proid, dackweb.category cato\
                     where b.catid = ? and b.proname LIKE ? and b.catid = cato.catid and cato.active = 1\

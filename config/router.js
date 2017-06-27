@@ -127,6 +127,11 @@ module.exports = function(app) {
 
     app.get("/seller/SellerPosted", index.dangdaugia.Defaultpage);// trang chinh ne
 
+    // ***
+    app.post("/item/WriteCommentSeller", index.item.addcommentSeller);
+
+    app.post("/item/WriteCommentBuyer", index.item.addcommentBuyer);
+
     // Handle Error Page checking.isLoggedIn, checking.checkingSeller,
     app.use(function(req, res, next){
         res.status(404);
