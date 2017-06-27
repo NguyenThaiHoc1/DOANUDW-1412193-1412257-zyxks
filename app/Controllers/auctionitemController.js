@@ -11,6 +11,8 @@ var auctionitemController = {
     var usersx;
     var CheckedSellerItem;
     var CheckingElimaneti;
+    var CheckingCommentSeller;
+    var CheckingCommentBuyer;
     if(req.session.user === undefined) {
         usersx = undefined;
         CheckedSellerItem = undefined;
@@ -20,25 +22,41 @@ var auctionitemController = {
     var proId = req.params.id;
     Qs.all([auctionitemdb.loadWithID(proId), auctionitemdb.loadSellerInfo(proId), auctionitemdb.loadHighestBuyerInfo(proId), auctionitemdb.loadTotalItemSeller(proId),
                     auctionitemdb.loadTotalPersonBid(proId), auctionitemdb.loadBidHistory(proId), auctionitemdb.loadComment(proId),auctionitemdb.getMaxBidAndStep(proId)
-                    , auctionitemdb.getCatogory(), auctionitemdb.loadingUserBuyer(proId)])
-                    .spread(function (item, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10) {
+                    , auctionitemdb.getCatogory(), auctionitemdb.loadingUserBuyer(proId), auctionitemdb.getListComments(proId)])
+                    .spread(function (item, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, temp11) {
       var user = req.session.user;
-      var moment_now = momment(new Date);
-      var moment_post = momment(item.datepost);
-      var moment_finish = momment(item.datefinish);
-      var isTimeNotAvailable = !(moment_post.isBefore(moment_now) && moment_now.isBefore(moment_finish));
+      var isTimeNotAvailable = (item.sogiay > 0) ? undefined : true;
+      var CheckHiggerstUser = (user === undefined) ? undefined : (temp3.length > 0) ? ((user.IdUser === temp3[0].f_ID) ? true : undefined) : undefined;
       var isRatingNotAvailable = false;
       var Stringresulf = (temp3.length > 0) ? temp3[0].f_Name : 'No Bid';
       var StringUrlBuyerBest = (temp3.length > 0)  ? temp3[0].f_ImageUrl : undefined;
       if (user){
           isRatingNotAvailable = user.Positiverating / (user.Negativerating + user.Positiverating) < 0.8;
       }
-      // item 1 giu ID thang ban nao ?
+
+      if(CheckHiggerstUser !== undefined) {
+        for(var i = 0 ; i < temp11.length ; i++){
+          if(req.session.user.IdUser === temp11[i].userid1) {
+              CheckingCommentBuyer = true;
+              break;
+          }
+        }
+      }
 
       if (req.session.user !== undefined) {
         if(req.session.user.IdUser === item.sellerid) {
             CheckedSellerItem = true;
+            // them vao day cung dc
+            //var UserComment = req.session.user.Firstname + ' ' +  req.session.user.Lastname;
+            for(var i = 0 ; i < temp11.length ; i++){
+              if(req.session.user.IdUser === temp11[i].userid1) {
+                  CheckingCommentSeller = true;
+                  break;
+              }
+            }
         }
+
+
 
         for(var i = 0 ; i < temp10.length; ++i ){
             if(req.session.user.IdUser === temp10[i].f_ID) {
@@ -70,14 +88,25 @@ var auctionitemController = {
         bidhistory : temp6,
         comment : temp7,
         maxbidandstep : temp8,
-        isTimeNotAvailable: (isTimeNotAvailable === true) ? undefined : isTimeNotAvailable,
+        isTimeNotAvailable: isTimeNotAvailable,
         isRatingNotAvailable: (isRatingNotAvailable === true) ? undefined : isRatingNotAvailable,
+        checkingBuyerHigest: CheckHiggerstUser,
+        listComment: temp11,
+        CheckCommentSeller: CheckingCommentSeller,
+        CheckCommentBuyer: CheckingCommentBuyer,
         helpers: {
             CheckingState: function (state_User) {
               if(state_User === '0'){
                 return new handle.SafeString('<button button-add="addfriendBTN" type="button" class="btn btn-danger glyphicon glyphicon-remove"></button>');
               } else {
                 return new handle.SafeString('<button button-unlock="unlockAccount" type="button" class="btn btn-success glyphicon glyphicon-ok"></button>');
+              }
+            },
+            CheckingLike: function (state) {
+              if(state === 1){
+                return new handle.SafeString('<i class="fa fa-thumbs-up" style="color:red;"></i>');
+              } else {
+                return new handle.SafeString('<i class="fa fa-thumbs-down" style="color:#9400D3;"></i>');
               }
             }
         }
@@ -116,7 +145,7 @@ var auctionitemController = {
             to: email,
             subject: 'Confirm Bid Price',
             text: 'You bid \"'+idItem+'\"\nWith price '+price+'\nClick link below to confirm:\n' +
-            'http://' + req.headers.host + '/item/'+idItem+'/bid?price='+price
+            'http://' + req.headers.host + '/item/'+idItem+'/'+bidType+'/bid?price='+price
         };
         transporter.sendMail(mailOptions, function (error, info) {
             if (error) {
@@ -137,6 +166,10 @@ var auctionitemController = {
                   if(data.length > 0){
                     var timebid=momment().format('YYYY/MM/DD H:mm:ss');
                     var priccGuess = (price - data[0].price);
+                    // da them so giay vao loadHighestBuyerInfo ---- . ------
+                    if(data[0].sogiay < 0) {
+                      booleand = false;
+                    }
                     if (priccGuess <= 0 || priccGuess % data[0].step !== 0) {
                       booleand = false;
                     }
@@ -153,7 +186,6 @@ var auctionitemController = {
                       res.redirect("/item/" + idItem);
                     }
                   }else {
-
                     auctionitemdb.loadWithID(idItem).then(function (data) {
                         if(price >= data.startprice) {
                             var timebid=momment().format('YYYY/MM/DD H:mm:ss');
@@ -238,6 +270,40 @@ var auctionitemController = {
             req.flash("messagesFail", "Product is not Ported !");
             res.redirect("/testtingO");
         });
+    },
+    addcommentSeller: function (req, res) {
+      req.body.CommentDetail.postDate =  momment(req.body.CommentDetail.postDate).format('YYYY/MM/DD H:mm:ss');
+      auctionitemdb.addcomment(req.body.CommentDetail).then(function (data) {
+        if(req.body.CommentDetail.CheckingLike === 1) {
+          auctionitemdb.updateDiemLen(req.body.CommentDetail.userSeller).then(function (data) {
+            req.flash("messagesSuccess", "Comment is Success !");
+            res.redirect("/item/" + req.body.CommentDetail.proID);
+          });
+        }else {
+          auctionitemdb.updateDiemXuong(req.body.CommentDetail.userSeller).then(function (data) {
+            req.flash("messagesSuccess", "Comment is Success !");
+            res.redirect("/item/" + req.body.CommentDetail.proID);
+          });
+        }
+      }).fail(function (err) {
+      })
+    },
+    addcommentBuyer: function (req, res) {
+      req.body.CommentDetail.postDate =  momment(req.body.CommentDetail.postDate).format('YYYY/MM/DD H:mm:ss');
+      auctionitemdb.addcommentBuyer(req.body.CommentDetail).then(function (data) {
+        if(req.body.CommentDetail.CheckingLike === 1) {
+          auctionitemdb.updateDiemLen(req.body.CommentDetail.userBuyer).then(function (data) {
+            req.flash("messagesSuccess", "Comment is Success !");
+            res.redirect("/item/" + req.body.CommentDetail.proID);
+          });
+        }else {
+          auctionitemdb.updateDiemXuong(req.body.CommentDetail.userBuyer).then(function (data) {
+            req.flash("messagesSuccess", "Comment is Success !");
+            res.redirect("/item/" + req.body.CommentDetail.proID);
+          });
+        }
+      }).fail(function (err) {
+      })
     }
 };
 module.exports = auctionitemController;

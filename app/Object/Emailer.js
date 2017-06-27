@@ -3,6 +3,7 @@ const nodemailer = require('nodemailer');
 
 
 module.exports = function (toEmail, ContentEmail) {
+  
   this.transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {

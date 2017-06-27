@@ -1,4 +1,5 @@
 <link rel="stylesheet" href="/css/item.css">
+<input type="hidden" name="" value="{{seller.sellerid}}" id="productSellerID" >
 <div class="content">
   <div class="col-md-4 col-ms-4 col-lg-3">
     <div id="myCarousel" class="carousel slide" data-ride="carousel">
@@ -41,13 +42,43 @@
       <div class="current-bid">
         <h3><b>${{maxbidandstep.maxprice}}</b></h3>
       </div>
-      <!-- <div class="previous-bid">
-        <p><b>$17.00</b></p>
-      </div> -->
+      {{#each listComment}}
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <strong>{{this.Userid1}} to {{this.Userid2}}</strong>
+                <br>
+                <strong>{{this.Userid1}}</strong> <span class="text-muted"> commented on {{this.datepost}}</span>
+              </div>
+              <div class="panel-body" style="color:blue;">
+                {{this.content}}
+                <br>
+                {{{CheckingLike this.commentLikeandDislike}}}
+              </div>
+            </div>
+      {{/each}}
     </div>
       {{#if user}}
           {{#if isTimeNotAvailable}}
               <p>Now is not the time to bid</p>
+              {{#if checkingSellerItem}}
+                  <!-- Check xem da comment hay chua-->
+                  {{#if CheckCommentSeller}}
+                  {{else}}
+                    <p>Seller's comments to the <strong>buyer</strong> highest</p>
+                    <div class="btn-bid">
+                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#sellertobuyer">Seller's Comment</button>
+                    </div>
+                  {{/if}}
+              {{else if checkingBuyerHigest}}
+                  <!-- Check xem da comment hay chua-->
+                  {{#if CheckCommentBuyer}}
+                  {{else}}
+                    <p>Buyer's comments to the <strong>seller</strong> </p>
+                    <div class="btn-bid">
+                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#buyertoseller">Buyer's Comment</button>
+                    </div>
+                  {{/if}}
+              {{/if}}
           {{else if isRatingNotAvailable}}
               <p>Positive rating occupy a low rate</p>
           {{else if CheckElimanate}}
@@ -73,6 +104,14 @@
               </a>
           </div>
       {{/if}}
+
+
+
+    <!-- Modal comment Seller-->
+    {{> modal_CommentSeller}}
+
+    <!-- Modal comment Buyer-->
+    {{> modal_CommentBuyer}}
 
 
     <!-- Modal: thong ke danh sach-->
@@ -343,7 +382,7 @@
 
         BootstrapDialog.show({
             title: 'Confirm',
-            message: 'You want to block user: ' + userName,
+            message: 'You sure to post Comment: ' + userName,
             buttons: [{
                   label: 'Close',
                   action: function(dialog){
@@ -411,10 +450,134 @@
       });
     });
   }
+  function myFunction(x) {
+    x.classList.remove("actives");
+    document.getElementById("dislikes").classList.add("actives");
+  }
+  function myFunction1(x) {
+    x.classList.remove("actives");
+    document.getElementById("likesss").classList.add("actives");
+  }
+
+
+  function myFunction2(x) {
+    x.classList.remove("actives");
+    document.getElementById("dislikes1").classList.add("actives");
+  }
+  function myFunction3(x) {
+    x.classList.remove("actives");
+    document.getElementById("likesss1").classList.add("actives");
+  }
   $(function () {
     $('[data-toggle="tooltip"]').tooltip(); // cho phep hien thi cac cuc nho
     $('#table1').DataTable();
     BlockAccount();
     UnblockAccount();
+    $('#idSubmitComment').click(function () {
+      //.find(".fsidUser").text();
+      var Sellerid = $('#productSellerID').val();
+      var idClientBest = $('#table1').find('tr:eq(1) .fsidUser').text();
+      var url      = window.location.href;     // Returns full URL
+      var proid = url.split('/')[4];
+       // true: like, false: dislike
+       var checkLikeandDislike = ($('#likesss').hasClass('actives')) ? 1 : 0;
+       var CommentText = $('#fCommentBuyer').val();
+       var PostedDate = new Date();
+       //console.log(Sellerid + ' ' + idClientBest + ' ' + proid + ' ' + CommentText + ' ' + PostedDate + ' ' + checkLikeandDislike);
+       var Objectsd = {
+            userSeller : Sellerid,
+            userBuyer : idClientBest,
+            proID : proid,
+            content : CommentText,
+            postDate : PostedDate,
+            CheckingLike : checkLikeandDislike
+       };
+
+       BootstrapDialog.show({
+           title: 'Confirm',
+           message: 'You sure to post comment ?',
+           buttons: [{
+                 label: 'Close',
+                 action: function(dialog){
+                     dialog.close();
+                 }
+           },
+           {
+                 label: 'OK',
+                 cssClass: 'btn-primary',
+                 action: function(dialog) {
+                     $.ajax({
+                         url: '/item/WriteCommentSeller',
+                         method: 'POST',
+                         contentType : "application/json",
+                         data: JSON.stringify({CommentDetail: Objectsd}),
+                         success: function (data) {
+                           console.log(data);
+                         },
+                         complete: function () {
+                           window.location.reload();
+                         }
+                     });
+                     dialog.close();
+                 }
+           }]
+       });
+
+    });
+
+
+    $('#idSubmitComment1').click(function () {
+      //.find(".fsidUser").text();
+      var Sellerid = $('#productSellerID').val();
+      var idClientBest = $('#table1').find('tr:eq(1) .fsidUser').text();
+      var url      = window.location.href;     // Returns full URL
+      var proid = url.split('/')[4];
+       // true: like, false: dislike
+       var checkLikeandDislike = ($('#likesss1').hasClass('actives')) ? 1 : 0;
+       var CommentText = $('#fCommentBuyer1').val();
+       var PostedDate = new Date();
+       //console.log(Sellerid + ' ' + idClientBest + ' ' + proid + ' ' + CommentText + ' ' + PostedDate + ' ' + checkLikeandDislike);
+       var Objectsd = {
+            userSeller : Sellerid,
+            userBuyer : idClientBest,
+            proID : proid,
+            content : CommentText,
+            postDate : PostedDate,
+            CheckingLike : checkLikeandDislike
+       };
+
+       BootstrapDialog.show({
+           title: 'Confirm',
+           message: 'You sure to post comment ?',
+           buttons: [{
+                 label: 'Close',
+                 action: function(dialog){
+                     dialog.close();
+                 }
+           },
+           {
+                 label: 'OK',
+                 cssClass: 'btn-primary',
+                 action: function(dialog) {
+                     $.ajax({
+                         url: '/item/WriteCommentBuyer',
+                         method: 'POST',
+                         contentType : "application/json",
+                         data: JSON.stringify({CommentDetail: Objectsd}),
+                         success: function (data) {
+                           console.log(data);
+                         },
+                         complete: function () {
+                           window.location.reload();
+                         }
+                     });
+                     dialog.close();
+                 }
+           }]
+       });
+
+    });
+
+
   });
 </script>

@@ -8,7 +8,7 @@ var item = {
     var obj = {
       proID: proId
     };
-    var sql = mustache.render('select * from product where proid = {{proID}}',obj);
+    var sql = mustache.render('select *, TIMESTAMPDIFF(Second , now() , datefinish) sogiay from product where proid = {{proID}}',obj);
     db.query(sql,function (error, results) {
       if (error){
         d.reject(error);
@@ -24,7 +24,7 @@ var item = {
     var obj = {
       proID: proId
     };
-    var sql = mustache.render('SELECT user.f_ImageUrl, user.f_Username, user.f_Name, user.f_Email  FROM product,user where product.sellerid = user.f_ID and proid = {{proID}}',obj);
+    var sql = mustache.render('SELECT product.sellerid, user.f_ImageUrl, user.f_Username, user.f_Name, user.f_Email  FROM product,user where product.sellerid = user.f_ID and proid = {{proID}}',obj);
     db.query(sql,function (error, results) {
       if (error){
         d.reject(error);
@@ -35,7 +35,8 @@ var item = {
   },
   loadHighestBuyerInfo : function (proId) {
     var d = q.defer();
-    var sql = 'select b.f_ImageUrl ,b.f_Name, a.price, f.step from bidhistory a, user b ,product f\
+    var sql = 'select b.f_ID ,b.f_ImageUrl ,b.f_Name, a.price, f.step, TIMESTAMPDIFF(Second , now() , f.datefinish) sogiay  \
+                from bidhistory a, user b ,product f\
                   where a.userid = b.f_ID and f.proid = a.productid\
                   and a.productid = ?\
                   and not exists (select * from dackweb.favorite favo\
@@ -317,7 +318,7 @@ var item = {
                   }
                 }
                 console.log("***Da co nguoi bid tu dong tu truoc " + prevMaxPrice + " " + prevAutoBidUserId);
-                if ((prevTurnAutoBidUserId == userid && prevTurnMaxPrice > prevMaxPrice) || index > 0) { 
+                if ((prevTurnAutoBidUserId == userid && prevTurnMaxPrice > prevMaxPrice) || index > 0) {
                   //người dùng cập nhật maxbid
                   var tmpsql = 'insert into autobid(iduser,idproduct,maxprice) \
                     values (?,?,?)';
@@ -333,7 +334,7 @@ var item = {
                       if (price > maxProductPrice && rslt2[0]['userid'] !== userid) {
                         sql = 'insert into bidhistory(userid, productid, price, timebid) \
                           values (?,?,?,?)';
-                        var max = (maxProductPrice > prevMaxPrice) ? maxProductPrice : prevMaxPrice; 
+                        var max = (maxProductPrice > prevMaxPrice) ? maxProductPrice : prevMaxPrice;
                         currentMaxPrice = max+step;
                         var whatToDecide = (prevAutoBidUserId == 0) ? userid : prevAutoBidUserId;
                         db.query(sql, [whatToDecide,productid,max+step,timebid], function(err3,rslt3) {
@@ -526,6 +527,69 @@ var item = {
           d.resolve(results);
       });
       return d.promise;
+  },
+  addcomment: function (Objects) {
+    var d = q.defer();
+    var sql = 'insert into CommentDanhGia(userid1, userid2, productid, content, datepost, commentLikeandDislike)\
+               values (?, ?, ?, ?, ?, ?)';
+    db.query(sql, [Objects.userSeller, Objects.userBuyer, Objects.proID, Objects.content, Objects.postDate, Objects.CheckingLike],function (error, results) {
+        if (error){
+            d.reject(error);
+        }
+        d.resolve(results);
+    });
+    return d.promise;
+  },
+  addcommentBuyer: function (Objects) {
+    var d = q.defer();
+    var sql = 'insert into CommentDanhGia(userid1, userid2, productid, content, datepost, commentLikeandDislike)\
+               values (?, ?, ?, ?, ?, ?)';
+    db.query(sql, [Objects.userBuyer, Objects.userSeller, Objects.proID, Objects.content, Objects.postDate, Objects.CheckingLike],function (error, results) {
+        if (error){
+            d.reject(error);
+        }
+        d.resolve(results);
+    });
+    return d.promise;
+  },
+  getListComments: function (proID) {
+    var d = q.defer();
+    var sql = 'select *, \
+                (select f_Name from dackweb.user where f_ID = a.userid1) as Userid1,\
+                (select f_Name from dackweb.user where f_ID = a.userid2) as Userid2\
+                from CommentDanhGia a where productid = ?;';
+    db.query(sql, [proID],function (error, results) {
+        if (error){
+            d.reject(error);
+        }
+        for (var i = 0;i< results.length;i++){
+          results[i].datepost = results[i].datepost.toLocaleString("en-GB");
+        }
+        d.resolve(results);
+    });
+    return d.promise;
+  },
+  updateDiemLen: function (userid) {
+    var d = q.defer();
+    var sql = 'update dackweb.user set positiverating = positiverating + 1 where f_ID = ?;';
+    db.query(sql, [userid],function (error, results) {
+        if (error){
+            d.reject(error);
+        }
+        d.resolve(results);
+    });
+    return d.promise;
+  },
+  updateDiemXuong: function (userid) {
+    var d = q.defer();
+    var sql = 'update dackweb.user set negativerating = negativerating + 1 where f_ID = ?;';
+    db.query(sql, [userid],function (error, results) {
+        if (error){
+            d.reject(error);
+        }
+        d.resolve(results);
+    });
+    return d.promise;
   }
 };
 
