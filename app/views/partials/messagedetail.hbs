@@ -1,0 +1,36 @@
+<script src="/component/tinymce/tinymce.min.js"></script>
+<script>tinymce.init({ selector:'textarea' });</script>
+<style >
+.editable{
+  height: 300px;
+  width: 100%;
+  cursor: text;
+  border: 1px solid #999;
+  background: white;
+  overflow-y:scroll;
+}
+</style>
+<form action="/seller/updateDescription" method="post">
+  <div class="alert alert-danger" role="alert" style="display:none;" id="error-inf">
+      <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+      <span class="sr-only" id="Common-err"></span>
+  </div>
+  <div class="form-group">
+    <input name="fIDProduct" type="text" class="form-control" id="IDProduct" style="display:none">
+  </div>
+  <div class="form-group">
+    <label for="DOE">Date of Edit</label>
+    <input name="fDOE" type="text" class="form-control" id="DOE" placeholder="Date Of Edit">
+  </div>
+  <div class="form-group">
+    <label for="noidung">Contain Full Description</label>
+    <div name="fnoidung" id="noidung" class="form-control editable" placeholder="Nội dung">
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="editContaint" >Contain Full Description</label>
+    <textarea name="editUpdate" id="editContaint" >Next, get a free TinyMCE Cloud API key!
+    </textarea>
+  </div>
+  <button type="submit" class="btn btn-primary" id="sentButton">Update</button>
+</form>

@@ -1,187 +1,171 @@
-<div class="row">
-    <div class="col-md-12 col-ms-12">
-        <!-- {{> breadcrumd}} -->
-    </div>
-</div>
+<style>
+  p {
+    margin: 3px 0;
+    font-size: 13px;
+    color: blue;
+  }
+  h4 {
+    margin: 8px 0;
+    font-size: 18px;
+  }
+</style>
+
 {{> popupMessage}}
-<!-- Breadcrumb-->
+
 <div class="row" style="margin-top: 20px;">
     <div class="col-md-12 col-ms-12">
         {{> sliderHome}}
     </div>
-    <div class="col-md-8 col-ms-12" style="margin-top:20px;">
-        {{> sliderHome_Shopping}}
-    </div>
-    <div class="col-md-4 col-ms-12" style="margin-top:20px;">
-        {{> sliderHome_Bags}}
-    </div>
-    <div class="col-md-4 col-ms-12" style="margin-top:20px;">
-        {{> sliderHome_Shoes}}
-    </div>
-    <div class="col-md-8 col-ms-12" style="margin-top:20px;">
-        {{> sliderHome_Men}}
-    </div>
 </div>
 
 <div class="row" style="margin-top: 20px;">
-    <div class="col-md-12 col-ms-12">
-        <div class="panel panel-default">
-            <div class="panel-heading" style="text-align:center;">
-                <h1 class="panel-title">TOP 5 PRODUCT ARE BID MOST</h1>
-            </div>
-            <div class="panel-body">
-                <div class="">
-                    <div class="span12">
-                        <div class="well">
-                            <div id="myCarousel" class="carousel fdi-Carousel slide">
-                                <!-- Carousel items -->
-                                <div class="carousel fdi-Carousel slide" id="eventCarousel" data-interval="0">
-                                    <div class="carousel-inner onebyone-carosel">
-                                        {{#each mostauctionbid}}
-                                            <div class="item">
-                                                <div class="col-md-4 col-sm-12">
-                                                  <span class="thumbnail text-center">
-                                                      <img src="{{this.image1}}" alt="..." class="img-responsive" style="width: 350px; height:280px;">
-                                                        <h6 class="text-danger" style="font-size: 15px;">{{{trimString this.proname}}}</h6>
-                                                          <div class="ratings">
-                                                            <p style="font-size: 11px; color: red">Highestbuyerid: {{this.userBid}}</p>
-                                                          </div>
-                                                          <p style="font-size: 11px;"><span class="price">Best price in time: {{this.priceAuction}} $</span> </p>
-                                                          <p style="font-size: 10px; color: blue">[{{this.soluotdaugia}} turn]</p>
-                                                          <p class="DateEnd" style="font-size: 13px;">  {{{CheckDeadline this.sogiay}}}</p>
-                                                          <input class="idText" type="hidden" name="id" value="{{this.proid}}">
-                                                          <hr class="line">
-                                                          <div class="row">
-                                                              <div class="col-md-6 col-sm-6">
-                                                                  <button button-add="addwishlist" type="button" class="btn btn-link watchlistItem">Add to Wishlist</button>
-                                                              </div>
-                                                              <div class="col-md-6 col-sm-6">
-                                                                <a href="/item/{{this.proid}}"><button class="btn btn-danger right" button-bid="bidnow"> BID NOW</button></a>
-                                                              </div>
-                                                          </div>
-                                                  </span>
-                                                </div>
-                                            </div>
-                                        {{/each}}
-                                    </div>
-                                    <a class="left carousel-control" href="#eventCarousel" data-slide="prev"></a>
-                                    <a class="right carousel-control" href="#eventCarousel" data-slide="next"></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+  <div class="col-md-12 col-ms-12">
+    <div class="panel panel-default">
+      <div class="panel-heading" style="text-align:center;background-color:#609af7;color:white;font-size:3em;">
+        <h1 class="panel-title" style="font-size:0.7em;">
+          <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+          TOP 5 POPULAR AUCTIONS
+          <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+        </h1>
+      </div>
+      <div class="panel-body">
+        {{#each mostauctionbid}}
+          <div class="col-sm-12" style="width:20%;margin:0px;padding:0px;">
+            <span class="thumbnail" >
+              <a href="/item/{{this.proid}}">
+              <div class="img-container" style="position:relative;">
+                <img src="{{this.image1}}" alt="..." class="img-responsive" style="width:350px; height:280px;position:relative;" title="{{this.tinydes}}">
+                {{#if this.isNew}}
+                  <img style="position:absolute;right:-4px;top:-5px;width:100px;" src="/img/label-product-new.png">
+                {{/if}}
+              </div>
+              <div style="padding: 0 5%;">
+                <h4 class="text-danger" title="{{this.proname}}">{{{trimString this.proname}}}</h4>
+                </a>
+                <p>
+                  {{this.soluotdaugia}} bids | {{this.priceAuction}}$ 
+                  <span title="{{this.userBid}}">({{trimString this.userBid}})
+                </p>
+                <p class="DateEnd">
+                  <span class="glyphicon glyphicon-time" aria-hidden="true"></span> 
+                  {{{CheckDeadline this.sogiay}}}
+                </p>
+                <input class="idText" type="hidden" name="id" value="{{this.proid}}">
+                <div class="row">
+                  <div class="col-md-6 col-sm-6">
+                    <button button-add="addwishlist" type="button" class="btn btn-link watchlistItem">Add to Wishlist</button>
+                  </div>
+                  <div class="col-md-6 col-sm-6">
+                    <a href="/item/{{this.proid}}"><button class="btn btn-danger right" button-bid="bidnow">BID NOW</button></a>
+                  </div>
                 </div>
-            </div>
-            <hr class="line">
-        </div>
+              </div>
+            </span>
+          </div>
+        {{/each}}
+      </div>
     </div>
+  </div>
 </div>
 
 <div class="row" style="margin-top: 20px;">
-    <div class="col-md-12 col-ms-12">
-        <div class="panel panel-default">
-            <div class="panel-heading" style="text-align:center;">
-                <h1 class="panel-title">TOP 5 PRODUCT PRICE MOST</h1>
-            </div>
-            <div class="panel-body">
-              <div class="">
-                  <div class="span12">
-                      <div class="well">
-                          <div id="myCarousel" class="carousel fdi-Carousel slide">
-                              <!-- Carousel items -->
-                              <div class="carousel fdi-Carousel slide" id="eventCarousel2" data-interval="0">
-                                  <div class="carousel-inner onebyone-carosel">
-                                      {{#each bestprice}}
-                                          <div class="item">
-                                              <div class="col-md-4 col-sm-12">
-                                                <span class="thumbnail text-center">
-                                                    <img src="{{this.image1}}" alt="..." class="img-responsive" style="width: 350px; height:280px;">
-                                                      <h6 class="text-danger" style="font-size: 15px;">{{{trimString this.proname}}}</h6>
-                                                        <div class="ratings">
-                                                          <p style="font-size: 11px; color: red">Highestbuyerid: {{this.userBid}}</p>
-                                                        </div>
-                                                        <p style="font-size: 11px;">Price: <span class="price">Best price in time: {{this.priceAuction}}</span> </p>
-                                                        <p style="font-size: 10px; color: blue">[{{this.soluotdaugia}} turn]</p>
-                                                        <p class="DateEnd" style="font-size: 13px;">  {{{CheckDeadline this.sogiay}}}</p>
-                                                        <input class="idText" type="hidden" name="id" value="{{this.proid}}">
-                                                        <hr class="line">
-                                                        <div class="row">
-                                                            <div class="col-md-6 col-sm-6">
-                                                                <button button-add="addwishlist" type="button" class="btn btn-link watchlistItem">Add to Wishlist</button>
-                                                            </div>
-                                                            <div class="col-md-6 col-sm-6">
-                                                              <a href="/item/{{this.proid}}"><button class="btn btn-danger right" button-bid="bidnow"> BID NOW</button></a>
-                                                            </div>
-                                                        </div>
-                                                </span>
-                                              </div>
-                                          </div>
-                                      {{/each}}
-                                  </div>
-                                  <a class="left carousel-control" href="#eventCarousel2" data-slide="prev"></a>
-                                  <a class="right carousel-control" href="#eventCarousel2" data-slide="next"></a>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
+  <div class="col-md-12 col-ms-12">
+    <div class="panel panel-default">
+      <div class="panel-heading" style="text-align:center;background-color:#fff600;color:#5b5b5b;font-size:3em;">
+        <h1 class="panel-title" style="font-size:0.7em;">
+          <span class="glyphicon glyphicon-usd" aria-hidden="true"></span>
+          TOP 5 VALUABLE AUCTIONS
+          <span class="glyphicon glyphicon-usd" aria-hidden="true"></span>
+        </h1>
+      </div>
+      <div class="panel-body">
+        {{#each bestprice}}
+          <div class="col-sm-12" style="width:20%;margin:0px;padding:0px;">
+            <span class="thumbnail" >
+              <a href="/item/{{this.proid}}">
+              <div class="img-container" style="position:relative;">
+                <img src="{{this.image1}}" alt="..." class="img-responsive" style="width:350px; height:280px;position:relative;" title="{{this.tinydes}}">
+                {{#if this.isNew}}
+                  <img style="position:absolute;right:-4px;top:-5px;width:100px;" src="/img/label-product-new.png">
+                {{/if}}
               </div>
-            </div>
-            <hr class="line">
-        </div>
+              <div style="padding: 0 5%;position:relative">
+                <h4 class="text-danger" title="{{this.proname}}">{{{trimString this.proname}}}</h4>
+                </a>
+                <p>
+                  {{this.soluotdaugia}} bids | {{this.priceAuction}}$ 
+                  <span title="{{this.userBid}}">({{trimString this.userBid}})
+                </p>
+                <p class="DateEnd">
+                  <span class="glyphicon glyphicon-time" aria-hidden="true"></span> 
+                  {{{CheckDeadline this.sogiay}}}
+                </p>
+                <input class="idText" type="hidden" name="id" value="{{this.proid}}">
+                <div class="row">
+                  <div class="col-md-6 col-sm-6">
+                    <button button-add="addwishlist" type="button" class="btn btn-link watchlistItem">Add to Wishlist</button>
+                  </div>
+                  <div class="col-md-6 col-sm-6">
+                    <a href="/item/{{this.proid}}"><button class="btn btn-danger right" button-bid="bidnow">BID NOW</button></a>
+                  </div>
+                </div>
+              </div>
+            </span>
+          </div>
+        {{/each}}
+      </div>
     </div>
+  </div>
 </div>
 
 <div class="row" style="margin-top: 20px;">
-    <div class="col-md-12 col-ms-12">
-        <div class="panel panel-default">
-            <div class="panel-heading" style="text-align:center;">
-                <h1 class="panel-title">TOP 5 PRODUCT COMING TO AN END</h1>
-            </div>
-            <div class="panel-body">
-              <div class="">
-                  <div class="span12">
-                      <div class="well">
-                          <div id="myCarousel" class="carousel fdi-Carousel slide">
-                              <!-- Carousel items -->
-                              <div class="carousel fdi-Carousel slide" id="eventCarousel1" data-interval="0">
-                                  <div class="carousel-inner onebyone-carosel">
-                                      {{#each cometoend}}
-                                          <div class="item">
-                                              <div class="col-md-4 col-sm-12">
-                                                <span class="thumbnail text-center">
-                                                        <img src="{{this.image1}}" alt="..." class="img-responsive" style="width: 350px; height:280px;">
-                                                        <h6 class="text-danger" style="font-size: 15px;">{{{trimString this.proname}}}</h6>
-                                                        <div class="ratings">
-                                                          <p style="font-size: 11px; color: red">Highestbuyerid: {{this.userBid}}</p>
-                                                        </div>
-                                                        <p style="font-size: 11px;">Price: <span class="price">Best price in time: {{this.priceAuction}}</span> </p>
-                                                        <p style="font-size: 10px; color: blue">[{{this.soluotdaugia}} turn]</p>
-                                                        <p class="DateEnd" style="font-size: 13px;">  {{{CheckDeadline this.sogiay}}}</p>
-                                                        <input class="idText" type="hidden" name="id" value="{{this.proid}}">
-                                                        <hr class="line">
-                                                        <div class="row">
-                                                            <div class="col-md-6 col-sm-6">
-                                                                <button button-add="addwishlist" type="button" class="btn btn-link">Add to Wishlist</button>
-                                                            </div>
-                                                            <div class="col-md-6 col-sm-6">
-                                                              <a href="/item/{{this.proid}}"><button class="btn btn-danger right" button-bid="bidnow"> BID NOW</button></a>
-                                                            </div>
-                                                        </div>
-                                                </span>
-                                              </div>
-                                          </div>
-                                      {{/each}}
-                                  </div>
-                                  <a class="left carousel-control" href="#eventCarousel1" data-slide="prev"></a>
-                                  <a class="right carousel-control" href="#eventCarousel1" data-slide="next"></a>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
+  <div class="col-md-12 col-ms-12">
+    <div class="panel panel-default">
+      <div class="panel-heading" style="text-align:center;background-color:#ff3f3f;color:white;font-size:3em;">
+        <h1 class="panel-title" style="font-size:0.7em;">
+          <span class="glyphicon glyphicon-fire" aria-hidden="true"></span>
+          TOP 5 EARLY TO END AUCTIONS
+          <span class="glyphicon glyphicon-fire" aria-hidden="true"></span>
+        </h1>
+      </div>
+      <div class="panel-body">
+        {{#each cometoend}}
+          <div class="col-sm-12" style="width:20%;margin:0px;padding:0px;">
+            <span class="thumbnail" >
+              <a href="/item/{{this.proid}}">
+              <div class="img-container" style="position:relative;">
+                <img src="{{this.image1}}" alt="..." class="img-responsive" style="width:350px; height:280px;position:relative;" title="{{this.tinydes}}">
+                {{#if this.isNew}}
+                  <img style="position:absolute;right:-4px;top:-5px;width:100px;" src="/img/label-product-new.png">
+                {{/if}}
               </div>
-            </div>
-        </div>
+              <div style="padding: 0 5%;">
+                <h4 class="text-danger" title="{{this.proname}}">{{{trimString this.proname}}}</h4>
+                </a>
+                <p>
+                  {{this.soluotdaugia}} bids | {{this.priceAuction}}$ 
+                  <span title="{{this.userBid}}">({{trimString this.userBid}})
+                </p>
+                <p class="DateEnd">
+                  <span class="glyphicon glyphicon-time" aria-hidden="true"></span> 
+                  {{{CheckDeadline this.sogiay}}}
+                </p>
+                <input class="idText" type="hidden" name="id" value="{{this.proid}}">
+                <div class="row">
+                  <div class="col-md-6 col-sm-6">
+                    <button button-add="addwishlist" type="button" class="btn btn-link watchlistItem">Add to Wishlist</button>
+                  </div>
+                  <div class="col-md-6 col-sm-6">
+                    <a href="/item/{{this.proid}}"><button class="btn btn-danger right" button-bid="bidnow">BID NOW</button></a>
+                  </div>
+                </div>
+              </div>
+            </span>
+          </div>
+        {{/each}}
+      </div>
     </div>
+  </div>
 </div>
 
 <div id="getting-started"></div>
@@ -195,7 +179,7 @@
         $('.fdi-Carousel .item:first-child').addClass("active");
 
         $('#myCarousel').carousel({
-            interval: 10000
+            //interval: 10000
         });
 
         $('.fdi-Carousel .item').each(function() {
@@ -220,6 +204,4 @@
           });
         });
     });
-
-
 </script>

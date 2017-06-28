@@ -13,14 +13,79 @@ function showSuggest(max, step) {
 
 }
 
-$(document).ready(function() {
-    $("#bid-warning").hide()
-    $('#myModal').on('shown.bs.modal', function() {
-        $("#bid-warning").hide()
-    });
-    $('#custom-price').on('input', function(){
-        useSuggerPrice=false;
-    });
+
+
+$(function () {
+  $("#bid-warning1").hide()
+  $('#myModal').on('shown.bs.modal', function() {
+    $("#bid-warning1").hide()
+  });
+  $('#custom-price').on('input', function(){
+      useSuggerPrice=false;
+  });
+});
+
+$("#btn-bid1").click(function () {
+    var currentPrice = parseInt($("#current-price").text());
+    var customPrice = parseInt($("#custom-price").val());
+    var bidStep = parseInt($("#bid-step").text());
+    var bidWarning = $("#bid-warning1");
+    if(isNaN(customPrice)) {
+      bidWarning.show();
+      bidWarning.text("Check your price");
+      bidPrice = NaN;
+    }
+    else if (!isNaN(customPrice) && !useSuggerPrice){
+        if(customPrice<=currentPrice){
+            console.log("abc");
+            bidWarning.show();
+            bidWarning.text("Custom price must be larger current price")
+            bidPrice = NaN;
+        }
+        else if((customPrice - currentPrice) % bidStep !== 0){
+            console.log("abc");
+            bidWarning.show();
+            bidWarning.text("Custom price must be divisible by step")
+            bidPrice = NaN;
+        }
+        else{
+            bidWarning.hide();
+            bidPrice=customPrice;
+        }
+    }
+    if(!isNaN(bidPrice)){
+        $('#myModal').modal('toggle');
+        BootstrapDialog.show({
+            title: 'Notify',
+            message: 'Your price is:  '+bidPrice+"\n We will send you a email to confirm",
+            buttons: [
+                {
+                    label: 'Close',
+                    action: function(dialog){
+                        dialog.close();
+                    }
+                },
+                {
+                label: 'Send me an email',
+                cssClass: 'btn-primary',
+                action: function(dialog) {
+                    var idItem= $("#addwishlist").val();
+                    var bidType= $("#checkboxIsAuto").is(':checked') ? 'auto' : 'manual';
+                    var idName= $("#item-name").text();
+                    $.ajax({
+                        url: "/item/"+idItem+"/"+bidType+"/send_email_confirm_bid",
+                        method: 'POST',
+                        contentType : "application/json",
+                        data: JSON.stringify({price: bidPrice, name: idName}),
+                        success: function (data) {
+                        }
+                    });
+                    dialog.close();
+                }
+            }
+            ]
+        });
+    }
 });
 
 function bidWithPrice(price){
@@ -71,62 +136,4 @@ $("#addwishlist").click(function () {
             }
         }
     });
-});
-
-$("#btn-bid").click(function () {
-    var currentPrice = parseInt($("#current-price").text());
-    var customPrice = parseInt($("#custom-price").val());
-    var bidStep = parseInt($("#bid-step").text());
-    var bidWarning = $("#bid-warning");
-    if (!isNaN(customPrice) && !useSuggerPrice){
-        if(customPrice<currentPrice){
-            bidWarning.show();
-            bidWarning.text("Custom price must be large current price")
-            bidPrice = NaN;
-        }
-        else if(customPrice % bidStep !== 0){
-            bidWarning.show();
-            bidWarning.text("Custom price must be divisible by step")
-            bidPrice = NaN;
-        }
-        else{
-            bidWarning.hide();
-            bidPrice=customPrice;
-        }
-    }
-    console.log(bidPrice);
-    if(!isNaN(bidPrice)){
-        $('#myModal').modal('toggle');
-        BootstrapDialog.show(
-            {
-            title: 'Notify',
-            message: 'Your price is:  '+bidPrice+"\n We will send you a email to confirm",
-            buttons: [
-                {
-                    label: 'Close',
-                    action: function(dialog){
-                        dialog.close();
-                    }
-                },
-                {
-                label: 'Send me an email',
-                cssClass: 'btn-primary',
-                action: function(dialog) {
-                    var idItem= $("#addwishlist").val();
-                    var idName= $("#item-name").text();
-                    $.ajax({
-                        url: "/item/"+idItem+"/send_email_confirm_bid",
-                        method: 'POST',
-                        contentType : "application/json",
-                        data: JSON.stringify({price: bidPrice, name: idName}),
-                        success: function (data) {
-                            console.log(data);
-                        }
-                    });
-                    dialog.close();
-                }
-            }
-            ]
-        });
-    }
 });

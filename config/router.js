@@ -4,7 +4,32 @@ var index = require("../app/Controllers/index.js");
 
 var checking = require("./OthersfunctionChecking.js");
 
+var multer  = require('multer');
+
+var cron = require('cron');
+
+var cronJob = cron.job("*/5 * * * * *", function(){
+    // tao 1 Job de thuc hien cong viec la xac nhan nguoi thang cuoc
+    // 5s se xac nhan 1 lan
+    index.winner.WrittingWinning();
+
+});
+
+var storage = multer.diskStorage({
+     destination: function (req, file, cb) {
+         cb(null, 'public/img/product')
+     },
+     filename: function (req, file, cb) {
+         cb(null, 'product' + Date.now()+file.originalname)
+     }
+});
+var upload = multer({storage:storage});
+
 module.exports = function(app) {
+
+    // bat dau cong viec
+    cronJob.start();
+
     // home
     app.get("/", index.home.homedefaultPage);
 
@@ -12,10 +37,14 @@ module.exports = function(app) {
 
     app.post("/item/:id/comments", checking.isLoggedIn, index.item.addComment);
 
-    app.post("/item/:id/send_email_confirm_bid", checking.isLoggedIn, index.item.sendEmailConfirmBid);
+    app.post("/item/:id/:bidType/send_email_confirm_bid", checking.isLoggedIn, index.item.sendEmailConfirmBid);
 
-    app.post("/item/:id/bid", checking.isLoggedIn, index.item.bid);
+    app.get("/item/:id/:bidType/bid", checking.isLoggedIn, index.item.bid);
 
+
+    app.post("/item/:id/eliminate", checking.isLoggedIn, checking.checkingSeller, index.item.eliminateUser);
+
+    app.post("/item/:id/unblockElimanate", checking.isLoggedIn, checking.checkingSeller, index.item.unblockElimanate);
 
     app.get("/register", checking.isLoggedLong, index.user.registerPage);
 
@@ -45,6 +74,8 @@ module.exports = function(app) {
 
     app.post("/changepassword", index.user.changepassword);
 
+    app.get("/requestselling", index.user.requestSelling);
+
     app.get("/timkiem", index.search.searchMenuPage);
 
     app.get("/danhmuc", index.catogory.searchCatogory);
@@ -61,25 +92,67 @@ module.exports = function(app) {
 
     app.post("/profile", index.user.changeInformation);
 
-
-    // cai nay la test co the xoa
-    app.get("/popup", function (req, res) {
-      res.render("testingPopup",{
-        layout: "application"
-      });
-    })
-
     app.get("/admin", index.admin.Defaultpage);
 
     app.post("/admin", index.admin.adminLogin);
 
     //admin functions
     app.get("/acceptsellrequest", index.admin.acceptSellRequest);
+
     app.get("/denysellrequest", index.admin.denySellRequest);
+
     app.get("/changecategorystate", index.admin.changeCategoryState);
+
     app.get("/addcategory", index.admin.addCategory);
+
     app.get("/editcategoryname", index.admin.editCategoryName);
+
     app.get("/changeuserstate", index.admin.changeUserState);
+
     app.get("/resetpassword", index.admin.resetPassword);
 
+    // text cai nay la test co the xoa
+    app.get("/popup", function (req, res) {
+      res.render("testingPopup",{
+        layout: "application"
+      });
+    })
+
+    // dang lam ne
+    app.get("/profile/manageauctions",checking.isLoggedIn, checking.checkingSeller ,index.seller.Defaultpage); // trang nguoi ban
+
+    app.post("/seller/updateDescription",checking.isLoggedIn, checking.checkingSeller, index.seller.UpdateSellerDetail);
+
+    app.post("/item", upload.array('input-file-preview', 3), index.item.publish);
+
+    app.get("/seller/SellerPosted", index.dangdaugia.Defaultpage);// trang chinh ne
+
+    // ***
+    app.post("/item/WriteCommentSeller", index.item.addcommentSeller);
+
+    app.post("/item/WriteCommentBuyer", index.item.addcommentBuyer);
+
+    // Handle Error Page checking.isLoggedIn, checking.checkingSeller,
+    app.use(function(req, res, next){
+        res.status(404);
+        if (req.accepts('html')) {
+          res.render('_errorPage/404', {
+            url: '/',
+            Topic: '404 Not Found',
+            content: "Oh noes everything broke",
+            layout: 'applicationnoHeader'
+          });
+          return;
+        }
+    });
+
+    app.use(function(err, req, res, next) {
+      res.status(err.status || 500);
+      res.render('_errorPage/404', {
+        Topic: 'Server Process Is Error',
+        content: err.message,
+        tryagain: req.url,
+        layout: 'applicationnoHeader'
+      });
+    });
 }

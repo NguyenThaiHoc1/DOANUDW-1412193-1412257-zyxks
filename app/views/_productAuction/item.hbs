@@ -1,5 +1,7 @@
 <link rel="stylesheet" href="/css/item.css">
-<div class="content">
+{{> popupMessage}}
+<input type="hidden" name="" value="{{seller.sellerid}}" id="productSellerID" >
+<div class="content row">
   <div class="col-md-4 col-ms-4 col-lg-3">
     <div id="myCarousel" class="carousel slide" data-ride="carousel">
       <!-- Indicators -->
@@ -8,7 +10,7 @@
         <li data-target="#myCarousel" data-slide-to="1"></li>
         <li data-target="#myCarousel" data-slide-to="2"></li>
       </ol>
-      <!-- Wrapper for slides -->
+      <!-- Wrapper for slides --> 
       <div class="carousel-inner">
         <div class="item active">
           <img src="{{item.image1}}" alt="Preview 1" style="width:100%;">
@@ -22,7 +24,7 @@
       </div>
     </div>
   </div>
-  <div class="col-md-8 col-ms-8 col-lg-9">
+  <div class="col-md-5 col-ms-5 col-lg-6">
     <div class="alert alert-success">
       <p>Event starts: <span id="datepost">{{item.datepost}}</span></p>
       <p id="datepost_timer"></p>
@@ -33,26 +35,69 @@
     </div>
     <div class="title-info">
       <h2 id="item-name">{{item.proname}}</h2>
-      <p>{{{item.fulldes}}}</p>
-      <button id="addwishlist" type="button" class="btn btn-link watchlistItem" value="{{item.proid}}">Add to Wishlist</button>
+      <p id="fulldescription">{{{item.fulldes}}}</p>
+      {{> Checkerror}}
     </div>
     <div class="item-info">
       <div class="current-bid">
-        <h3><b>${{maxbidandstep.maxprice}}</b></h3>
+        <h3><b>Current price: {{maxbidandstep.maxprice}}$</b></h3>
+        <h6 style="font-style:italic;font-size:18px;line-height:22px;">
+          Starting price: &nbsp;&nbsp;&nbsp;{{item.startprice}}$<br>
+          Step: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{item.step}}$
+        </h6>
       </div>
-      <!-- <div class="previous-bid">
-        <p><b>$17.00</b></p>
-      </div> -->
+      {{#each listComment}}
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <strong>{{this.Userid1}} to {{this.Userid2}}</strong>
+                <br>
+                <strong>{{this.Userid1}}</strong> <span class="text-muted"> commented on {{this.datepost}}</span>
+              </div>
+              <div class="panel-body" style="color:blue;">
+                {{this.content}}
+                <br>
+                {{{CheckingLike this.commentLikeandDislike}}}
+              </div>
+            </div>
+      {{/each}}
     </div>
       {{#if user}}
           {{#if isTimeNotAvailable}}
-            <p>Now is not the time to bid</p>
+              <p>Now is not the time to bid</p>
+              {{#if checkingSellerItem}}
+                  <!-- Check xem da comment hay chua-->
+                  {{#if CheckCommentSeller}}
+                  {{else}}
+                    <p>Seller's comments to the <strong>buyer</strong> highest</p>
+                    <div class="btn-bid">
+                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#sellertobuyer">Seller's Comment</button>
+                    </div>
+                  {{/if}}
+              {{else if checkingBuyerHigest}}
+                  <!-- Check xem da comment hay chua-->
+                  {{#if CheckCommentBuyer}}
+                  {{else}}
+                    <p>Buyer's comments to the <strong>seller</strong> </p>
+                    <div class="btn-bid">
+                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#buyertoseller">Buyer's Comment</button>
+                    </div>
+                  {{/if}}
+              {{/if}}
           {{else if isRatingNotAvailable}}
               <p>Positive rating occupy a low rate</p>
+          {{else if CheckElimanate}}
+              <p style="color:red;">You can not allow the auction product</p>
           {{else}}
-              <div class="btn-bid">
-                  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal" onclick="showSuggest({{maxbidandstep.maxprice}}, {{maxbidandstep.step}})">Bid Now</button>
-              </div>
+              <!-- Khuc nay minh se check-->
+              {{#if checkingSellerItem}}
+                <div class="btn-bid">
+                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#enquirypopup">Eliminate Buyer</button>
+                </div>
+              {{else}}
+                <div class="btn-bid">
+                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal" onclick="showSuggest({{maxbidandstep.maxprice}}, {{maxbidandstep.step}})">Bid Now</button>
+                </div>
+              {{/if}}
           {{/if}}
       {{else}}
           <div class="btn-bid">
@@ -63,6 +108,97 @@
               </a>
           </div>
       {{/if}}
+
+    <!-- Modal comment Seller-->
+    {{> modal_CommentSeller}}
+
+    <!-- Modal comment Buyer-->
+    {{> modal_CommentBuyer}}
+
+    <!-- Modal: thong ke danh sach-->
+    <div id="enquirypopup" class="modal fade in" role="dialog">
+       <div class="modal-dialog">
+         <!-- Modal content-->
+         <div class="modal-content row">
+           <div class="modal-header custom-modal-header">
+             <button type="button" class="close" data-dismiss="modal">×</button>
+             <h4 class="modal-title">Eliminate Buyer</h4>
+           </div>
+           <div class="modal-body">
+             <form action="/seller/updateDescription" method="post">
+               <div class="form-group">
+                 <table class="table table-hover table-bordered" id="table1">
+                   <thead>
+                     <tr>
+                       <th style="display:none;">ProID</th>
+                       <th style="display:none;">UserID</th>
+                       <th>f_ImageUrl</th>
+                       <th style="display:none;">Username</th>
+                       <th>Name</th>
+                       <th>Positiverating</th>
+                       <th>Negativerating</th>
+                       <th>Date of create</th>
+                       <th>Eliminate</th>
+                     </tr>
+                   </thead>
+                   <tbody class="mess">
+                     {{#each BuyerAuction}}
+                       <tr>
+                         <td class="fsidPro" valign="middle" align="center" style="display:none;">{{this.productid}}</td>
+                         <td class="fsidUser" valign="middle" align="center" style="display:none;">{{this.f_ID}}</td>
+                         <td class="fsImgUser" valign="middle" align="center">
+                           <img src="{{this.f_ImageUrl}}" class="img-responsive img-box img-thumbnail" style="height: 100px; width: 100px;">
+                         </td>
+                         <td class="fsUsernames" valign="middle" align="center" style="display:none;">{{this.f_Username}}</td>
+                         <td class="fsName" valign="middle" align="center">{{this.f_Name}}</td>
+                         <td class="fsPositi" valign="middle" align="center">{{this.positiverating}}</td>
+                         <td class="fsNegative" valign="middle" align="center">{{this.negativerating}}</td>
+                         <td class="fsSogiay" valign="middle" align="center">{{this.sogiay}}</td>
+                         <td>
+                          {{{CheckingState state_User}}}
+                        </td>
+                       </tr>
+                     {{/each}}
+                   </tbody>
+                 </table>
+               </div>
+               <button type="submit" class="btn btn-primary" id="sentButton">Update</button>
+             </form>
+             <!-- dung jquery xu ly -->
+           </div>
+         </div>
+       </div>
+     </div>
+
+     <div class="modal fade" id="AccpecBlock" role="dialog">
+       <div class="modal-dialog">
+         <div class="modal-content">
+           <div class="modal-header">
+             <button type="button" class="close" data-dismiss="modal">&times;</button>
+             <h4 class="modal-title">Confirm</h4>
+           </div>
+           <div class="modal-body">
+             <p>You Want to block user: <span id="userConfirm"></span></p>
+           </div>
+           <div class="modal-footer">
+             <button type="button" class="btn btn-primary" id="btn-bid">OK</button>
+             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+           </div>
+         </div>
+       </div>
+     </div>
+
+     <!-- Modal zoom image -->
+     <div class="modal fade" id="ZoomImage" role="dialog">
+       <div class="modal-dialog modal-lg">
+         <div class="modal-content">
+           <div class="modal-body" style="text-align:center;">
+             <img>
+           </div>
+         </div>
+       </div>
+     </div>
+
     <!-- Modal -->
     <div class="modal fade" id="myModal" role="dialog">
       <div class="modal-dialog">
@@ -71,7 +207,7 @@
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal">&times;</button>
             <h4 class="modal-title">Bid</h4>
-              <h6><p class="label label-warning" id="bid-warning">Event sta</p></h6>
+              <h6><p class="label label-warning" id="bid-warning1">Event sta</p></h6>
           </div>
           <div class="modal-body">
             <div class="beat col-md-6 col-ms-6">
@@ -80,12 +216,8 @@
               <div class="auto-bid col-md-12 col-ms-12">
                 <p>Auto bid?</p>
                 <div class="btn-group" data-toggle="buttons">
-
-            			<label class="btn btn-primary">
-            				<input type="checkbox" autocomplete="off" checked>
-            				<span class="glyphicon glyphicon-ok"></span>
-            			</label>
-            		</div>
+                  <input id='checkboxIsAuto' type="checkbox">
+                </div>
               </div>
             </div>
             <div class="form-group col-md-6 col-ms-6">
@@ -98,142 +230,327 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary" id="btn-bid">Bid!</button>
+            <button type="button" class="btn btn-primary" id="btn-bid1">Bid!</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <div class="owner-info col-md-12 col-ms-12" id="inner" style="margin-top: 50px;">
-    <div class="bid-info col-md-6 col-ms-6 col-lg-7">
-      <div class="panel panel-default col-md-12 col-ms-12">
-        <div class="panel-body">
-          <div class="starting-bid">
-            <p>Starting bid: </p>
-            <p><strong>$ {{item.startprice}}</strong></p>
-          </div>
-          <div class="bit-user">
-            <p>We've had {{totalPersonBid.count}} people tried to bid!</p>
-          </div>
-          <div class="bit-count">
-            <p>Bid counts: </p>
-            <p>{{maxbidandstep.bidcount}}</p>
-          </div>
-        </div>
-      </div>
-      <div class="history col-md-12 col-ms-12">
-        <h4>History</h4>
-      </div>
-      <div class="history-list col-md-12 col-ms-12">
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Time</th>
-              <th>Username</th>
-              <th>Bid</th>
-            </tr>
-          </thead>
-          <tbody>
-            {{#each bidhistory}}
-            <tr>
-              <td>{{this.timebid}}</td>
-              <td>{{this.f_Name}}</td>
-              <td>${{this.price}}</td>
-            </tr>
-            {{/each}}
-          </tbody>
-        </table>
-      </div>
-      <div class="comment col-md-12 col-ms-12">
-        <div class="comment-title col-md-12 col-ms-12">
-          <h3>Comments :</h3>
-        </div>
-        <div class="content col-md-12 col-ms-12">
-            <form action="/item/{{item.proid}}/comments" method="post" id="commentForm">
-              <div class="textarea-message col-md-9 col-ms-9">
-                <textarea id="message" class="textarea-message form-control" placeholder="Your Message" rows="5" name="content"></textarea>
-              </div>
-              <div class="text-center col-md-3 col-ms-3">
-                <button type="submit" class="button button-style button-style-dark button-style-icon text-center">Submit</button>
-              </div>
-            </form>
-        </div>
-        <div class="previous-comment col-md-12 col-ms-12">
-          <ul>
-            {{#each comment}}
-            <li>
-              <div class="col-sm-2">
-                <div class="thumbnail">
-                  <img class="img-responsive user-photo" src="https://ssl.gstatic.com/accounts/ui/avatar_2x.png">
-                </div>
-                <!-- /thumbnail -->
-              </div>
-              <!-- /col-sm-1 -->
-              <div class="col-sm-10">
-                <div class="panel panel-default">
-                  <div class="panel-heading">
-                    <strong>{{this.f_Name}}</strong> <span class="text-muted">commented on {{this.datepost}}</span>
-                  </div>
-                  <div class="panel-body">
-                    {{this.content}}
-                  </div>
-                  <!-- /panel-body -->
-                </div>
-                <!-- /panel panel-default -->
-              </div>
-              <!-- /col-sm-5 -->
-            </li>
-            {{/each}}
-          </ul>
-        </div>
+  <div class="col-md-3 col-sm-3 col-lg-3">
+    <button id="addwishlist" type="button" class="btn btn-success watchlistItem" value="{{item.proid}}" style="width:100%;">Add to Wishlist</button><br/><br/>
+    <div class="panel panel-default">
+      <div class="panel-body" style="padding: 15px 25px;margin:0;font-size:16px;">
+        <span class="largeNumber"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp;
+        {{totalPersonBid.count}}</span> &nbsp;&nbsp;&nbsp;active bidders<br/>
+        <span class="largeNumber"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>&nbsp;
+        {{maxbidandstep.bidcount}}</span> &nbsp;&nbsp;&nbsp;total bids
       </div>
     </div>
-    <div class="col-md-6 col-ms-6 col-lg-5">
-      <div class="owner-buyer">
-        <div class="owner">
-          <div class="owner-avatar">
-            <img src="http://placehold.it/150x150" alt="avatar" class="img-circle">
-          </div>
-          <div class="owner-username">
-            <a href="#">
-              <p><b>Seller: {{seller.f_Name}}</b></p>
-            </a>
-          </div>
-        </div>
-        <div class="exchange">
-          <span class="glyphicon glyphicon-resize-horizontal"></span>
-        </div>
-        <div class="current-buyer">
-          <div class="current-buyer-avatar">
-            <img src="http://placehold.it/150x150" alt="avatar" class="img-circle">
-          </div>
-          <div class="current-buyer-username">
-            <a href="#">
-              <p><b>Current highest: {{highestbuyerid.f_Name}}</b></p>
-            </a>
-          </div>
-        </div>
+    <div class="margin 0 auto;">
+      <div style="text-align:center">
+        {{#if seller}}
+          <img src="{{seller.f_ImageUrl}}" alt="avatar" class="img-circle" style="width: 150px; height: 150px;">
+        {{else}}
+          <img src="https://pbs.twimg.com/profile_images/600060188872155136/st4Sp6Aw.jpg" alt="avatar" class="img-circle" style="width:150px; height:150px;">
+        {{/if}}
       </div>
-      <div class="about-seller">
-        <h3>Seller information</h3>
-        <div class="panel-body">
-          <a href="#">
-            <p>@{{seller.f_Username}}</p>
-          </a>
-          <p>Total items: {{sellertotalitems.totalitems}}</p>
-          <br>
-          <a href="#">
-            <p>See other items</p>
-          </a>
-          <br>
-        </div>
+      <div style="text-align:center">
+        <p><b>Seller: {{seller.f_Name}}</b></p>
+      </div>
+      <div style="text-align:center">
+        {{#if highesybuyerIMG}}
+          <img src="{{highesybuyerIMG}}" alt="avatar" class="img-circle" style="width: 150px; height: 150px;">
+        {{else}}
+          <img src="https://pbs.twimg.com/profile_images/600060188872155136/st4Sp6Aw.jpg" alt="avatar" class="img-circle" style="width:150px; height:150px;">
+        {{/if}}
+      </div>
+      <div style="text-align:center">
+        <p><b>Highest bidder: {{highestbuyerid}}</b></p>
       </div>
     </div>
   </div>
 </div>
+<hr/>
+
+<div class="row">
+  <div class="col-md-5 col-sm-5 col-lg-5">
+    <div class="history">
+      <h3>History</h3>
+    </div>
+    <div class="history-list">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Username</th>
+            <th>Bid</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each bidhistory}}
+          <tr>
+            <td>{{this.timebid}}</td>
+            <td>{{this.f_Name}}</td>
+            <td>${{this.price}}</td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="col-md-7 col-sm-7 col-lg-7">
+    <div class="comment-title history">
+      <h3>Comments</h3>
+    </div>
+    <ul>
+      {{#each comment}}
+      <li>
+        <div class="col-sm-2">
+          <div class="thumbnail">
+            <img class="img-responsive user-photo" src="{{this.f_ImageUrl}}" style="height: 75px; width: 100px;">
+          </div>
+        </div>
+        <div class="col-sm-10">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <strong>{{this.f_Name}}</strong> <span class="text-muted">commented on {{this.datepost}}</span>
+            </div>
+            <div class="panel-body">
+              {{this.content}}
+            </div>
+          </div>
+        </div>
+      </li>
+      {{/each}}
+    </ul>
+    <form action="/item/{{item.proid}}/comments" method="post" id="commentForm">
+      <div class="textarea-message col-md-9 col-ms-9">
+        <textarea id="message" class="textarea-message form-control" placeholder="Add a comment" rows="5" name="content"></textarea>
+      </div>
+      <div class="text-center col-md-3 col-ms-3">
+        <button type="submit" class="button button-style button-style-dark button-style-icon text-center">Comment</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <script src="/component/moment/moment.js"></script>
 <script src="/component/moment-precise-range/readable-range.js"></script>
 <script src="/component/bootstrap3-dialog/dist/js/bootstrap-dialog.js"></script>
 <script src="/js/item.js"></script>
 <script src="/js/countdown.js"></script>
+<script src="/js/datatable.js"></script>
+<script src="/js/PopupMessageClick.js"></script>
+<script type="text/javascript">
+  function BlockAccount() {
+      $("#table1").on('click', '[button-add="addfriendBTN"]', function () {
+        var li = $(this).closest("tr");
+        var idClient = li.find(".fsidUser").text();
+        var userName = li.find(".fsName").text();
+        var idProduct = li.find(".fsidPro").text();
+        var idUser = li.find(".fsidUser").text();
+        BootstrapDialog.show({
+            title: 'Confirm',
+            message: 'You sure to post Comment: ' + userName,
+            buttons: [{
+                  label: 'Close',
+                  action: function(dialog){
+                      dialog.close();
+                  }
+            },
+            {
+                  label: 'OK',
+                  cssClass: 'btn-primary',
+                  action: function(dialog) {
+                      $.ajax({
+                          url: '/item/'+ idProduct +'/eliminate',
+                          method: 'POST',
+                          contentType : "application/json",
+                          data: JSON.stringify({iduserblock: idUser, idproductblock: idProduct}),
+                          success: function (data) {
+                              console.log(data);
+                          },
+                          complete: function () {
+                            window.location.reload();
+                          }
+                      });
+                      dialog.close();
+                  }
+            }]
+        });
+      });
+  }
+  function UnblockAccount() {
+      $("#table1").on('click', '[button-unlock="unlockAccount"]', function () {
+      var li = $(this).closest("tr");
+      var idClient = li.find(".fsidUser").text();
+      var userName = li.find(".fsName").text();
+      var idProduct = li.find(".fsidPro").text();
+      var idUser = li.find(".fsidUser").text();
+      BootstrapDialog.show({
+          title: 'Confirm',
+          message: 'You want to unblock user: ' + userName,
+          buttons: [{
+                label: 'Close',
+                action: function(dialog){
+                    dialog.close();
+                }
+          },
+          {
+                label: 'OK',
+                cssClass: 'btn-primary',
+                action: function(dialog) {
+                    $.ajax({
+                        url: '/item/'+ idProduct +'/unblockElimanate',
+                        method: 'POST',
+                        contentType : "application/json",
+                        data: JSON.stringify({iduserblock: idUser, idproductblock: idProduct}),
+                        success: function (data) {
+                            console.log(data);
+                        },
+                        complete: function () {
+                          window.location.reload();
+                        }
+                    });
+                    dialog.close();
+                }
+          }]
+      });
+    });
+  }
+  function myFunction(x) {
+    x.classList.remove("actives");
+    document.getElementById("dislikes").classList.remove("actives");
+    document.getElementById("likesss").classList.add("actives");
+  }
+  function myFunction1(x) {
+    document.getElementById("likesss").classList.remove("actives");
+    document.getElementById("dislikes").classList.add("actives");
+  }
+  function myFunction2(x) {
+    document.getElementById("dislikes1").classList.remove("actives");
+    document.getElementById("likesss1").classList.add("actives");
+  }
+  function myFunction3(x) {
+    document.getElementById("likesss1").classList.remove("actives");
+    document.getElementById("dislikes1").classList.add("actives");
+  }
+  $(function () {
+    $('.carousel-inner img').on("click", function() {
+      $('#ZoomImage img').attr('src', $(this).attr('src'));
+      $('#ZoomImage').modal();
+    });
+    /*
+    $('#buttonToggleFullDes').on("click", function() {
+      $('#fulldescription').toggle();
+      if ($(this).attr('class') == 'glyphicon glyphicon-triangle-right')
+        $(this).attr('class', 'glyphicon glyphicon-triangle-bottom');
+      else
+        $(this).attr('class', 'glyphicon glyphicon-triangle-right');
+    })*/
+    $('[data-toggle="tooltip"]').tooltip(); // cho phep hien thi cac cuc nho
+    $('#table1').DataTable();
+    BlockAccount();
+    UnblockAccount();
+    $('#idSubmitComment').click(function () {
+      //.find(".fsidUser").text();
+      var Sellerid = $('#productSellerID').val();
+      var idClientBest = $('#table1').find('tr:eq(1) .fsidUser').text();
+      var url      = window.location.href;     // Returns full URL
+      var proid = url.split('/')[4];
+       // true: like, false: dislike
+       var checkLikeandDislike = ($('#likesss').hasClass('actives')) ? 1 : 0;
+       var CommentText = $('#fCommentBuyer').val();
+       var PostedDate = new Date();
+       //console.log(Sellerid + ' ' + idClientBest + ' ' + proid + ' ' + CommentText + ' ' + PostedDate + ' ' + checkLikeandDislike);
+       var Objectsd = {
+            userSeller : Sellerid,
+            userBuyer : idClientBest,
+            proID : proid,
+            content : CommentText,
+            postDate : PostedDate,
+            CheckingLike : checkLikeandDislike
+       };
+       BootstrapDialog.show({
+           title: 'Confirm',
+           message: 'You sure to post comment ?',
+           buttons: [{
+                 label: 'Close',
+                 action: function(dialog){
+                     dialog.close();
+                 }
+           },
+           {
+                 label: 'OK',
+                 cssClass: 'btn-primary',
+                 action: function(dialog) {
+                     $.ajax({
+                         url: '/item/WriteCommentSeller',
+                         method: 'POST',
+                         contentType : "application/json",
+                         data: JSON.stringify({CommentDetail: Objectsd}),
+                         success: function (data) {
+                           console.log(data);
+                         },
+                         complete: function () {
+                           window.location.reload();
+                         }
+                     });
+                     dialog.close();
+                 }
+           }]
+       });
+    });
+    $('#idSubmitComment1').click(function () {
+      //.find(".fsidUser").text();
+      var Sellerid = $('#productSellerID').val();
+      var idClientBest = $('#table1').find('tr:eq(1) .fsidUser').text();
+      var url      = window.location.href;     // Returns full URL
+      var proid = url.split('/')[4];
+       // true: like, false: dislike
+       var checkLikeandDislike = ($('#likesss1').hasClass('actives')) ? 1 : 0;
+       var CommentText = $('#fCommentBuyer1').val();
+       var PostedDate = new Date();
+       //console.log(Sellerid + ' ' + idClientBest + ' ' + proid + ' ' + CommentText + ' ' + PostedDate + ' ' + checkLikeandDislike);
+       var Objectsd = {
+            userSeller : Sellerid,
+            userBuyer : idClientBest,
+            proID : proid,
+            content : CommentText,
+            postDate : PostedDate,
+            CheckingLike : checkLikeandDislike
+       };
+       BootstrapDialog.show({
+           title: 'Confirm',
+           message: 'You sure to post comment ?',
+           buttons: [{
+                 label: 'Close',
+                 action: function(dialog){
+                     dialog.close();
+                 }
+           },
+           {
+                 label: 'OK',
+                 cssClass: 'btn-primary',
+                 action: function(dialog) {
+                     $.ajax({
+                         url: '/item/WriteCommentBuyer',
+                         method: 'POST',
+                         contentType : "application/json",
+                         data: JSON.stringify({CommentDetail: Objectsd}),
+                         success: function (data) {
+                           console.log(data);
+                         },
+                         complete: function () {
+                           window.location.reload();
+                         }
+                     });
+                     dialog.close();
+                 }
+           }]
+       });
+    });
+  });
+</script>

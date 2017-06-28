@@ -24,6 +24,19 @@ $("#hinhanh2").on('click', '#close-preview1', function(){
     );
 });
 
+$("#hinhanh3").on('click', '#close-preview2', function(){
+    $('#hinhanh3 .image-preview').popover('hide');
+    // Hover befor close the preview
+    $('#hinhanh3 .image-preview').hover(
+        function () {
+           $('#hinhanh3 .image-preview').popover('show');
+        },
+         function () {
+           $('#hinhanh3 .image-preview').popover('hide');
+        }
+    );
+});
+
 $(function() {
     // Create the close button
     $('#datetimepicker1').datetimepicker();
@@ -71,6 +84,9 @@ $(function() {
         reader.readAsDataURL(file);
     });
 
+
+
+
     var closebtn1 = $('<button/>', {
         type:"button",
         text: 'x',
@@ -113,4 +129,52 @@ $(function() {
         }
         reader.readAsDataURL(file);
     });
+
+
+
+
+    var closebtn2 = $('<button/>', {
+        type:"button",
+        text: 'x',
+        id: 'close-preview2',
+        style: 'font-size: initial;',
+    });
+    closebtn2.attr("class","close pull-right");
+    // Set the popover default content
+    $('#hinhanh3 .image-preview').popover({
+        trigger:'manual',
+        html:true,
+        title: "<strong>Preview</strong>"+$(closebtn2)[0].outerHTML,
+        content: "There's no image",
+        placement:'bottom'
+    });
+    // Clear event
+    $('#hinhanh3 .image-preview-clear').click(function(){
+        $('#hinhanh3 .image-preview').attr("data-content","").popover('hide');
+        $('#hinhanh3 .image-preview-filename').val("");
+        $('#hinhanh3 .image-preview-clear').hide();
+        $('#hinhanh3 .image-preview-input input:file').val("");
+        $("#hinhanh3 .image-preview-input-title").text("Browse");
+    });
+    // Create the preview image
+    $("#hinhanh3 .image-preview-input input:file").change(function (){
+        var img = $('<img/>', {
+            id: 'dynamic',
+            width:250,
+            height:200
+        });
+        var file = this.files[0];
+        var reader = new FileReader();
+        // Set preview image into the popover data-content
+        reader.onload = function (e) {
+            $("#hinhanh3 .image-preview-input-title").text("Change");
+            $("#hinhanh3 .image-preview-clear").show();
+            $("#hinhanh3 .image-preview-filename").val(file.name);
+            img.attr('src', e.target.result);
+            $("#hinhanh3 .image-preview").attr("data-content",$(img)[0].outerHTML).popover("show");
+        }
+        reader.readAsDataURL(file);
+    });
+
+
 });
