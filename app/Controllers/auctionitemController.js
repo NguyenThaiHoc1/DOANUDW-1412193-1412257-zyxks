@@ -144,7 +144,7 @@ var auctionitemController = {
             from: 'dackweb0@gmail.com',
             to: email,
             subject: 'Confirm Bid Price',
-            text: 'You bid \"'+idItem+'\"\nWith price '+price+'\nClick link below to confirm:\n' +
+            text: 'You bid '+idItem+'\nWith price '+price+'\nClick link below to confirm:\n' +
             'http://' + req.headers.host + '/item/'+idItem+'/'+bidType+'/bid?price='+price
         };
         transporter.sendMail(mailOptions, function (error, info) {
@@ -260,27 +260,27 @@ var auctionitemController = {
         var beatprice=req.body.beatprice;
         var autoextend=req.body.autoextend==="on";
         var catid=req.body.catid;
-        var image1 = req.files[0]?req.files[0].filename:undefined;
-        var image2 = req.files[1]?req.files[1].filename:undefined;
-        var image3 = req.files[2]?req.files[2].filename:undefined;
+        var image1 = req.files[0]? '/img/product/' + req.files[0].filename:'https://pbs.twimg.com/profile_images/600060188872155136/st4Sp6Aw.jpg';
+        var image2 = req.files[1]? '/img/product/' + req.files[1].filename:'https://pbs.twimg.com/profile_images/600060188872155136/st4Sp6Aw.jpg';
+        var image3 = req.files[2]? '/img/product/' + req.files[2].filename:'https://pbs.twimg.com/profile_images/600060188872155136/st4Sp6Aw.jpg';
         auctionitemdb.publish(sku, sellerid, datepost, proname, tinyDes, fulldes, datefinish,startprice , step, beatprice, autoextend,catid, image1, image2, image3).then(function () {
             req.flash("messagesSuccess", "Product is Ported !");
-            res.redirect("/testtingO");
+            res.redirect("/profile/manageauctions");
         }).fail(function (err) {
             req.flash("messagesFail", "Product is not Ported !");
-            res.redirect("/testtingO");
+            res.redirect("/profile/manageauctions");
         });
     },
     addcommentSeller: function (req, res) {
       req.body.CommentDetail.postDate =  momment(req.body.CommentDetail.postDate).format('YYYY/MM/DD H:mm:ss');
       auctionitemdb.addcomment(req.body.CommentDetail).then(function (data) {
         if(req.body.CommentDetail.CheckingLike === 1) {
-          auctionitemdb.updateDiemLen(req.body.CommentDetail.userSeller).then(function (data) {
+          auctionitemdb.updateDiemLen(req.body.CommentDetail.userBuyer).then(function (data) {
             req.flash("messagesSuccess", "Comment is Success !");
             res.redirect("/item/" + req.body.CommentDetail.proID);
           });
         }else {
-          auctionitemdb.updateDiemXuong(req.body.CommentDetail.userSeller).then(function (data) {
+          auctionitemdb.updateDiemXuong(req.body.CommentDetail.userBuyer).then(function (data) {
             req.flash("messagesSuccess", "Comment is Success !");
             res.redirect("/item/" + req.body.CommentDetail.proID);
           });
@@ -292,12 +292,12 @@ var auctionitemController = {
       req.body.CommentDetail.postDate =  momment(req.body.CommentDetail.postDate).format('YYYY/MM/DD H:mm:ss');
       auctionitemdb.addcommentBuyer(req.body.CommentDetail).then(function (data) {
         if(req.body.CommentDetail.CheckingLike === 1) {
-          auctionitemdb.updateDiemLen(req.body.CommentDetail.userBuyer).then(function (data) {
+          auctionitemdb.updateDiemLen(req.body.CommentDetail.userSeller).then(function (data) {
             req.flash("messagesSuccess", "Comment is Success !");
             res.redirect("/item/" + req.body.CommentDetail.proID);
           });
         }else {
-          auctionitemdb.updateDiemXuong(req.body.CommentDetail.userBuyer).then(function (data) {
+          auctionitemdb.updateDiemXuong(req.body.CommentDetail.userSeller).then(function (data) {
             req.flash("messagesSuccess", "Comment is Success !");
             res.redirect("/item/" + req.body.CommentDetail.proID);
           });

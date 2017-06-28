@@ -68,6 +68,15 @@ var profileController = {
           start = (currentPage - 1) * pageSize;
         }
         profileDb.getWishlistbylimitID(req.session.user.IdUser, start, pageSize).then(function (data) {
+          for (var i = 0; i < data.length; i++) {
+            var days = Math.floor(data[i].sogiay / 86400);
+            data[i].sogiay %= 86400;
+            var hours = Math.floor(data[i].sogiay / 3600);
+            data[i].sogiay %= 3600;
+            var minutes = Math.floor(data[i].sogiay / 60);
+            data[i].sogiay %= 60;
+            data[i].sogiay = '' + days + ' days ' + hours + ':' + minutes + ':' + data[i].sogiay;
+          }
           res.render("_profile/profilewishlist",{
               user: req.session.user,
               checkingSeller: (req.session.user.Permission === 'seller') ? true : undefined,
@@ -113,6 +122,9 @@ var profileController = {
           start = (currentPage - 1) * pageSize;
         }
         profileDb.getHistoryaucbylimitID(req.session.user.IdUser, start, pageSize).then(function (data) {
+          for (var i = 0; i < data.length; i++) {
+            data[i].timebid = data[i].timebid.toISOString().replace(/T/, ' ').replace(/\..+/, '')
+          }
           res.render("_profile/profilehistoryAuc",{
               user: req.session.user,
               checkingSeller: (req.session.user.Permission === 'seller') ? true : undefined,
@@ -157,10 +169,39 @@ var profileController = {
     });
   },
   historyvictoryPage : function (req, res) {
-    res.render("_profile/profilehistoryvictory",{
-        user: req.session.user,
-        checkingSeller: (req.session.user.Permission === 'seller') ? true : undefined,
-        layout: "applicationnoHeader"
+    profileDb.GetHistoryVictoryByID(req.session.user.IdUser).then(function (temp1) {
+        totalRec      = temp1.length;
+        pageCount     =  Math.ceil(totalRec /  pageSize);
+        if (typeof req.query.page !== 'undefined') {
+          currentPage = req.query.page;
+        }
+        if(currentPage >= 1){
+          start = (currentPage - 1) * pageSize;
+        }
+        profileDb.GetHistoryVictoryLimitID(req.session.user.IdUser, start, pageSize).then(function (data) {
+          res.render("_profile/profilehistoryvictory",{
+              user: req.session.user,
+              checkingSeller: (req.session.user.Permission === 'seller') ? true : undefined,
+              checkingSeller: (req.session.user.Permission === 'seller') ? true : undefined,
+              historyAuction: data,
+              layout: "applicationnoHeader",
+              helpers: {
+                foo: function () {
+                  var html = '';
+                  html += '<li><a href="/profile/historyvictory?page='+ 1 + '" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>';
+                  for (var i = 1; i <= pageCount; i++) {
+                      if(currentPage == i) {
+                        html += '<li class="active"><a href= "/profile/historyvictory?page='+ i +'">' + i + ' </a></li>';
+                      }else {
+                        html += '<li><a href= "/profile/historyvictory?page='+ i +'">' + i + ' </a></li>';
+                      }
+                  }
+                  html += '<li><a href="/profile/historyvictory?page='+ pageCount + '" aria-label="Previous"><span aria-hidden="true">&raquo;</span></a></li>';
+                  return new handle.SafeString(html);
+                }
+              }
+          });
+        });
     });
   }
 }

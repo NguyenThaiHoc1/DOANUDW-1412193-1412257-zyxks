@@ -10,7 +10,16 @@ var homeController = {
       }else {
         usersx = (req.session.user.Permission === 'seller') ? true : undefined;
       }
-      Qs.all([homeDB.top5mostauctionbid(), homeDB.top5bestprice() ,homeDB.top5cometoend(), homeDB.getCatogory()]).spread(function (temp1, temp2, temp3, temp4) {
+      Qs.all([homeDB.top5mostauctionbid(), homeDB.top5bestprice() ,homeDB.top5cometoend(), homeDB.getCatogory()])
+        .spread(function (temp1, temp2, temp3, temp4) {
+        var fourPastHoursFromNow = new Date();
+        fourPastHoursFromNow.setHours(fourPastHoursFromNow.getHours() - 4);
+        for (var i = 0; i < temp1.length; i++)
+          temp1[i].isNew = (temp1[i].datepost >= fourPastHoursFromNow) ? true : false;
+        for (var i = 0; i < temp2.length; i++)
+          temp2[i].isNew = (temp2[i].datepost >= fourPastHoursFromNow) ? true : false;
+        for (var i = 0; i < temp3.length; i++)
+          temp3[i].isNew = (temp3[i].datepost >= fourPastHoursFromNow) ? true : false;
         res.render("home", {
           user: req.session.user,
           checkingSeller: usersx,

@@ -119,7 +119,7 @@ module.exports = function(app) {
     })
 
     // dang lam ne
-    app.get("/testtingO",checking.isLoggedIn, checking.checkingSeller ,index.seller.Defaultpage); // trang nguoi ban
+    app.get("/profile/manageauctions",checking.isLoggedIn, checking.checkingSeller ,index.seller.Defaultpage); // trang nguoi ban
 
     app.post("/seller/updateDescription",checking.isLoggedIn, checking.checkingSeller, index.seller.UpdateSellerDetail);
 

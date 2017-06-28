@@ -1,4 +1,4 @@
-$(".item").on('click', '[button-add="addwishlist"]', function () {
+$(".thumbnail").on('click', '[button-add="addwishlist"]', function () {
     var spanItem = $(this).closest("span");
     var idProduct = spanItem.find(".idText").val();
     var urlServer = "/wishlist?idProduct=" + idProduct;

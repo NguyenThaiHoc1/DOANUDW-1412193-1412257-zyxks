@@ -36,6 +36,7 @@ var winningChecking = {
                           // thuc hien qua trinh gui email
                           var ContentEmailNB = 'Your Product noOne Bid !! Sorry for this'
                           var EmailNguoiBan = new Gemail(Proidsx.f_Email, ContentEmailNB);
+                          EmailNguoiBan.SendEmail();
                       }
                   }).fail(function (err) {
                   });

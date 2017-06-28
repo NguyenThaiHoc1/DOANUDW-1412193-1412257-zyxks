@@ -11,7 +11,8 @@ var sellerController = {
       - ta can danh sach san pham se hien thi ra (San pham nay la cua 1 nguoi nao do *itemPostAuction)
     */
 
-    Qs.all([sellerDB.GetAuctionPosted(req.session.user.IdUser)]).spread(function (temp1) {
+    Qs.all([sellerDB.GetAuctionPosted(req.session.user.IdUser), sellerDB.getCatogory(), sellerDB.GetUserInformation(req.session.user.IdUser)])
+      .spread(function (temp1, temp2, temp3) {
       res.render("_profile/profileSeller", {
         user: req.session.user,
         checkingSeller: (req.session.user.Permission === 'seller') ? true : undefined,
@@ -20,6 +21,8 @@ var sellerController = {
         checkingSeller: (req.session.user.Permission === 'seller') ? true : undefined,
         itemPostAuction: temp1,
         layout: "applicationnoHeader",
+        catogorylist: temp2,
+        isSeller: temp3[0].isSeller,
         helpers: {
           trimString: function (passedString) {
             var theString = passedString.substring(0,20);

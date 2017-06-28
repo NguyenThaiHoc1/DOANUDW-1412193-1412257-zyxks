@@ -27,6 +27,7 @@ var searchController = {
       usersx = (req.session.user.Permission === 'seller') ? true : undefined;
     }
     Qs.all([searchDB.searchPage(object), searchDB.getCatogory()]).spread(function (temp1, temp2) {
+            console.log('???!!!');
             // start phan trang
             var urlTemp = req.url.split("&page=")[0];
             totalRec      = temp1.length;
@@ -45,6 +46,10 @@ var searchController = {
                   res.send(data);
               }else {
                 var  breachcumGen = (object.catogory == 0) ? "All Catogory" : temp2[parseInt(object.catogory) - 1].catname;
+                var fourPastHoursFromNow = new Date();
+                fourPastHoursFromNow.setHours(fourPastHoursFromNow.getHours() - 4);                
+                for (var i = 0; i < data.length; i++)
+                  data[i].isNew = (data[i].datepost >= fourPastHoursFromNow) ? true : false;
                 res.render("_productAuction/SPDAUGIA", {
                   user: req.session.user,
                   checkingSeller: usersx,
