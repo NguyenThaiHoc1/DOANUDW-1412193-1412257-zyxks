@@ -26,7 +26,7 @@ var home = {
                                                  group by history.productid)\
                   end as soluotdaugia\
                   from bidhistory a right join product b on a.productid = b.proid, dackweb.category cato\
-                  where b.catid = cato.catid and cato.active = 1 \
+                  where TIMESTAMPDIFF(Second , now() , b.datefinish) > 0 and b.catid = cato.catid and cato.active = 1 \
                   and not exists( select * \
                           from favorite favo\
                                   where favo.idproduct = b.proid and favo.iduser = a.userid)\

@@ -3,7 +3,7 @@ var querystring = require('querystring');
 var Qs = require('q');
 var request = require('request');
 var objectUser = require("../Object/userObject.js");
-
+var emailer = require('../Object/Emailer.js');
 
 function Checking(value) {
   var resulf = value === undefined || value.trim() === "" || value.length === 0;
@@ -95,7 +95,10 @@ var adminControllers = {
       res.redirect('/admin');
       return;
     }
-    adminDB.ResetPassword(req.query.f_Username).then(function (rows) {
+    adminDB.ResetPassword(req.query.f_Username).then(function (rslt) {
+      mail = new emailer(rslt.email, 'Mật khẩu của bạn đã được reset: ' + rslt.newPassword +
+        '\nBạn có thể sử dụng mật khẩu trên để đăng nhập và đổi lại mật khẩu mới nếu muốn.');
+      mail.SendEmail();
       res.redirect('/admin');
     })
   },
@@ -108,6 +111,16 @@ var adminControllers = {
       res.redirect('/admin');
     })
   },
+  deleteCategory: function (req,res) {
+    if (req.session.admin === undefined) {
+      res.redirect('/admin');
+      return;
+    }
+    adminDB.DeleteCategory(req.query.f_Catname).then(function (rows) {
+      console.log(req.query.f_Catname);
+      res.redirect('/admin');
+    })
+  },
   Defaultpage: function (req, res) {
     if (req.session.admin === undefined) {
       res.render("_featureWEB/loginAdmin", {
@@ -117,8 +130,17 @@ var adminControllers = {
       });
     }
     else {
-      Qs.all([adminDB.FindSellRequest(), adminDB.LoadUser(),adminDB.LoadCategory()])
-        .spread(function (users_request_rows, users_all_rows, categories_rows) {
+      Qs.all([adminDB.FindSellRequest(), adminDB.LoadUser(),adminDB.LoadCategory(),adminDB.CheckCategoriseDeletable()])
+        .spread(function (users_request_rows, users_all_rows, categories_rows, check_deletable_rows) {
+        var deletable_categories = [];
+        for (var i = 0; i < check_deletable_rows.length; i++) {
+          deletable_categories.push(check_deletable_rows[i].catname);
+        }
+        for (var i = 0; i < categories_rows.length; i++) {
+          categories_rows[i].deletable = true;
+          if (deletable_categories.indexOf(categories_rows[i].catname) >= 0)
+            categories_rows[i].deletable = false;
+        }
         var vm = {
           users_request: users_request_rows,
           users_all: users_all_rows,

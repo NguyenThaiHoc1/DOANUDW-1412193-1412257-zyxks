@@ -1,0 +1,52 @@
+{{#if User}}
+  <p>Full Name: <strong>{{User.f_Name}}</strong></p>
+  <p>Positive rating: <strong>{{User.positiverating}}</strong></p>
+  <p>Negative rating: <strong>{{User.negativerating}}</strong></p>
+  <p>Rate: <strong>{{{TinhToanDiem}}}%</strong></p>
+{{/if}}
+<div class="container-fluid" style="margin-top:20px;">
+  <div class="row">
+    <div class="well">
+      <p><strong>All comment for user</strong></p>
+              <div class="tab-pane fade in active" id="tab1">
+                <div class="bs-callout bs-callout-danger">
+                  {{#if ListComment.length}}
+                  {{#each ListComment}}
+                    <div class="row">
+                      <div class="col-sm-3">
+                        <div class="thumbnail" style="height: 200px; width: 250px;">
+                          <img src="{{this.image1}}" style="width: 100%; height: 100%;">
+                        </div>
+                      </div>
+                      <div class="col-sm-9">
+                        <div class=" panel panel-default">
+                          <div class="panel-heading">
+                            <strong>{{this.Userid1}} to {{this.Userid2}}</strong>
+                            <br>
+                            <strong>{{this.Userid1}}</strong> <span class="text-muted"> commented on {{this.datepost}}</span>
+                          </div>
+                          <div class="panel-body" style="color:blue;">
+                            {{this.content}}
+                            <br>
+                            {{{CheckingLike this.commentLikeandDislike}}}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  {{/each}}
+                   <hr class="line">
+                   <div class="row" aria-label="..." style="text-align:center;">
+                     <ul class="pagination">
+                       {{{foo}}}
+                     </ul>
+                   </div>
+                {{else}}
+                <div class="row" style="text-align:center;">
+                    <h4>No Items In Here <a href="/">Continue Auction</a></h4>
+                </div>
+                {{/if}}
+              </div>
+           </div>
+  </div>
+</div>
+</div>
