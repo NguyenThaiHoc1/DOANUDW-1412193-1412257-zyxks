@@ -2,6 +2,14 @@ var homeDB = require("../models/home.js");
 var Qs = require('q');
 var handle = require('handlebars'); // --- module mới dùng để xử lý helpers
 
+function encryptString (passedString) {
+  var s = passedString;
+  for (var i = 0; i < Math.floor(passedString.length / 2); i++) {
+    s = s.substr(0, (i*2)+1) + '*' + s.substr((i*2)+2);
+  }
+  return s;
+};
+
 var homeController = {
   homedefaultPage : function (req, res) {
       var usersx;
@@ -14,12 +22,18 @@ var homeController = {
         .spread(function (temp1, temp2, temp3, temp4) {
         var fourPastHoursFromNow = new Date();
         fourPastHoursFromNow.setHours(fourPastHoursFromNow.getHours() - 4);
-        for (var i = 0; i < temp1.length; i++)
+        for (var i = 0; i < temp1.length; i++) {
           temp1[i].isNew = (temp1[i].datepost >= fourPastHoursFromNow) ? true : false;
-        for (var i = 0; i < temp2.length; i++)
+          temp1[i].userBid = encryptString(temp1[i].userBid);
+        }
+        for (var i = 0; i < temp2.length; i++) {
           temp2[i].isNew = (temp2[i].datepost >= fourPastHoursFromNow) ? true : false;
-        for (var i = 0; i < temp3.length; i++)
+          temp2[i].userBid = encryptString(temp2[i].userBid);
+        }
+        for (var i = 0; i < temp3.length; i++) {
           temp3[i].isNew = (temp3[i].datepost >= fourPastHoursFromNow) ? true : false;
+          temp3[i].userBid = encryptString(temp3[i].userBid);
+        }
         res.render("home", {
           user: req.session.user,
           checkingSeller: usersx,

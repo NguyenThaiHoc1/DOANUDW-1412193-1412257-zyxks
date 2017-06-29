@@ -12,6 +12,8 @@
  var adminController = require("./adminControllers");
  var sellerController = require("./SellerControllers");
  var winningController = require("./CheckingWinning.js");
+ var publicController = require("./publicControllers.js");
+ var beatpriceController = require("./itemBeatPriceControllers.js");
 
  module.exports = {
    home : homeController,
@@ -27,5 +29,7 @@
    wishlist : WishlistController,
    admin : adminController,
    seller : sellerController,
-   winner : winningController
+   winner : winningController,
+   publicsx : publicController,
+   beatprice : beatpriceController
  }

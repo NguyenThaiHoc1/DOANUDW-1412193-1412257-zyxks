@@ -139,13 +139,43 @@ var admin = {
   },
   ResetPassword: function (username) {
     var d = q.defer();
-    var newPassword = randstr.generate(8);
+    var newPassword = randstr.generate(8) + 'a0';
     var encrpytedPassword = bcrypt.hashSync(newPassword, bcrypt.genSaltSync(5), null);
     var sql = "update user set f_Password=? where f_username=?";
     db.query(sql, [encrpytedPassword,username], function (err,rslt) {
       if (err)
         d.reject(err);
-      console.log("* Reset Password: " + newPassword);
+      sql = "select f_email from user where f_username=?";
+      db.query(sql, [username], function(err2,rslt2) {
+        if (err2)
+          d.reject(err2)
+        var result = {email:rslt2[0].f_email, newPassword:newPassword};
+        d.resolve(result);
+      })
+    });
+    return d.promise;
+  },
+  CheckCategoriseDeletable: function () {
+    var d = q.defer();
+    var sql = "select count(*), c.catname from product p,category c where p.catid=c.catid and (\
+        p.proid in (select productid from bidhistory) or\
+        p.proid in (select productid from comment) or\
+        p.proid in (select idproduct from favorite) or\
+        p.proid in (select productid from watchlist))\
+      group by c.catid, c.catname";
+    db.query(sql, function (err,rslt) {
+      if (err)
+        d.reject(err);
+      d.resolve(rslt);
+    });
+    return d.promise;
+  },
+  DeleteCategory: function (catname) {
+    var d = q.defer();
+    var sql = "delete from category where catname=?";
+    db.query(sql, [catname], function (err,rslt) {
+      if (err)
+        d.reject(err);
       d.resolve(rslt);
     });
     return d.promise;

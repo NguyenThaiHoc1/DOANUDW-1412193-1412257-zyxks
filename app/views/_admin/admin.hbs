@@ -195,15 +195,21 @@
                                                 <td>
                                                     <button class="btn btn-warning" type="submit">Khóa</button>
                                                     <input type="text" value="{{catname}}" style="display:none" name="f_Catname_ChangeState">
-                                                </td>
+                                                </form>
                                             {{else}}
                                                 <td valign="middle" align="center" style="color: red;">Không hoạt động</td>
                                                 <td>
                                                     <button class="btn btn-success" type="submit">Kích hoạt</button>
                                                     <input type="text" value="{{catname}}" style="display:none" name="f_Catname_ChangeState">
-                                                </td>
+                                                </form>
                                             {{/if}}
-                                        </form>
+                                            {{#if deletable}}
+                                                <form action="/deletecategory" method="get">
+                                                    <button class="btn btn-danger" type="submit">Xóa</button>
+                                                    <input type="text" value="{{catname}}" style="display:none" name="f_Catname">
+                                                </form>
+                                            {{/if}}
+                                            </td>
                                     </tr>
                                 {{/each}}
                             </tbody>

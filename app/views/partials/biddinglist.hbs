@@ -1,0 +1,31 @@
+<div class="container">
+    <div class="row">
+        {{#each biddingList}}
+        <div class="row" style="margin-top: 0px;padding-top:0px;">
+            <div class="col-xs-12 col-sm-3 col-md-2">
+            <a href="/item/{{this.proid}}">
+                <img src="{{this.image1}}" class="img-responsive img-box img-thumbnail" >
+            </div>
+            <div class="col-xs-12 col-sm-9 col-md-10">
+                <div class="list-group">
+                    <div class="list-group-item">
+                        <div class="row-content">
+                            <div class="list-group-item-heading">
+                                <h4>{{{this.proname}}}</h4>
+                                </a>
+                            </div>
+                            <div>
+                                <i class="glyphicon glyphicon-time"></i> Close at {{this.datefinish}}
+                                {{#if this.isHoldingPrice}}
+                                <p style="color:red">Đang giữ giá!</p>
+                                {{/if}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr>
+        {{/each}}
+    </div>
+</div>

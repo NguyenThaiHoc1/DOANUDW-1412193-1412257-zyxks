@@ -35,7 +35,7 @@ var item = {
   },
   loadHighestBuyerInfo : function (proId) {
     var d = q.defer();
-    var sql = 'select b.f_ID ,b.f_ImageUrl ,b.f_Name, a.price, f.step, TIMESTAMPDIFF(Second , now() , f.datefinish) sogiay  \
+    var sql = 'select b.f_ID ,b.f_ImageUrl ,b.f_Name, b.f_Username, a.price, f.step, TIMESTAMPDIFF(Second , now() , f.datefinish) sogiay  \
                 from bidhistory a, user b ,product f\
                   where a.userid = b.f_ID and f.proid = a.productid\
                   and a.productid = ?\
@@ -88,7 +88,7 @@ var item = {
     var obj = {
       proID: proId
     };
-      var sql = 'SELECT user.f_Name, bidhistory.timebid, bidhistory.price \
+      var sql = 'SELECT user.f_Name, user.f_Username, bidhistory.timebid, bidhistory.price \
                 FROM bidhistory, user \
                 where bidhistory.productid = ?\
                 and bidhistory.userid = user.f_ID\

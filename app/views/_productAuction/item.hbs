@@ -44,6 +44,8 @@
         <h6 style="font-style:italic;font-size:18px;line-height:22px;">
           Starting price: &nbsp;&nbsp;&nbsp;{{item.startprice}}$<br>
           Step: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{item.step}}$
+          <br>Beat price: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span id="beatprice">{{item.beatprice}}</span>$
+
         </h6>
       </div>
       {{#each listComment}}
@@ -96,6 +98,11 @@
               {{else}}
                 <div class="btn-bid">
                     <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal" onclick="showSuggest({{maxbidandstep.maxprice}}, {{maxbidandstep.step}})">Bid Now</button>
+                </div>
+
+
+                <div class="btn-bid">
+                    <button type="button" class="btn btn-default" id="btnBeatNow">Beat Now</button>
                 </div>
               {{/if}}
           {{/if}}
@@ -256,7 +263,7 @@
         {{/if}}
       </div>
       <div style="text-align:center">
-        <p><b>Seller: {{seller.f_Name}}</b></p>
+        <p><b><a href="/public/commentUser?username={{seller.f_Username}}">Seller: {{seller.f_Name}}</a></b></p>
       </div>
       <div style="text-align:center">
         {{#if highesybuyerIMG}}
@@ -266,7 +273,7 @@
         {{/if}}
       </div>
       <div style="text-align:center">
-        <p><b>Highest bidder: {{highestbuyerid}}</b></p>
+        <p><b><a href="{{linkToHighestRating}}">Highest bidder: {{highestbuyerid}}</a></b></p>
       </div>
     </div>
   </div>
@@ -283,7 +290,7 @@
         <thead>
           <tr>
             <th>Time</th>
-            <th>Username</th>
+            <th>Name</th>
             <th>Bid</th>
           </tr>
         </thead>
@@ -291,7 +298,7 @@
           {{#each bidhistory}}
           <tr>
             <td>{{this.timebid}}</td>
-            <td>{{this.f_Name}}</td>
+            <td><a href="/public/commentUser?username={{this.f_Username}}">{{this.f_Name}}</td>
             <td>${{this.price}}</td>
           </tr>
           {{/each}}
@@ -454,6 +461,47 @@
     $('#table1').DataTable();
     BlockAccount();
     UnblockAccount();
+
+    $('#btnBeatNow').click(function () {
+      var prices = $('#beatprice').text();
+      var idItem= $("#addwishlist").val();
+      var idName= $("#item-name").text();
+      BootstrapDialog.show({
+          title: 'Notify',
+          message: 'Beat price is:  '+ prices +"\n We will send you a email to confirm",
+          buttons: [
+              {
+                  label: 'Close',
+                  action: function(dialog){
+                    dialog.close();
+                  }
+              },
+              {
+              label: 'Send me an email',
+              cssClass: 'btn-primary',
+              action: function(dialog) {
+                  //var bidType= $("#checkboxIsAuto").is(':checked') ? 'auto' : 'manual';
+                  $.ajax({
+                      url: '/item/'+ idItem +'/beatprice',
+                      method: 'POST',
+                      contentType : "application/json",
+                      data: JSON.stringify({price: prices, name: idName}),
+                      success: function (data) {
+                        console.log(data);
+                      },
+                      complete: function () {
+                        window.location.reload();
+                      }
+                  });
+                  dialog.close();
+              }
+          }
+          ]
+      });
+    });
+
+
+
     $('#idSubmitComment').click(function () {
       //.find(".fsidUser").text();
       var Sellerid = $('#productSellerID').val();

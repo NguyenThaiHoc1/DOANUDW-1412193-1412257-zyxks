@@ -27,7 +27,6 @@ var searchController = {
       usersx = (req.session.user.Permission === 'seller') ? true : undefined;
     }
     Qs.all([searchDB.searchPage(object), searchDB.getCatogory()]).spread(function (temp1, temp2) {
-            console.log('???!!!');
             // start phan trang
             var urlTemp = req.url.split("&page=")[0];
             totalRec      = temp1.length;
