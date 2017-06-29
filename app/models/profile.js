@@ -65,9 +65,68 @@ var profile = {
                     									)\
                     			 )\
                     group by c.DateAdd, b.proid, b.proname, b.tinydes, TIMESTAMPDIFF(Second , now() , b.datefinish), a.price, a.userid\
-                    order by c.DateAdd ASC\
+                    order by c.DateAdd DESC\
                     LIMIT ?, ?';
     db.query(sql,[idUser, start, pageSize], function (error, results) {
+      if (error){
+        d.reject(error);
+      }
+      d.resolve(results);
+    });
+    return d.promise;
+  },
+  GetBiddingListByID: function (id) {
+    // ta se ghi lai lich su bid cua 1 id nao do trong bang bidhistory
+    var d = q.defer();
+    var sql = 'select * from product p,bidhistory b where p.proid=b.productid and userid=? and p.datefinish>now() group by proid';
+    db.query(sql, [id], function (error, results) {
+      if (error){
+        d.reject(error);
+      }
+      d.resolve(results);
+    });
+    return d.promise;
+  },
+  GetBiddingListLimitID: function (id, start, end) {
+    var d = q.defer();
+    var sql = 'select p.image1, p.proid, p.proname, p.beatprice, DATE_FORMAT(p.datefinish,\'%Y-%m-%d %H:%i:%s\') datefinish\
+            from product p,bidhistory b \
+            where p.proid=b.productid and userid=? and p.datefinish>now()\
+            group by proid\
+            LIMIT ?, ?';
+    db.query(sql, [id, start, end], function (error, data) {
+      if (error){
+        d.reject(error);
+      }
+      sql = 'select * from bidhistory order by productid, price desc';
+      db.query(sql, [id], function (error0, temp2) {
+        if (error){
+          d.reject(error);
+        }
+        var winningProductID = [];
+        var headID = 0;
+        for (var i = 0; i < temp2.length; i++) {
+          if (temp2[i].productid != headID) {
+            headID = temp2[i].productid;
+            if (temp2[i].userid == id) {
+              winningProductID.push(temp2[i].productid);
+            }
+          }
+        }
+        for (var i = 0; i < data.length; i++) {
+          data[i].isHoldingPrice = false;
+          if (winningProductID.indexOf(data[i].proid) >= 0)
+            data[i].isHoldingPrice = true;
+        }
+        d.resolve(data);
+      })
+    });
+    return d.promise;
+  },
+  GetBiddingHistory: function () {
+    var d = q.defer();
+    var sql = 'select * from bidhistory order by productid, price desc';
+    db.query(sql, [id], function (error, results) {
       if (error){
         d.reject(error);
       }
@@ -99,11 +158,38 @@ var profile = {
     var sql = 'select b.image1, b.proid, b.proname, \
             Case \
             when TIMESTAMPDIFF(Second , now() , b.datefinish)  > 0 then b.datefinish\
-            when TIMESTAMPDIFF(Second , now() , b.datefinish) <= 0 then \'This Finish\'\
+            when TIMESTAMPDIFF(Second , now() , b.datefinish) <= 0 then \'Auction Closed\'\
             end as thoigian, a.timebid, a.price\
             from dackweb.bidhistory a, dackweb.product b \
             where a.productid = b.proid and a.userid = ?\
             LIMIT ?, ?;';
+    db.query(sql, [id, start, end], function (error, results) {
+      if (error){
+        d.reject(error);
+      }
+      d.resolve(results);
+    });
+    return d.promise;
+  },
+  GetHistoryVictoryByID: function (id) {
+    // ta se ghi lai lich su bid cua 1 id nao do trong bang bidhistory
+    var d = q.defer();
+    var sql = 'select * from product where highestbuyerid = ?';
+    db.query(sql, [id], function (error, results) {
+      if (error){
+        d.reject(error);
+      }
+      d.resolve(results);
+    });
+    return d.promise;
+  },
+  GetHistoryVictoryLimitID: function (id, start, end) {
+    var d = q.defer();
+    var sql = 'select b.image1, b.proid, b.proname, b.beatprice, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\') \
+            from dackweb.product b \
+            where highestbuyerid = ?\
+            order by b.datefinish desc\
+            LIMIT ?, ?';
     db.query(sql, [id, start, end], function (error, results) {
       if (error){
         d.reject(error);

@@ -1,3 +1,15 @@
+<style>
+  p {
+    margin: 3px 0;
+    font-size: 13px;
+    color: blue;
+  }
+  h4 {
+    margin: 8px 0;
+    font-size: 18px;
+  }
+</style>
+
 {{> popupMessage}}
 <div class="row">
     <div class="col-md-12 col-ms-12">
@@ -17,26 +29,37 @@
             {{#if productlist.length}}
                 {{#each productlist}}
                 <div class="item">
-                  <div class="col-md-4 col-sm-6">
-                    <span class="thumbnail text-center">
-                        <img src="{{this.image1}}" alt="..." class="img-responsive" style="width: 350px; height:280px;">
-                          <h6 class="text-danger" style="font-size: 15px;">{{{trimString this.proname}}}</h6>
-                            <div class="ratings">
-                              <p style="font-size: 11px; color: red">Highestbuyerid: {{this.userBid}}</p>
-                            </div>
-                            <p style="font-size: 11px;"><span class="price">Best price in time: {{this.priceAuction}}</span> </p>
-                            <p style="font-size: 10px; color: blue">[{{this.soluotdaugia}} turn]</p>
-                            <p class="DateEnd" style="font-size: 13px;">  {{{CheckDeadline this.sogiay}}}</p>
-                            <input class="idText" type="hidden" name="id" value="{{this.proid}}">
-                            <hr class="line">
-                            <div class="row">
-                                <div class="col-md-6 col-sm-6">
-                                  <button button-add="addwishlist" type="button" class="btn btn-link watchlistItem">Add to Wishlist</button>
-                                </div>
-                                <div class="col-md-6 col-sm-6">
-                                  <a href="/item/{{this.proid}}"><button class="btn btn-danger right" button-bid="bidnow"> BID NOW</button></a>
-                                </div>
-                            </div>
+                  <div class="col-md-3 col-sm-12" style="margin: 10px 0;">
+                    <span class="thumbnail" >
+                      <a href="/item/{{this.proid}}">
+                      <div class="img-container" style="position:relative;">
+                        <img src="{{this.image1}}" alt="..." class="img-responsive" style="width:350px; height:280px;position:relative;" title="{{this.tinydes}}">
+                        {{#if this.isNew}}
+                          <img style="position:absolute;right:-4px;top:-5px;width:100px;" src="/img/label-product-new.png">
+                        {{/if}}
+                      </div>
+                      <div style="padding: 0 5%;">
+                        <h4 class="text-danger" title="{{this.proname}}">{{{trimString this.proname}}}</h4>
+                        </a>
+                        <p>
+                          {{this.soluotdaugia}} bids | {{this.priceAuction}}$ 
+                          <br>
+                          <span title="{{this.userBid}}">({{trimString this.userBid}})
+                        </p>
+                        <p class="DateEnd">
+                          <span class="glyphicon glyphicon-time" aria-hidden="true"></span> 
+                          {{{CheckDeadline this.sogiay}}}
+                        </p>
+                        <input class="idText" type="hidden" name="id" value="{{this.proid}}">
+                        <div class="row">
+                          <div class="col-md-6 col-sm-6">
+                            <button button-add="addwishlist" type="button" class="btn btn-link watchlistItem">Add to Wishlist</button>
+                          </div>
+                          <div class="col-md-6 col-sm-6">
+                            <a href="/item/{{this.proid}}"><button class="btn btn-danger right" button-bid="bidnow">BID NOW</button></a>
+                          </div>
+                        </div>
+                      </div>
                     </span>
                   </div>
                 </div>

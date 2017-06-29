@@ -1,6 +1,6 @@
 <div class="container">
     <div class="row">
-        {{#each wishlist}}
+        {{#each biddingList}}
         <div class="row" style="margin-top: 0px;padding-top:0px;">
             <div class="col-xs-12 col-sm-3 col-md-2">
             <a href="/item/{{this.proid}}">
@@ -15,7 +15,10 @@
                                 </a>
                             </div>
                             <div>
-                                  <i class="glyphicon glyphicon-time"></i> Remaining {{this.sogiay}}
+                                <i class="glyphicon glyphicon-time"></i> Close at {{this.datefinish}}
+                                {{#if this.isHoldingPrice}}
+                                <p style="color:red">Đang giữ giá!</p>
+                                {{/if}}
                             </div>
                         </div>
                     </div>

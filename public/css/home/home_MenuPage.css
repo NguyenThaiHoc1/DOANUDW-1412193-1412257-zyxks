@@ -1,7 +1,11 @@
 #id_menu a {
   font-family: 'Scout Condensed',sans-serif;
   color: black;
+  border: solid 1px white;
+  text-align: center;
+  font-size: 25px;
 }
 #id_menu a:hover {
   color: #DAA520;
+  border: solid 1px #847474;
 }

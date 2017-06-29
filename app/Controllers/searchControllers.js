@@ -45,6 +45,10 @@ var searchController = {
                   res.send(data);
               }else {
                 var  breachcumGen = (object.catogory == 0) ? "All Catogory" : temp2[parseInt(object.catogory) - 1].catname;
+                var fourPastHoursFromNow = new Date();
+                fourPastHoursFromNow.setHours(fourPastHoursFromNow.getHours() - 4);                
+                for (var i = 0; i < data.length; i++)
+                  data[i].isNew = (data[i].datepost >= fourPastHoursFromNow) ? true : false;
                 res.render("_productAuction/SPDAUGIA", {
                   user: req.session.user,
                   checkingSeller: usersx,

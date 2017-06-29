@@ -35,7 +35,7 @@ var item = {
   },
   loadHighestBuyerInfo : function (proId) {
     var d = q.defer();
-    var sql = 'select b.f_ID ,b.f_ImageUrl ,b.f_Name, a.price, f.step, TIMESTAMPDIFF(Second , now() , f.datefinish) sogiay  \
+    var sql = 'select b.f_ID ,b.f_ImageUrl ,b.f_Name, b.f_Username, a.price, f.step, TIMESTAMPDIFF(Second , now() , f.datefinish) sogiay  \
                 from bidhistory a, user b ,product f\
                   where a.userid = b.f_ID and f.proid = a.productid\
                   and a.productid = ?\
@@ -74,7 +74,7 @@ var item = {
     var obj = {
       proID: proId
     };
-    var sql = mustache.render('select count(userid) as count from bidhistory where productid = {{proID}}',obj);
+    var sql = mustache.render('select count(distinct userid) as count from bidhistory where productid = {{proID}}',obj);
     db.query(sql,function (error, results) {
       if (error){
         d.reject(error);
@@ -88,7 +88,7 @@ var item = {
     var obj = {
       proID: proId
     };
-      var sql = 'SELECT user.f_Name, bidhistory.timebid, bidhistory.price \
+      var sql = 'SELECT user.f_Name, user.f_Username, bidhistory.timebid, bidhistory.price \
                 FROM bidhistory, user \
                 where bidhistory.productid = ?\
                 and bidhistory.userid = user.f_ID\
@@ -180,7 +180,7 @@ var item = {
     var index = 0;
     var sql ='';
     var mail;
-    console.log("*** " + bidType + (typeof bidType));
+    //console.log("*** " + bidType + (typeof bidType));
     if (bidType == 'manual') {
       sql = 'insert into bidhistory (userid, productid, price, timebid) values (?, ?, ?, ?);';
       db.query(sql, [userid, productid, price, timebid],function (error, results) {
@@ -234,7 +234,7 @@ var item = {
                   break;
                 }
               }
-              console.log("***prevbiddermail " + prevBidderEmail);
+              //console.log("***prevbiddermail " + prevBidderEmail);
               if (prevBidderEmail != '') {
                 mail = new emailer(prevBidderEmail, 'Đã có người đưa ra giá cao hơn bạn trong sản phẩm ' + rslt01[0].proname +
                   '\nGiá hiện tại của sản phẩm là: ' + currentMaxPrice + '\nXem chi tiết: \
@@ -275,7 +275,7 @@ var item = {
             }
             step = rslt[0].step;
 
-            console.log("***Max product price: " + maxProductPrice);
+            //console.log("***Max product price: " + maxProductPrice);
             sql = 'select iduser,maxprice from autobid where idproduct=? order by id desc';
             db.query(sql, [productid], function(err0,rslt0) {
               if (err0)
@@ -297,7 +297,7 @@ var item = {
                   db.query(sql,[userid,productid,price], function(err2, rslt2) {
                     if (err2)
                       d.reject(err2);
-                    console.log("***Done!");
+                    //console.log("***Done!");
                     d.resolve(rslt2);
                     mail = new emailer(prevBidderEmail, 'Đã có người đưa ra giá cao hơn bạn trong sản phẩm ' + rslt01[0].proname +
                       '\nGiá hiện tại của sản phẩm là: ' + currentMaxPrice + '\nXem chi tiết: \
@@ -305,7 +305,7 @@ var item = {
                     mail.SendEmail();
                   });
                 });
-                console.log("***Nguoi dau tien");
+                //console.log("***Nguoi dau tien");
               }
               else { //đã có người tự động bid từ trước
                 prevTurnAutoBidUserId = rslt0[0]['iduser'];
@@ -317,7 +317,7 @@ var item = {
                     break;
                   }
                 }
-                console.log("***Da co nguoi bid tu dong tu truoc " + prevMaxPrice + " " + prevAutoBidUserId);
+                //console.log("***Da co nguoi bid tu dong tu truoc " + prevMaxPrice + " " + prevAutoBidUserId);
                 if ((prevTurnAutoBidUserId == userid && prevTurnMaxPrice > prevMaxPrice) || index > 0) {
                   //người dùng cập nhật maxbid
                   var tmpsql = 'insert into autobid(iduser,idproduct,maxprice) \
@@ -330,7 +330,7 @@ var item = {
                       //console.log("****userid" + rslt2[0]['userid']);
                       if (err2)
                         d.reject(err2);
-                      console.log("*****" + rslt2[0]['userid'] + userid + (rslt2[0]['userid'] !== userid));
+                      //console.log("*****" + rslt2[0]['userid'] + userid + (rslt2[0]['userid'] !== userid));
                       if (price > maxProductPrice && rslt2[0]['userid'] !== userid) {
                         sql = 'insert into bidhistory(userid, productid, price, timebid) \
                           values (?,?,?,?)';
@@ -355,7 +355,7 @@ var item = {
                         d.resolve(rslt2);
                     })
                   })
-                  console.log("***Cap nhat autobid");
+                  //console.log("***Cap nhat autobid");
                 }
                 else {
                   sql = 'insert into bidhistory(userid, productid, price, timebid) \
@@ -375,7 +375,7 @@ var item = {
                         db.query(sql,[userid,productid,price], function(err3, rslt3) {
                           if (err3)
                             d.reject(err3);
-                          console.log("***Done!");
+                          //console.log("***Done!");
                           d.resolve(rslt3);
                         });
                       });
@@ -384,7 +384,7 @@ var item = {
                         http://' + host + '/item/'+productid);
                       mail.SendEmail();
                     });
-                    console.log("***price < prevMaxPrice");
+                    //console.log("***price < prevMaxPrice");
                   }
                   else if (price == prevMaxPrice) {
                     db.query(sql, [userid,productid,price,timebid], function(err1,rslt1) {
@@ -401,7 +401,7 @@ var item = {
                         db.query(sql,[userid,productid,price], function(err3, rslt3) {
                           if (err3)
                             d.reject(err3);
-                          console.log("***Done!");
+                          //console.log("***Done!");
                           d.resolve(rslt3);
                         });
                       })
@@ -410,7 +410,7 @@ var item = {
                         http://' + host + '/item/'+productid);
                       mail.SendEmail();
                     });
-                    console.log("***price == prevMaxPrice");
+                    //console.log("***price == prevMaxPrice");
                   }
                   else { //>
                     var whatToDecide = (prevMaxPrice > maxProductPrice) ? prevMaxPrice : maxProductPrice;
@@ -423,7 +423,7 @@ var item = {
                       db.query(sql,[userid,productid,price], function(err2, rslt2) {
                         if (err2)
                           d.reject(err2);
-                        console.log("***Done!");
+                        //console.log("***Done!");
                         d.resolve(rslt2);
                       });
                     });
@@ -437,7 +437,7 @@ var item = {
                       Giá hiện tại của sản phẩm là: ' + currentMaxPrice + '\nXem chi tiết: \
                       http://' + host + '/item/'+productid);
                     mail.SendEmail();
-                    console.log("***price > prevMaxPrice; prev" + prevMaxPrice + " prevTurn" + prevTurnMaxPrice);
+                    //console.log("***price > prevMaxPrice; prev" + prevMaxPrice + " prevTurn" + prevTurnMaxPrice);
                   }
                 }
               }

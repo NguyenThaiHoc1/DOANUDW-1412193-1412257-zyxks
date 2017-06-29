@@ -14,6 +14,13 @@ var currentPage = 1;
 
 var typePage = 0;
 
+function encryptString (passedString) {
+  var s = passedString;
+  for (var i = 0; i < Math.floor(passedString.length / 2); i++) {
+    s = s.substr(0, (i*2)+1) + '*' + s.substr((i*2)+2);
+  }
+  return s;
+};
 
 var catogoryController = {
   searchCatogory : function (req, res) {
@@ -41,6 +48,13 @@ var catogoryController = {
                   res.send(data);
               }else {
                 var  breachcumGen = (req.query.danhmuc == 0) ? "All Catogory" : temp2[parseInt(req.query.danhmuc) - 1].catname;
+                var fourPastHoursFromNow = new Date();
+                fourPastHoursFromNow.setHours(fourPastHoursFromNow.getHours() - 4);                
+                for (var i = 0; i < data.length; i++) {
+                  data[i].isNew = (data[i].datepost >= fourPastHoursFromNow) ? true : false;
+                  data[i].userBid = encryptString(data[i].userBid);
+                }
+
                 res.render("_productAuction/SPDAUGIA", {
                   user: req.session.user,
                   checkingSeller: usersx,

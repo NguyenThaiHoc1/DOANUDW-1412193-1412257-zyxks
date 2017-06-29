@@ -64,6 +64,8 @@ module.exports = function(app) {
 
     app.get("/inputvalidateEmail", index.user.userCheckEmail);
 
+    app.get("/inputvalidateEmailChangeinfomation", index.user.userCheckEmailChangeInfomation);
+
     app.get("/inputvalidateUsername", index.user.userCheckName);
 
     app.post("/register",  index.user.userRegister);
@@ -86,6 +88,8 @@ module.exports = function(app) {
 
     app.get("/profile/wishlist", checking.isLoggedIn, index.profile.wishlistUserPage);
 
+    app.get("/profile/biddinglist", checking.isLoggedIn, index.profile.biddingListPage);
+
     app.get("/profile/historyauction", checking.isLoggedIn, index.profile.historyauctionPage);
 
     app.get("/profile/historyvictory", checking.isLoggedIn, index.profile.historyvictoryPage);
@@ -98,18 +102,13 @@ module.exports = function(app) {
 
     //admin functions
     app.get("/acceptsellrequest", index.admin.acceptSellRequest);
-
     app.get("/denysellrequest", index.admin.denySellRequest);
-
     app.get("/changecategorystate", index.admin.changeCategoryState);
-
     app.get("/addcategory", index.admin.addCategory);
-
     app.get("/editcategoryname", index.admin.editCategoryName);
-
     app.get("/changeuserstate", index.admin.changeUserState);
-
     app.get("/resetpassword", index.admin.resetPassword);
+    app.get("/deletecategory", index.admin.deleteCategory);
 
     // text cai nay la test co the xoa
     app.get("/popup", function (req, res) {
@@ -119,7 +118,7 @@ module.exports = function(app) {
     })
 
     // dang lam ne
-    app.get("/testtingO",checking.isLoggedIn, checking.checkingSeller ,index.seller.Defaultpage); // trang nguoi ban
+    app.get("/profile/manageauctions",checking.isLoggedIn, checking.checkingSeller ,index.seller.Defaultpage); // trang nguoi ban
 
     app.post("/seller/updateDescription",checking.isLoggedIn, checking.checkingSeller, index.seller.UpdateSellerDetail);
 
@@ -132,6 +131,12 @@ module.exports = function(app) {
 
     app.post("/item/WriteCommentBuyer", index.item.addcommentBuyer);
 
+    app.get("/public/commentUser", index.publicsx.defaultPage);
+
+
+    app.get("/item/:id/bidbeatprice", checking.isLoggedIn, index.beatprice.bid);
+
+    app.post("/item/:id/beatprice", checking.isLoggedIn, index.beatprice.sendEmailConfirmBid);
     // Handle Error Page checking.isLoggedIn, checking.checkingSeller,
     app.use(function(req, res, next){
         res.status(404);

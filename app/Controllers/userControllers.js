@@ -3,6 +3,7 @@ var querystring = require('querystring');
 var Qs = require('q');
 var request = require('request');
 var objectUser = require("../Object/userObject.js");
+var emailCheck = require('email-check');
 
 function Checking(value) {
   var resulf = value === undefined || value.trim() === "" || value.length === 0;
@@ -13,24 +14,69 @@ function Checking(value) {
 var userController = {
 
   userCheckEmail : function (req, res) {
-        var params = req.url.split('?')[1];
-        var data   = querystring.parse(params);
-        var email  = data.email;
-        res.statusCode = 200;
-        res.setHeader("Content-Type", "application/json");
-        res.setHeader("Access-Control-Allow-Origin", "*");
-        res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-        userDB.findbyUserEmail(email).then(function (rows) {
-            if (rows.length > 0) {
-              res.write('"Email is already"');
-            } else {
-              res.write('"true"');
-            }
-            res.end();
+  var params = req.url.split('?')[1];
+  var data = querystring.parse(params);
+  var email = data.email;
+  res.statusCode = 200;
+  res.setHeader("Content-Type", "application/json");
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+   emailCheck(email).then(function () {
+  // Returns "true" if the email address exists, "false" if it doesn't.
+    userDB.findbyUserEmail(email).then(function (rows) {
+      if (rows.length > 0) {
+        res.write('"Email is already"');
+      } else {
+        res.write('"true"');
+      }
+      res.end();
+    }).fail(function(err) {
+      console.log(err);
+      res.end('fail');
+    });
+  }).catch(function (err) {
+  if (err.message === 'refuse') {
+    // The MX server is refusing requests from your IP address.
+    res.write('"Email is not exists ! try again"');
+  } else {
+    // Decide what to do with other errors.
+    res.write('"Email is not exists ! try again"');
+  }
+    res.end();
+  });
+  },
+  userCheckEmailChangeInfomation: function (req, res) {
+      var params = req.url.split('?')[1];
+      var data = querystring.parse(params);
+      var email = data.email;
+      res.statusCode = 200;
+      res.setHeader("Content-Type", "application/json");
+      res.setHeader("Access-Control-Allow-Origin", "*");
+      res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+
+      emailCheck(email).then(function () {
+      // Returns "true" if the email address exists, "false" if it doesn't.
+        userDB.findbyUserEmailforchange(email, req.session.user.IdUser).then(function (rows) {
+          if (rows.length > 0) {
+            res.write('"Email is already"');
+          } else {
+            res.write('"true"');
+          }
+          res.end();
         }).fail(function(err) {
-            console.log(err);
-            res.end('fail');
+          console.log(err);
+          res.end('fail');
         });
+      }).catch(function (err) {
+      if (err.message === 'refuse') {
+        // The MX server is refusing requests from your IP address.
+        res.write('"Email is not exists ! try again"');
+      } else {
+        // Decide what to do with other errors.
+        res.write('"Email is not exists ! try again"');
+      }
+        res.end();
+      });
   },
   userCheckName : function (req, res) {
     var params = req.url.split('?')[1].split('=')[1];

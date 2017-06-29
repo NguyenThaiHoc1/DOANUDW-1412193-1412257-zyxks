@@ -41,11 +41,7 @@ var seller = {
                                     )\
                          )\
                   group by b.proid, b.proname, b.tinydes, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\'), a.price, a.userid\
-                  order by \
-                  case\
-                      when a.price is null then b.startprice \
-                      when a.price is not null then a.price\
-                  end ASC; ';
+                  order by b.datepost DESC; ';
       db.query(sql,[idUser], function (error, results) {
         if (error){
           d.reject(error);
@@ -73,6 +69,40 @@ var seller = {
           d.reject(error);
         }
         d.resolve(results);
+      });
+      return d.promise;
+    },
+    getCatogory: function () {
+      var d = q.defer();
+      var sql = 'select catid, catname from category where active = 1;';
+      db.query(sql, function (error, results) {
+        if (error){
+          d.reject(error);
+        }
+        d.resolve(results);
+      });
+      return d.promise;
+    },
+    GetUserInformation: function(userid) {
+      var d = q.defer();
+      var sql = 'select * from user where f_id=?';
+      db.query(sql, [userid],function (error, results) {
+        if (error){
+          d.reject(error);
+        }
+        results[0].isSeller = false;
+        var now = new Date();
+        if (results[0].f_deadlineseller && results[0].f_deadlineseller > now)
+          results[0].isSeller = true;
+        d.resolve(results);
+
+        if (!results[0].isSeller) {
+          sql = "update user set f_permission='user' where f_id=?";
+          db.query(sql, [userid], function (err,rslt) {
+            if (err)
+              d.reject(err);
+          })
+        }
       });
       return d.promise;
     }

@@ -3,7 +3,7 @@ var db = require("./database.js");
 var home = {
     top5bestprice : function () {
       var d = q.defer();
-      var sql = 'select b.image1, b.proid, b.proname, b.tinydes, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\') sogiay,\
+      var sql = 'select b.image1, b.proid, b.proname, b.tinydes, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\') sogiay, b.datepost,\
                   case\
                             when a.price is null then b.startprice \
                             when a.price is not null then a.price\
@@ -26,9 +26,9 @@ var home = {
                                                  group by history.productid)\
                   end as soluotdaugia\
                   from bidhistory a right join product b on a.productid = b.proid, dackweb.category cato\
-                  where b.catid = cato.catid and cato.active = 1 \
+                  where TIMESTAMPDIFF(Second , now() , b.datefinish) > 0 and b.catid = cato.catid and cato.active = 1 \
                   and not exists( select * \
-                				  from favorite favo\
+                          from favorite favo\
                                   where favo.idproduct = b.proid and favo.iduser = a.userid)\
                   and not exists (\
                               select *\
@@ -36,16 +36,16 @@ var home = {
                               where c.productid = a.productid\
                                           and a.userid = c.userid\
                                           and not exists(select * \
-											  from favorite favo\
-											  where favo.idproduct = c.productid and favo.iduser = c.userid)\
+                        from favorite favo\
+                        where favo.idproduct = c.productid and favo.iduser = c.userid)\
                                           and  exists(\
                                         select * \
                                                               from bidhistory e \
                                                               where e.productid = c.productid\
                                                               and a.price < e.price\
                                                               and not exists( select * \
-															  from favorite favo\
-															  where favo.idproduct = e.productid and favo.iduser = e.userid)\
+                                from favorite favo\
+                                where favo.idproduct = e.productid and favo.iduser = e.userid)\
                               )\
                          )\
                   group by b.proid, b.proname, b.tinydes, TIMESTAMPDIFF(Second , now() , b.datefinish), a.price, a.userid\
@@ -65,7 +65,7 @@ var home = {
     },
     top5mostauctionbid : function () {
       var d = q.defer();
-      var sql = 'select b.image1, b.proid, b.proname, b.tinydes, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\') sogiay,\
+      var sql = 'select b.image1, b.proid, b.proname, b.tinydes, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\') sogiay, b.datepost,\
                   case\
                             when a.price is null then b.startprice \
                             when a.price is not null then a.price\
@@ -90,26 +90,26 @@ var home = {
                   from bidhistory a right join product b on a.productid = b.proid, dackweb.category cato\
                   where b.catid = cato.catid and cato.active = 1 \
                   and not exists( select * \
-                				  from favorite favo\
+                          from favorite favo\
                                   where favo.idproduct = b.proid and favo.iduser = a.userid)\
                   and not exists (\
                               select *\
-							  from bidhistory c\
+                from bidhistory c\
                               where c.productid = a.productid\
-							  and a.userid = c.userid\
-							  and not exists( select * \
-											  from favorite favo\
-											  where favo.idproduct = c.productid and favo.iduser = c.userid)\
-							  and  exists(\
-											  select * \
-											  from bidhistory e \
-											  where e.productid = c.productid\
-											  and a.price < e.price\
-											  and not exists( select * \
-															  from favorite favo\
-															  where favo.idproduct = e.productid and favo.iduser = e.userid)\
-										  )\
-				  )\
+                and a.userid = c.userid\
+                and not exists( select * \
+                        from favorite favo\
+                        where favo.idproduct = c.productid and favo.iduser = c.userid)\
+                and  exists(\
+                        select * \
+                        from bidhistory e \
+                        where e.productid = c.productid\
+                        and a.price < e.price\
+                        and not exists( select * \
+                                from favorite favo\
+                                where favo.idproduct = e.productid and favo.iduser = e.userid)\
+                      )\
+          )\
                   group by b.proid, b.proname, b.tinydes, TIMESTAMPDIFF(Second , now() , b.datefinish), a.price, a.userid\
                   order by \
                   case \
@@ -136,7 +136,7 @@ var home = {
     },
     top5cometoend : function () {
       var d = q.defer();
-      var sql = 'select b.image1, b.proid, b.proname, b.tinydes, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\') sogiay,\
+      var sql = 'select b.image1, b.proid, b.proname, b.tinydes, DATE_FORMAT(b.datefinish,\'%Y-%m-%d %H:%i:%s\') sogiay,b.datepost,\
                   case\
                             when a.price is null then b.startprice \
                             when a.price is not null then a.price\
@@ -162,7 +162,7 @@ var home = {
                   where TIMESTAMPDIFF(Second , now() , b.datefinish) > 0 and b.catid = cato.catid \
                   and cato.active = 1 \
                   and not exists( select * \
-                				  from favorite favo\
+                          from favorite favo\
                                   where favo.idproduct = b.proid and favo.iduser = a.userid)\
                   and not exists (\
                               select *\
@@ -170,16 +170,16 @@ var home = {
                               where c.productid = a.productid\
                                           and a.userid = c.userid\
                                           and not exists(select * \
-											  from favorite favo\
-											  where favo.idproduct = c.productid and favo.iduser = c.userid)\
+                        from favorite favo\
+                        where favo.idproduct = c.productid and favo.iduser = c.userid)\
                                           and  exists(\
                                         select * \
                                                               from bidhistory e \
                                                               where e.productid = c.productid\
                                                               and a.price < e.price\
                                                               and not exists( select * \
-															  from favorite favo\
-															  where favo.idproduct = e.productid and favo.iduser = e.userid)\
+                                from favorite favo\
+                                where favo.idproduct = e.productid and favo.iduser = e.userid)\
                               )\
                          )\
                   group by b.proid, b.proname, b.tinydes, TIMESTAMPDIFF(Second , now() , b.datefinish), a.price, a.userid\
